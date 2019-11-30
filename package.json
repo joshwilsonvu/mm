@@ -1,0 +1,65 @@
+{
+  "name": "magicmirror",
+  "private": true,
+  "version": "2.9.0",
+  "description": "The open source modular smart mirror platform.",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "concurrently --kill-others npm:startonly npm:electron",
+    "startonly": "@mm/scripts start",
+    "build": "@mm/scripts build",
+    "electron": "electron -r esm src/server/index.js",
+    "lint": "eslint src/**/*.{js,jsx,ts,tsx}",
+    "lint:fix": "eslint --fix src/**/*.{js,jsx,ts,tsx}"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joshwilsonvu/MagicMirror.git"
+  },
+  "keywords": [
+    "magic mirror",
+    "smart mirror",
+    "mirror UI",
+    "modular"
+  ],
+  "authors": [
+    "Michael Teeuw",
+    "Josh Wilson"
+  ],
+  "contributors": [
+    "https://github.com/joshwilsonvu/MagicMirror/graphs/contributors"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/joshwilsonvu/MagicMirror/issues"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.7.4",
+    "@babel/core": "^7.7.4",
+    "@babel/plugin-proposal-class-properties": "^7.7.4",
+    "@babel/plugin-proposal-export-default-from": "^7.7.4",
+    "@babel/plugin-syntax-dynamic-import": "^7.7.4",
+    "@babel/preset-env": "^7.7.4",
+    "@babel/preset-react": "^7.7.4",
+    "@babel/traverse": "^7.7.4",
+    "babylon": "^6.18.0",
+    "danger": "^3.1.3",
+    "jest": "^24.9.0",
+    "lerna": "^3.19.0",
+    "lerna-wizard": "^1.1.1",
+    "react": "^16.11.0",
+    "react-dom": "^16.11.0",
+    "rimraf": "^3.0.0"
+  },
+  "dependencies": {
+    "@mm/cli": "file:packages/cli",
+    "@mm/babel-plugin-transform-config": "file:packages/babel-plugin-transform-config",
+    "@mm/core": "file:packages/core",
+    "@mm/legacy": "file:packages/legacy",
+    "@mm/legacy-loader": "file:packages/legacy-loader",
+    "@mm/scripts": "file:packages/scripts"
+  },
+  "browserslist": [
+    "last 1 chrome version"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "@mm/babel-plugin-transform-config",
+  "version": "0.0.1",
+  "description": "Adds imports to MagicMirror config.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Josh Wilson <joshua.wilson@vanderbilt.edu>",
+  "license": "MIT"
+}
