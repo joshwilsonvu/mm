@@ -1,9 +1,8 @@
 {
   "name": "mm",
-  "private": true,
-  "version": "2.9.0",
+  "version": "0.0.1",
   "description": "The open source modular smart mirror platform.",
-  "main": "src/index.js",
+  "main": "index.js",
   "scripts": {
     "start": "concurrently --kill-others npm:startonly npm:electron",
     "startonly": "@mm/scripts start",

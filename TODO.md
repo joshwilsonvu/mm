@@ -27,3 +27,15 @@
     custom loader, and *maybe* working with the `module.hot` API. This
     would get rid of the messiness of watching files and running a separate
     process.
+    
+* Get rid of the overcomplicated monorepo structure and having several packages and just
+  have one. To get the modular code structure, use multiple folders in `./lib`, compile all
+  to `./dist`, and add root-level files that export the `./dist` code.
+  ```javascript
+  // ./core
+  module.exports=require("./dist/core");
+  ```
+  becomes
+  ```javascript
+  const core = require("mm/core");
+  ```
