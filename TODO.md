@@ -18,12 +18,7 @@
   * Self host in production if not `serve` or `view`: https://stackoverflow.com/a/43423171/7619380
   * Programmatically run `react-scripts` and `electron` concurrently in development
 
-* Instead of trying to make codegen work with HMR and Babel and all of the
-  sweet, sweet features we love, why not run a watcher process that copies
-  the files we're interested in to a hidden folder and processes them there?
-  Gets around symlinks, HMR failures, lets react-scripts do the hard work.
-
-  * But maybe we can do the same thing by forking react-scripts, adding a
+* Try forking react-scripts, adding a
     custom loader, and *maybe* working with the `module.hot` API. This
     would get rid of the messiness of watching files and running a separate
     process.
