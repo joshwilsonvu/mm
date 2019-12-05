@@ -1,7 +1,7 @@
 {
-  "name": "mm",
+  "name": "magicmirrorx",
   "version": "0.0.1",
-  "description": "The open source modular smart mirror platform.",
+  "description": "Libraries for the MagicMirror experimental branch.",
   "main": "index.js",
   "scripts": {
     "clean": "rimraf dist",
