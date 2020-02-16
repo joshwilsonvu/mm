@@ -1,11 +1,10 @@
 {
-  "name": "magicmirrorx",
+  "name": "mm",
+  "private": true,
   "version": "0.0.1",
   "description": "Libraries for the MagicMirror experimental branch.",
   "main": "index.js",
   "scripts": {
-    "clean": "rimraf dist",
-    "build": "npm run clean && babel lib -d dist --copy-files --source-maps --ignore '**/*.test.js'",
     "test": "jest"
   },
   "repository": {
@@ -19,49 +18,19 @@
     "modular"
   ],
   "authors": [
-    "Michael Teeuw",
     "Josh Wilson"
   ],
   "contributors": [
-    "https://github.com/joshwilsonvu/MagicMirror/graphs/contributors"
+    "https://github.com/joshwilsonvu/mm/graphs/contributors"
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/joshwilsonvu/MagicMirror/issues"
+    "url": "https://github.com/joshwilsonvu/mm/issues"
   },
-  "dependencies": {
-    "nanoid": "^2.1.7",
-    "nunjucks": "^3.2.0",
-    "react-transition-group": "^4.3.0",
-    "semver": "^6.3.0"
-  },
-  "peerDependencies": {
-    "react": "^16.8.0"
-  },
+  "dependencies": {},
+  "peerDependencies": {},
   "devDependencies": {
-    "@babel/cli": "^7.7.4",
-    "@babel/core": "^7.7.4",
-    "@babel/plugin-proposal-class-properties": "^7.7.4",
-    "@babel/plugin-proposal-export-default-from": "^7.7.4",
-    "@babel/preset-env": "^7.7.4",
-    "@babel/preset-react": "^7.7.4",
-    "danger": "^3.1.3",
     "jest": "^24.9.0",
-    "react": "^16.11.0",
-    "react-dom": "^16.11.0",
-    "rimraf": "^3.0.0"
-  },
-  "browserslist": [
-    "last 1 chrome version"
-  ],
-  "babel": {
-    "plugins": [
-      "@babel/plugin-proposal-export-default-from",
-      "@babel/plugin-proposal-class-properties"
-    ],
-    "presets": [
-      "@babel/preset-env",
-      "@babel/preset-react"
-    ]
+    "lerna": "^3.20.2"
   }
 }

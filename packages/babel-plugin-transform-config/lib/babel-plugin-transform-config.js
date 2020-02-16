@@ -21,32 +21,35 @@
  *     {
  *       module: "module-name",
  *       ...otherProperties: "anything",
- *   ==> _import: () => import("../modules/[default]/module-name[/module-name]") <==
+ *   ==> _import: () => import("modules/module-name") <==
  *     },
  *     ...
  *   ],
  *   ...
  * }
  */
-module.exports = function ({types: t}) {
-  t.isIdentifierOrLiteral = (node, name) => t.isIdentifier(node, {name}) || t.isStringLiteral(node, {value: name});
-  const buildImport = path => (
+'use strict';
+module.exports = function(babel) {
+  const t = babel.types;
+  t.isIdentifierOrLiteral = (node, name) =>
+    t.isIdentifier(node, { name }) || t.isStringLiteral(node, { value: name });
+  const buildImport = path =>
     t.objectProperty(
       t.identifier('_import'),
       t.arrowFunctionExpression(
         [], // params
-        t.callExpression(
-          t.import(),
-          [t.stringLiteral(path)]
-        )
+        t.callExpression(t.import(), [t.stringLiteral(path)])
       )
-    )
-  );
+    );
   return {
     visitor: {
       ObjectProperty(path) {
         // find the "modules" property of the config object with an array value
-        if (!path.node.computed && t.isIdentifierOrLiteral(path.node.key, 'modules') && t.isArrayExpression(path.node.value)) {
+        if (
+          !path.node.computed &&
+          t.isIdentifierOrLiteral(path.node.key, 'modules') &&
+          t.isArrayExpression(path.node.value)
+        ) {
           const elements = path.get('value.elements'); // get the array elements
           for (const element of elements) {
             // iterate over the objects in the array
@@ -54,10 +57,15 @@ module.exports = function ({types: t}) {
               const properties = element.get('properties');
               for (const property of properties) {
                 // find the "module" property of the object
-                if (!property.node.computed && t.isIdentifierOrLiteral(property.node.key, 'module') && t.isStringLiteral(property.node.value)) {
+                if (
+                  !property.node.computed &&
+                  t.isIdentifierOrLiteral(property.node.key, 'module') &&
+                  t.isStringLiteral(property.node.value)
+                ) {
                   const moduleName = property.node.value.value; // literal value of property value
+                  const modulePath = `modules/${defaultModules.indexOf(moduleName) !== -1 ? 'default/' : ''}${moduleName}/${moduleName}`;
                   // insert an _import property with a lazy dynamic import as its value
-                  const _import = buildImport(`modules/${moduleName}`);
+                  const _import = buildImport(modulePath);
                   property.insertAfter(_import);
                   break; // don't search through other properties
                 }
@@ -65,7 +73,21 @@ module.exports = function ({types: t}) {
             }
           }
         }
-      }
-    }
+      },
+    },
   };
 };
+
+// preface default/ if one of these modules is listed
+const defaultModules = [
+  'alert',
+  'calendar',
+  'clock',
+  'compliments',
+  'currentweather',
+  'helloworld',
+  'newsfeed',
+  'weatherforecast',
+  'updatenotification',
+  'weather',
+];

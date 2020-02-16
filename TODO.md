@@ -1,14 +1,10 @@
 ## To-Do
 
-* Rearchitect so that instead of wrapping React modules in a `Module`
-  subclass with a `getComponent()` overridden method (what was I thinking?),
-  legacy modules are wrapped in a React component. 
-
 * Allow this project to be used in two ways:
   * Legacy style, `git clone` to install, `git pull` to update,
     user config in `config/` and modules in `modules/`
   * Dependency style, `npm install`/`update`, modules in `modules/`
-    or npm dependencies, run from npm scripts with `mm [--prod]`, 
+    or npm dependencies, run from npm scripts with `mm [--prod]`,
     `mm serve --port 8080`, `mm view --url localhost://8080`
 
 * Reproduce all the default modules with React components
@@ -22,15 +18,4 @@
     custom loader, and *maybe* working with the `module.hot` API. This
     would get rid of the messiness of watching files and running a separate
     process.
-    
-* Get rid of the overcomplicated monorepo structure and having several packages and just
-  have one. To get the modular code structure, use multiple folders in `./lib`, compile all
-  to `./dist`, and add root-level files that export the `./dist` code.
-  ```javascript
-  // ./core
-  module.exports=require("./dist/core");
-  ```
-  becomes
-  ```javascript
-  const core = require("mm/core");
-  ```
+
