@@ -1,5 +1,5 @@
 {
-  "name": "babel-plugin-transform-mm2",
+  "name": "@mm/babel-plugin-transform-mm2",
   "version": "0.0.1",
   "description": "Converts global-based MagicMirror modules to use ES6 imports and exports.",
   "keywords": [
