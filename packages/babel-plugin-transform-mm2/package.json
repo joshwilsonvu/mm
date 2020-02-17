@@ -10,6 +10,9 @@
   "author": "Josh Wilson <joshua.wilson@vanderbilt.edu>",
   "homepage": "https://github.com/joshwilsonvu/mm#readme",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "lib/babel-plugin-transform-mm2.js",
   "directories": {
     "lib": "lib",
@@ -30,5 +33,6 @@
   },
   "devDependencies": {
     "@babel/core": "^7.8.4"
-  }
+  },
+  "gitHead": "4226212ac168ad91a9d9d0250487193d813858d1"
 }
