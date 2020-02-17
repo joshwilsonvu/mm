@@ -29,6 +29,9 @@
  * }
  */
 'use strict';
+const nodepath = require("path");
+const fs = require("fs");
+const memoize = require("memoize-one");
 module.exports = function(babel) {
   const t = babel.types;
   t.isIdentifierOrLiteral = (node, name) =>
@@ -43,7 +46,7 @@ module.exports = function(babel) {
     );
   return {
     visitor: {
-      ObjectProperty(path) {
+      ObjectProperty(path, state) {
         // find the "modules" property of the config object with an array value
         if (
           !path.node.computed &&
@@ -62,8 +65,13 @@ module.exports = function(babel) {
                   t.isIdentifierOrLiteral(property.node.key, 'module') &&
                   t.isStringLiteral(property.node.value)
                 ) {
-                  const moduleName = property.node.value.value; // literal value of property value
-                  const modulePath = `modules/${defaultModules.indexOf(moduleName) !== -1 ? 'default/' : ''}${moduleName}/${moduleName}`;
+                  const moduleName = property.node.value.value;
+                  // find the relative path to the nearest modules/ folder within the project
+                  const dirname = nodepath.dirname(state.file.opts.filename);
+                  let moduleBasePath = findModulePath(dirname);
+                  moduleBasePath = moduleBasePath ? nodepath.relative(dirname, moduleBasePath): "modules";
+                  // add the path of the module being requested
+                  const modulePath = `${moduleBasePath}/${defaultModules.indexOf(moduleName) !== -1 ? 'default/' : ''}${moduleName}/${moduleName}`;
                   // insert an _import property with a lazy dynamic import as its value
                   const _import = buildImport(modulePath);
                   property.insertAfter(_import);
@@ -91,3 +99,23 @@ const defaultModules = [
   'updatenotification',
   'weather',
 ];
+
+// find the absolute path of the nearest modules/ folder up the tree, or null
+const findModulePath = memoize(function findModulePath(dirName) {
+  const path = nodepath;
+  const actualDirName = path.resolve(dirName);
+  const {root} = path.parse(actualDirName);
+  // return the nearest .../modules/ path
+  const modulePath = path.join(actualDirName, "modules");
+  const moduleExists = fs.existsSync(modulePath);
+  if (moduleExists) {
+    return modulePath;
+  }
+  // stop when we reach the nearest package.json file
+  const pkgPath = path.join(actualDirName, "package.json");
+  const pkgExists = fs.existsSync(pkgPath);
+  if (pkgExists || dirName === root) {
+    return null;
+  }
+  return findModulePath(path.dirname(dirName));
+});

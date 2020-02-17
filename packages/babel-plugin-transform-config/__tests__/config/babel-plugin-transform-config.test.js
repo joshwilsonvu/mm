@@ -1,7 +1,7 @@
 'use strict';
 
 const babel = require('@babel/core');
-const plugin = require('..');
+const plugin = require('../../lib/babel-plugin-transform-config');
 
 test('transform', () => {
   let original, transformed, expected;
@@ -27,6 +27,7 @@ test('transform', () => {
     transformed = babel.transformSync(original, {
       plugins: [plugin],
       compact: false,
+      filename: __filename,
     }).code;
     expected = babel.transformSync(
       `
@@ -35,7 +36,7 @@ test('transform', () => {
         modules: [
           {
             module: "helloworld",
-            _import: () => import("modules/default/helloworld/helloworld"),
+            _import: () => import("../modules/default/helloworld/helloworld"),
             position: "top_left",
             config: {
               text: "Hello world"
@@ -43,7 +44,7 @@ test('transform', () => {
           },
           {
             module: "MMM-clock",
-            _import: () => import("modules/MMM-clock/MMM-clock"),
+            _import: () => import("../modules/MMM-clock/MMM-clock"),
             position: "top_right"
           }
         ]
@@ -53,6 +54,7 @@ test('transform', () => {
       {
         plugins: [require('@babel/plugin-syntax-dynamic-import')],
         compact: false,
+        filename: __filename,
       }
     ).code;
 
