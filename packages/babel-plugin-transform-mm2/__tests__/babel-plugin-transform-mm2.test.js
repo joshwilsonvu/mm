@@ -23,6 +23,7 @@ test('transform', () => {
     transformed = babel.transformSync(original, {
       plugins: [plugin],
       compact: false,
+      filename: __filename,
     }).code;
     expected = babel.transformSync(
       `
@@ -43,6 +44,7 @@ test('transform', () => {
       `,
       {
         compact: false,
+        filename: __filename,
       }
     ).code;
 

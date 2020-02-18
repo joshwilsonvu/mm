@@ -5,7 +5,11 @@
   "description": "Libraries for the MagicMirror experimental branch.",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "build": "lerna exec npm -- run build --if-present",
+    "test": "npm run build -- -- --no-minify && jest",
+    "test:only": "jest",
+    "postinstall": "lerna bootstrap",
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -29,12 +33,21 @@
   },
   "dependencies": {
     "@mm/babel-plugin-transform-config": "file:packages/babel-plugin-transform-config",
-    "@mm/babel-plugin-transform-mm2": "file:packages/babel-plugin-transform-mm2"
+    "@mm/babel-plugin-transform-mm2": "file:packages/babel-plugin-transform-mm2",
+    "@mm/hooks": "file:packages/hooks",
+    "mm2": "file:packages/mm2"
   },
   "devDependencies": {
+    "@babel/cli": "^7.8.4",
     "@babel/core": "^7.8.4",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
+    "@babel/preset-env": "^7.8.4",
+    "@babel/preset-react": "^7.8.3",
+    "babel-jest": "^25.1.0",
     "jest": "^24.9.0",
-    "lerna": "^3.20.2"
+    "lerna": "^3.20.2",
+    "parcel-bundler": "^1.12.4",
+    "react": "latest",
+    "redux": "^4.0.5"
   }
 }

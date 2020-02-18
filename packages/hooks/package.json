@@ -1,0 +1,41 @@
+{
+  "name": "@mm/hooks",
+  "version": "0.0.2",
+  "description": "Builtin and community-created React Hooks for MagicMirror.",
+  "keywords": [
+    "react",
+    "hooks",
+    "magicmirror"
+  ],
+  "author": "Josh Wilson <joshua.wilson@vanderbilt.edu>",
+  "homepage": "https://github.com/joshwilsonvu/mm#readme",
+  "license": "MIT",
+  "main": "dist/hooks.js",
+  "source": "lib/hooks.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joshwilsonvu/mm.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1",
+    "build": "npx parcel build --target=node lib/hooks.js"
+  },
+  "bugs": {
+    "url": "https://github.com/joshwilsonvu/mm/issues"
+  },
+  "dependencies": {
+    "mitt": "^1.2.0",
+    "react-redux": "^7.2.0",
+    "react-dom": "^16.12.0"
+  }
+}

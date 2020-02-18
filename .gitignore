@@ -85,4 +85,4 @@ Temporary Items
 *.rej
 *.bak
 
-!/.old/tests/node_modules/**/*
+.cache
