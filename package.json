@@ -6,8 +6,7 @@
   "main": "index.js",
   "scripts": {
     "build": "lerna exec npm -- run build --if-present",
-    "test": "npm run build -- -- --no-minify && jest",
-    "test:only": "jest",
+    "test": "jest",
     "postinstall": "lerna bootstrap",
     "prepublishOnly": "npm run build"
   },
@@ -44,6 +43,7 @@
     "@babel/preset-env": "^7.8.4",
     "@babel/preset-react": "^7.8.3",
     "babel-jest": "^25.1.0",
+    "babel-plugin-tester": "^8.0.1",
     "jest": "^24.9.0",
     "lerna": "^3.20.2",
     "parcel-bundler": "^1.12.4",

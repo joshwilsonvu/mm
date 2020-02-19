@@ -1,7 +1,7 @@
 'use strict';
 
 const babel = require('@babel/core');
-const plugin = require('..');
+const plugin = require('../lib/babel-plugin-transform-mm2');
 
 test('transform', () => {
   let original, transformed, expected;
@@ -23,7 +23,7 @@ test('transform', () => {
     transformed = babel.transformSync(original, {
       plugins: [plugin],
       compact: false,
-      filename: __filename,
+      filename: require.resolve('./dummy'),
     }).code;
     expected = babel.transformSync(
       `
@@ -44,7 +44,7 @@ test('transform', () => {
       `,
       {
         compact: false,
-        filename: __filename,
+        filename: require.resolve('./dummy'),
       }
     ).code;
 

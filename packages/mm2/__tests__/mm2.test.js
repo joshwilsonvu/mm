@@ -1,4 +1,4 @@
-const { makeCompat, Module } = require("..");
+const { makeCompat, Module } = require("../lib/mm2");
 
 test("Module", () => {
   const Subclass = Module.register("Test", {

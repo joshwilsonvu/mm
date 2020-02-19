@@ -1,5 +1,5 @@
 'use strict';
 
-const hooks = require('..');
+const hooks = require('../lib/hooks');
 
 test.todo('hooks');
