@@ -1,7 +1,7 @@
-const { default: React, useState, useRef, useEffect, useLayoutEffect, useCallback } = require("react");
-const useConstant = require("use-constant");
-const { useMM2, useSubscribe } = require("@mm/hooks");
-const semver = require("semver");
+import React, { useState, useRef, useEffect, useLayoutEffect, useCallback } from "react";
+import useConstant from "use-constant";
+import { useMM2, useSubscribe } from "@mm/hooks";
+import semver from "semver";
 
 const makeCompat = (MM2, name, globalConfig) => {
   // access an instance of the MM2 class

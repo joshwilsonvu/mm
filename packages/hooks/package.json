@@ -28,15 +28,15 @@
   },
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1",
-    "build": "npx parcel build --target=node lib/hooks.js"
+    "build": "babel lib -d dist"
   },
   "bugs": {
     "url": "https://github.com/joshwilsonvu/mm/issues"
   },
   "dependencies": {
     "mitt": "^1.2.0",
-    "react-redux": "^7.2.0",
-    "react-dom": "^16.12.0"
+    "react-dom": "^16.12.0",
+    "react-redux": "^7.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4"
