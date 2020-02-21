@@ -1,97 +1,90 @@
 import React, { createContext, useEffect, useContext, useCallback, useRef } from 'react';
 import useConstant from 'use-constant';
-import mitt from 'mitt';
 
-const PubSubContext = createContext(null);
+
+
+const Context = createContext({});
 const defaultKey = Symbol("default");
 const destinationKey = Symbol("destination");
 
-// Creates Provider, useSubscribe, and usePublish that use the given context. Useful for separate "rooms".
-export const createPubSub = Context => {
-  function Provider(props) {
-    const emitter = useConstant(mitt);
-    return <Context.Provider {...props} value={emitter} />;
-  }
-
-  function useEmitter() { return useContext(Context); }
-
-  /*
-   * To subscribe to a notification, call this hook with the name of the notification
-   * to subscribe to and the function to be called when the notification comes in.
-   *     useSubscribe("ALL_MODULES_LOADED", payload => console.log("Loaded!"));
-   *
-   * Listen to all events with
-   *     useSubscribe("*", (payload, event) => console.log("Received event " + event));
-   *
-   * If an optional third argument is supplied with a unique identifier, events from
-   * usePublish(_, _, destination) will only reach subscribers with a matching identifier.
-   *     useSubscribe("UPDATE", payload => console.log("Updated!"), "foo");
-   *     ...
-   *     const publish = usePublish();
-   *     publish("UPDATE", {}, "foo");
-   */
-  function useSubscribe(event, subscriber, identity) {
-    const emitter = useEmitter();
-    const subscriberRef = useRef(null);
-    subscriberRef.current = subscriber;
-    useEffect(() => {
-      function cb(type, payload) {
-        // change argument order to keep payload first when the event is a catch-all
-        if (typeof payload === "undefined") {
-          payload = type;
-          type = undefined;
-        }
-        // when the payload contains a destination, only call the subscriber if identity matches
-        if (!identity || !payload[destinationKey] || payload[destinationKey] === identity) {
-          // extract the payload from the object if it was wrapped
-          if (payload[defaultKey]) {
-            payload = payload[defaultKey];
-          }
-          subscriberRef.current && subscriberRef.current(payload, type);
+// Creates Provider, useSubscribe, and usePublish that use the given context.
+function createEmitter() {
+  let events = {};
+  return {
+    // type defaults to '*', a catch-all event; handler will receive type as first arg if handler.length === 3
+    on(type = '*', handler) {
+      if (typeof type === "function") {
+        handler = type;
+        type = '*';
+      }
+      (events[type] || (events[type] = [])).push(handler)
+    },
+    off(type, handler) {
+      if (events[type]) {
+        events[type].splice(events[type].indexOf(handler) >>> 0, 1);
+      }
+    },
+    emit(type, payload, sender) {
+      for (let handler of [...events[type], ...events['*']]) {
+        // provide type if handler takes three args, typically done with '*' events
+        if (handler.length === 3) {
+          handler(type, payload, sender);
+        } else {
+          handler(payload, sender);
         }
       }
-
-      emitter.on(event, cb);
-      return () => emitter.off(event, cb);
-    }, [event, identity, emitter]);
-  }
-
-  /*
-   * To emit, use the return value of this hook in a useEffect() block or event handler.
-   * It's not a good idea to call it in the render phase as it could be called more than once.
-   *     const publish = usePublish();
-   *     useEffect(() => fetch(something).then(content => publish("FETCHED", content)), [something]);
-   * To publish to a specific listener,
-   *     publish("FETCHED", payload, destination) // "foo"
-   */
-  function usePublish() {
-    const emitter = useEmitter();
-    // return value of hook acts as emit function
-    return useCallback(
-      (event, payload, destination) => {
-        // wrap payload in an object if it's not already an object
-        if (typeof payload !== "object") {
-          payload = { [defaultKey]: payload };
-        }
-        emitter.emit(event, {
-          ...payload,
-          ...(destination && { [destinationKey]: destination })
-        })
-      },
-      [emitter]
-    );
-  }
-
-  return {
-    Provider,
-    useSubscribe,
-    usePublish,
+    }
   };
-};
+}
 
-const { Provider, useSubscribe, usePublish } = createPubSub(PubSubContext);
+function Provider(props) {
+  const events = useRef({});
+  const emitter = useConstant(createEmitter);
+  return <Context.Provider {...props} value={emitter} />;
+}
+
+function useEmitter() { return useContext(Context); }
+
+/*
+  * To subscribe to a notification, call this hook with the name of the notification
+  * to subscribe to and the function to be called when the notification comes in.
+  *     useSubscribe("ALL_MODULES_LOADED", (payload, sender) => console.log("Loaded!"));
+  *
+  * Listen to all events with
+  *     useSubscribe("*", (event, payload, sender) => console.log("Received event " + event));
+  */
+function useNotification(event, subscriber) {
+  const emitter = useEmitter();
+  const subscriberRef = useRef(null);
+  subscriberRef.current = subscriber;
+  useEffect(() => {
+    function cb(...args) {
+      subscriberRef.current && subscriberRef.current(...args);
+    }
+    // Provide the correct 'length' property for inspection
+    Object.defineProperty(cb, 'length', {
+      configurable: true,
+      get: () => subscriberRef.current && subscriberRef.current.length || 0
+    })
+    emitter.on(event, cb);
+    return () => emitter.off(event, cb);
+  }, [event, emitter]);
+}
+
+/*
+  * To emit, use the return value of this hook in a useEffect() block or event handler.
+  * It's not a good idea to call it in the render phase as it could be called more than once.
+  *     const sendNotification = useSendNotification();
+  *     useEffect(() => fetch(something).then(content => sendNotification("FETCHED", content)), [something]);
+  */
+function useSendNotification() {
+  const { emit } = useEmitter();
+  return emit;
+}
+
 export {
   Provider,
-  useSubscribe,
-  usePublish
-}
+  useNotification,
+  useSendNotification,
+};
+

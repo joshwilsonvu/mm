@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { usePublish } from './use-subscribe';
+import { useSendNotification } from '@mm/hooks';
 
 // Expose a backwards-compatible hook version of the global MM variable
 export const useMM = ({ includeDeprecated }) => {
   const modules = useSelector(s => s.modules);
   const dispatch = useDispatch();
-  const publish = usePublish();
+  const publish = useSendNotification();
 
   return useMemo(() => {
     const selectionMethodsModules = setSelectionMethodsForModules(modules);

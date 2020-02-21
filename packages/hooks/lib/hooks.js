@@ -1,2 +1,2 @@
-export * from "./use-mm";
+export * from "../../core/lib/use-mm";
 export * from "./use-subscribe";
