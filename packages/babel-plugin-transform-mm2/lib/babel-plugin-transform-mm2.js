@@ -6,6 +6,7 @@
 module.exports = function(babel) {
   const t = babel.types;
   return {
+    name: "babel-plugin-transform-mm2",
     visitor: {
       ExpressionStatement(path) {
         const expression = path.get('expression');

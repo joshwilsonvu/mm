@@ -45,6 +45,7 @@ module.exports = function(babel) {
       )
     );
   return {
+    name: "babel-plugin-transform-config",
     visitor: {
       ObjectProperty(path, state) {
         // find the "modules" property of the config object with an array value
@@ -101,21 +102,24 @@ const defaultModules = [
 ];
 
 // find the absolute path of the nearest modules/ folder up the tree, or null
-const findModulePath = memoize(function findModulePath(dirName) {
-  const path = nodepath;
-  const actualDirName = path.resolve(dirName);
-  const {root} = path.parse(actualDirName);
-  // return the nearest .../modules/ path
-  const modulePath = path.join(actualDirName, "modules");
-  const moduleExists = fs.existsSync(modulePath);
-  if (moduleExists) {
-    return modulePath;
+const findModulePath = memoize(function(dirName) {
+  function findModulePath(dirName) {
+    const path = nodepath;
+    const actualDirName = path.resolve(dirName);
+    const {root} = path.parse(actualDirName);
+    // return the nearest .../modules/ path
+    const modulePath = path.join(actualDirName, "modules");
+    const moduleExists = fs.existsSync(modulePath);
+    if (moduleExists) {
+      return modulePath;
+    }
+    // stop when we reach the nearest package.json file
+    const pkgPath = path.join(actualDirName, "package.json");
+    const pkgExists = fs.existsSync(pkgPath);
+    if (pkgExists || dirName === root) {
+      return null;
+    }
+    return findModulePath(path.dirname(dirName));
   }
-  // stop when we reach the nearest package.json file
-  const pkgPath = path.join(actualDirName, "package.json");
-  const pkgExists = fs.existsSync(pkgPath);
-  if (pkgExists || dirName === root) {
-    return null;
-  }
-  return findModulePath(path.dirname(dirName));
+  return findModulePath(dirName);
 });
