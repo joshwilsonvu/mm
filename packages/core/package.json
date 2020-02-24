@@ -8,7 +8,7 @@
   "author": "Josh <jowilson@logostech.net>",
   "homepage": "https://github.com/joshwilsonvu/mm#readme",
   "license": "MIT",
-  "browser": "lib/index.js",
+  "main": "dist/index.js",
   "directories": {
     "lib": "lib",
     "test": "__tests__"

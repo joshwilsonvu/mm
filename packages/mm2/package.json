@@ -26,8 +26,7 @@
     "url": "git+https://github.com/joshwilsonvu/mm.git"
   },
   "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1",
-    "build": "babel lib -d dist"
+    "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "bugs": {
     "url": "https://github.com/joshwilsonvu/mm/issues"
