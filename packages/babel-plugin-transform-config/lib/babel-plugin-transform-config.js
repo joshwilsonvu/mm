@@ -70,7 +70,7 @@ module.exports = function(babel) {
                   // find the relative path to the nearest modules/ folder within the project
                   const dirname = nodepath.dirname(state.file.opts.filename);
                   let moduleBasePath = findModulePath(dirname);
-                  moduleBasePath = moduleBasePath ? nodepath.relative(dirname, moduleBasePath): "modules";
+                  moduleBasePath = moduleBasePath ? nodepath.relative(dirname, moduleBasePath).replace("\\", "/"): "modules";
                   // add the path of the module being requested
                   const modulePath = `${moduleBasePath}/${defaultModules.indexOf(moduleName) !== -1 ? 'default/' : ''}${moduleName}/${moduleName}`;
                   // insert an _import property with a lazy dynamic import as its value

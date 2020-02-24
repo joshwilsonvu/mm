@@ -11,7 +11,8 @@
   },
   "scripts": {
     "build": "lerna exec --parallel --ignore=@mm/babel-plugin-* -- babel --root-mode=upward lib --out-dir dist --source-maps --delete-dir-on-start",
-    "test": "jest"
+    "test": "jest",
+    "prepare": "yarn build"
   },
   "repository": {
     "type": "git",

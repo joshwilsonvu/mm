@@ -45,6 +45,7 @@
     "socket.io-client": "^2.3.0",
     "suncalc": "^1.8.0",
     "use-constant": "^1.0.0",
-    "weathericons": "^2.1.0"
+    "weathericons": "^2.1.0",
+    "@mm/hooks": "*"
   }
 }

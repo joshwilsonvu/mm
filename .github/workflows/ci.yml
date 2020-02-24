@@ -15,9 +15,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install Packages
-        run: yarn
-      - name: Build Packages
-        run: yarn build
+        run: |
+          yarn cache clean
+          yarn install --frozen-lockfile
       - name: Test
         run: yarn test
         # env:
