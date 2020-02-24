@@ -1,17 +1,14 @@
 {
   "name": "@mm/core",
   "version": "0.0.1",
-  "description": "> TODO: description",
+  "description": "Core functionality for MagicMirror.",
   "keywords": [
-    "Core",
-    "functionality",
-    "for",
-    "MagicMirror."
+    "magicmirror"
   ],
   "author": "Josh <jowilson@logostech.net>",
   "homepage": "https://github.com/joshwilsonvu/mm#readme",
   "license": "MIT",
-  "main": "lib/core.js",
+  "browser": "lib/index.js",
   "directories": {
     "lib": "lib",
     "test": "__tests__"
@@ -28,5 +25,16 @@
   },
   "bugs": {
     "url": "https://github.com/joshwilsonvu/mm/issues"
-  }
+  },
+  "peerDependencies": {
+    "react": "^16.9.0",
+    "redux": "^4.0.0"
+  },
+  "dependencies": {
+    "nanoid": "^2.1.11",
+    "path": "^0.12.7",
+    "react-redux": "^7.2.0",
+    "use-constant": "^1.0.0"
+  },
+  "devDependencies": {}
 }

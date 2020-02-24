@@ -1,8 +1,6 @@
 import React, { createContext, useEffect, useContext, useCallback, useRef } from 'react';
 import useConstant from 'use-constant';
 
-
-
 const Context = createContext({});
 const defaultKey = Symbol("default");
 const destinationKey = Symbol("destination");

@@ -15,11 +15,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install Packages
-        run: |
-          npm install
-          npx lerna bootstrap
+        run: yarn
       - name: Test
-        run: npm test
+        run: yarn test
         # env:
         #   CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
       # - name: Authenticate with Registry
