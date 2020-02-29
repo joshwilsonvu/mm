@@ -1,7 +1,7 @@
 'use strict';
 
 const pluginTester = require('babel-plugin-tester').default;
-const plugin = require('../lib/babel-plugin-transform-mm2');
+const plugin = require('../src');
 
 pluginTester({
   plugin: plugin,

@@ -1,6 +1,6 @@
 import MagicMirror from './magic-mirror';
 import ModuleGuard from './module-guard';
-import {useMM, useMM2} from '@mm/hooks';
+import {useMM, useMM2} from './use-mm';
 //import {FadeTransition, Fader, FaderGroup} from './fader';
 
 export {

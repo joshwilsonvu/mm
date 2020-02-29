@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useLayoutEffect, useCallback } from "react";
 import useConstant from "use-constant";
-import { useMM2, useSubscribe } from "@mm/hooks";
+import { useMM2 } from "@mm/core";
+import { useSubscribe } from "@mm/hooks";
 import semver from "semver";
 
 const makeCompat = (MM2, name, globalConfig) => {

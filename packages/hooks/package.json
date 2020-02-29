@@ -10,10 +10,9 @@
   "author": "Josh Wilson <joshua.wilson@vanderbilt.edu>",
   "homepage": "https://github.com/joshwilsonvu/mm#readme",
   "license": "MIT",
-  "main": "dist/hooks.js",
-  "source": "lib/hooks.js",
+  "main": "dist/hooks.cjs.js",
   "directories": {
-    "lib": "lib",
+    "lib": "src",
     "test": "__tests__"
   },
   "files": [
@@ -36,6 +35,9 @@
     "use-constant": "^1.0.0"
   },
   "peerDependencies": {
+    "react": "^16.12.0"
+  },
+  "devDependencies": {
     "react": "^16.12.0"
   }
 }

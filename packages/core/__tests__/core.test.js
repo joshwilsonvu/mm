@@ -1,6 +1,6 @@
 'use strict';
 
-const core = require('../lib/index');
+const core = require('../src/index');
 const React = require("react");
 // const {render, fireEvent, screen} = require('@testing-library/react');
 

@@ -13,13 +13,13 @@
   "publishConfig": {
     "access": "public"
   },
-  "main": "lib/babel-plugin-transform-config.js",
+  "main": "dist/babel-plugin-transform-config.cjs.js",
   "directories": {
-    "lib": "lib",
+    "lib": "src",
     "test": "__tests__"
   },
   "files": [
-    "lib"
+    "dist"
   ],
   "repository": {
     "type": "git",

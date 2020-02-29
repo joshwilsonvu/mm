@@ -10,9 +10,9 @@
   "author": "Josh Wilson <joshua.wilson@vanderbilt.edu>",
   "homepage": "https://github.com/joshwilsonvu/mm#readme",
   "license": "MIT",
-  "main": "dist/mm2.js",
+  "main": "dist/mm2.cjs.js",
   "directories": {
-    "lib": "lib",
+    "lib": "src",
     "test": "__tests__"
   },
   "files": [
@@ -39,6 +39,8 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.12.1",
+    "@mm/core": "*",
+    "@mm/hooks": "*",
     "moment-timezone": "^0.5.28",
     "nunjucks": "^3.2.0",
     "semver": "^7.1.3",
@@ -46,5 +48,8 @@
     "suncalc": "^1.8.0",
     "use-constant": "^1.0.0",
     "weathericons": "^2.1.0"
+  },
+  "devDependencies": {
+    "react": "^16.12.0"
   }
 }
