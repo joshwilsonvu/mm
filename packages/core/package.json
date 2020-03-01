@@ -1,6 +1,6 @@
 {
   "name": "@mm/core",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Core functionality for MagicMirror.",
   "keywords": [
     "magicmirror"
@@ -13,9 +13,7 @@
     "lib": "src",
     "test": "__tests__"
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/joshwilsonvu/mm.git"
@@ -35,8 +33,7 @@
     "nanoid": "^2.1.11",
     "path": "^0.12.7",
     "react-redux": "^7.2.0",
-    "use-constant": "^1.0.0",
-    "@mm/hooks": "*"
+    "use-constant": "^1.0.0"
   },
   "devDependencies": {
     "react": "^16.12.0",

@@ -1,6 +1,6 @@
 {
   "name": "@mm/hooks",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Builtin and community-created React Hooks for MagicMirror.",
   "keywords": [
     "react",
@@ -15,9 +15,7 @@
     "lib": "src",
     "test": "__tests__"
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "publishConfig": {
     "access": "public"
   },
