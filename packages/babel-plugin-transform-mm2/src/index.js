@@ -2,7 +2,7 @@
  * This Babel plugin imports Module from "@mm/mm2" and exports the result
  * of Module.register, only in MM2-style modules.
  */
-'use strict';
+
 module.exports = function(babel) {
   const t = babel.types;
   return {

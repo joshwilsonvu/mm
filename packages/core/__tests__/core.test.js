@@ -1,4 +1,4 @@
-'use strict';
+
 
 const core = require('../src/index');
 const React = require("react");

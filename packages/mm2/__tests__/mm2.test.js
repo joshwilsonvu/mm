@@ -13,4 +13,5 @@ test("Module", () => {
 
 test("makeCompat", () => {
   expect(typeof makeCompat).toBe("function");
+  expect(makeCompat.length).toBe(3);
 })

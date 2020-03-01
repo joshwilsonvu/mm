@@ -1,20 +1,10 @@
 {
-    "env": {
-        "browser": true,
-        "es6": true,
-        "node": true
-    },
     "extends": [
-        "eslint:recommended",
-        "plugin:react/recommended"
+        "react-app",
+        "plugin:monorepo/recommended"
     ],
-    "globals": {
-        "Atomics": "readonly",
-        "SharedArrayBuffer": "readonly"
-    },
-    "plugins": [
-        "react"
-    ],
-    "rules": {
-    }
+    "ignorePatterns": [
+        "dist/",
+        "node_modules/"
+    ]
 }

@@ -28,7 +28,7 @@
  *   ...
  * }
  */
-'use strict';
+
 const nodepath = require("path");
 const fs = require("fs");
 const memoize = require("memoize-one");

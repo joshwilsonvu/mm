@@ -18,7 +18,9 @@
     "lib": "src",
     "test": "__tests__"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/joshwilsonvu/mm.git"
@@ -34,7 +36,7 @@
     "memoize-one": "^5.1.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.8.4",
+    "@babel/core": "^7.8.6",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
     "babel-plugin-tester": "^8.0.1"
   }

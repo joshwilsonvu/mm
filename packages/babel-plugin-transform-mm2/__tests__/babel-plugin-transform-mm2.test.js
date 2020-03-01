@@ -1,4 +1,4 @@
-'use strict';
+
 
 const pluginTester = require('babel-plugin-tester').default;
 const plugin = require('../src');

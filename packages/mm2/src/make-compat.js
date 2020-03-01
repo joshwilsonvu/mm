@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useLayoutEffect, useCallback } from "react";
 import useConstant from "use-constant";
-import { useMM2 } from "@mm/core";
+import { useMM2, ModuleGuard } from "@mm/core";
 import { useSubscribe } from "@mm/hooks";
 import semver from "semver";
 
