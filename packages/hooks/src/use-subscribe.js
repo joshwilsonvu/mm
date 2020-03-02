@@ -1,16 +1,14 @@
-import React, { createContext, useEffect, useContext, useCallback, useRef } from 'react';
+import React, { createContext, useEffect, useContext, useRef } from 'react';
 import useConstant from 'use-constant';
 
 const Context = createContext({});
-const defaultKey = Symbol("default");
-const destinationKey = Symbol("destination");
 
 // Creates Provider, useSubscribe, and usePublish that use the given context.
 function createEmitter() {
   let events = {};
   return {
-    // type defaults to '*', a catch-all event; handler will receive type as first arg if handler.length === 3
-    on(type = '*', handler) {
+    // type defaults to '*', a catch-all event; handler will receive type as first arg if type is '*'
+    on(type, handler) {
       if (typeof type === "function") {
         handler = type;
         type = '*';
@@ -23,20 +21,15 @@ function createEmitter() {
       }
     },
     emit(type, payload, sender) {
-      for (let handler of [...events[type], ...events['*']]) {
-        // provide type if handler takes three args, typically done with '*' events
-        if (handler.length === 3) {
-          handler(type, payload, sender);
-        } else {
-          handler(payload, sender);
-        }
+      if (type !== '*') {
+        (events[type] || []).forEach(handler => handler(payload, sender));
       }
+      (events['*'] || []).forEach(handler => handler(type, payload, sender));
     }
   };
 }
 
 function Provider(props) {
-  const events = useRef({});
   const emitter = useConstant(createEmitter);
   return <Context.Provider {...props} value={emitter} />;
 }
@@ -73,7 +66,7 @@ function useNotification(event, subscriber) {
   * To emit, use the return value of this hook in a useEffect() block or event handler.
   * It's not a good idea to call it in the render phase as it could be called more than once.
   *     const sendNotification = useSendNotification();
-  *     useEffect(() => fetch(something).then(content => sendNotification("FETCHED", content)), [something]);
+  *     useEffect(() => fetch(something).then(content => sendNotification("FETCHED", content, 'sender')), [something]);
   */
 function useSendNotification() {
   const { emit } = useEmitter();

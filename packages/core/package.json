@@ -14,7 +14,8 @@
     "test": "__tests__"
   },
   "files": [
-    "dist"
+    "dist",
+    "css"
   ],
   "repository": {
     "type": "git",

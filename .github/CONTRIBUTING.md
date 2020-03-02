@@ -5,22 +5,6 @@ Thanks for contributing to MagicMirror²!
 
 We hold our code to standard, and these standards are documented below.
 
-If you wish to run both linters, use `grunt` without any arguments.
-
-### JavaScript: Run ESLint
-
-We use [ESLint](http://eslint.org) on our JavaScript files.
-
-Our ESLint configuration is in our .eslintrc.json and .eslintignore files.
-
-To run ESLint, use `grunt eslint`.
-
-### CSS: Run StyleLint
-
-We use [StyleLint](http://stylelint.io) to lint our CSS. Our configuration is in our .stylelintrc file.
-
-To run StyleLint, use `grunt stylelint`.
-
 ### Submitting Issues
 
 Please only submit reproducible issues.
