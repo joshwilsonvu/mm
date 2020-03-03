@@ -13,7 +13,6 @@
     "test": "jest",
     "lint": "eslint packages/*",
     "changeset": "changeset",
-    "version": "changeset version",
     "release": "yarn build && changeset publish"
   },
   "repository": {
@@ -36,7 +35,7 @@
     "@babel/preset-react": "^7.8.3",
     "@changesets/cli": "^2.5.2",
     "@manypkg/cli": "^0.10.0",
-    "@mm/core": "^0.0.2",
+    "@mm/core": "^0.0.3",
     "@preconstruct/cli": "^1.1.7",
     "@typescript-eslint/eslint-plugin": "2.x",
     "@typescript-eslint/parser": "2.x",
@@ -52,11 +51,17 @@
     "eslint-plugin-monorepo": "^0.2.1",
     "eslint-plugin-react": "7.x",
     "eslint-plugin-react-hooks": "1.x",
+    "husky": "^4.2.3",
     "jest": "^24.9.0"
   },
   "preconstruct": {
     "packages": [
       "packages/*"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "manypkg check && yarn lint && yarn test"
+    }
   }
 }

@@ -15,7 +15,10 @@
     "lib": "src",
     "test": "__tests__"
   },
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "publishConfig": {
     "access": "public"
   },
