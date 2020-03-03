@@ -1,6 +1,6 @@
 {
   "name": "@mm/core",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Core functionality for MagicMirror.",
   "keywords": [
     "magicmirror"
@@ -15,6 +15,7 @@
   },
   "files": [
     "dist",
+    "src",
     "css"
   ],
   "repository": {

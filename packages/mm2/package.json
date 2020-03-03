@@ -1,6 +1,6 @@
 {
   "name": "@mm/mm2",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Provides backwards-compatibility for MM2 modules.",
   "keywords": [
     "magicmirror",
@@ -15,9 +15,7 @@
     "lib": "src",
     "test": "__tests__"
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist", "src"],
   "publishConfig": {
     "access": "public"
   },

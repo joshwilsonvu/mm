@@ -17,7 +17,7 @@ describe('useNotification', () => {
   beforeEach(() => subscriberFn.mockReset());
 
   test('works', () => {
-    const { result, unmount } = setup('event');
+    const { result } = setup('event');
     // ...and use sendNotification to send out an 'event' notification
     act(() => {
       let sendNotification = result.current;
@@ -26,11 +26,10 @@ describe('useNotification', () => {
 
     expect(subscriberFn).toHaveBeenCalledTimes(1);
     expect(subscriberFn).toHaveBeenCalledWith('payload', 'sender');
-    unmount();
   });
 
   test('passes type to "*" subscribers"', () => {
-    const { result, unmount } = setup(undefined); // equivalent to '*'
+    const { result } = setup(undefined); // equivalent to '*'
     act(() => {
       let sendNotification = result.current;
       sendNotification('event', 'payload', 'sender');
@@ -38,6 +37,5 @@ describe('useNotification', () => {
 
     expect(subscriberFn).toHaveBeenCalledTimes(1);
     expect(subscriberFn).toHaveBeenCalledWith('event', 'payload', 'sender');
-    unmount();
   });
 });
