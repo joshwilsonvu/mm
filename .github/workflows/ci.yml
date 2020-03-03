@@ -1,38 +1,33 @@
 name: CI
 
-on: [push]
+on: push
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [10.x, 12.x]
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
+        with:
+          # This makes Actions fetch all Git history for Changesets
+          fetch-depth: 0
+      - name: Use Node.js 12.x
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
-      - name: Install Packages
+          node-version: 12.x
+
+      - name: Install Dependencies
         run: yarn
       - name: Lint
         run: yarn lint
       - name: Test
         run: yarn test
-        # env:
-        #   CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-      # - name: Authenticate with Registry
-      #   run: |
-      #     echo "@mm:registry=http://registry.npmjs.org/" > .npmrc
-      #     echo "registry=http://registry.npmjs.org/" >> .npmrc
-      #     echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> .npmrc
-      #     npm whoami
-      #   env:
-      #     NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      # - name: Publish package
-      #   run: lerna publish --yes --message 'chore: release new versions'
-      #   env:
-      #     GH_TOKEN: ${{ secrets.GITHUB_PAT }}
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_PAT }}
-      #     NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # If changesets have been added with `yarn changeset add`, opens a pull request and publishes when it is merged
+      - name: Create Release Pull Request or Publish to npm
+        uses: changesets/action@master
+        with:
+          # this expects you to have a script called release which does a build for your packages and calls changeset publish
+          publish: yarn release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
