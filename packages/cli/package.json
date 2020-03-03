@@ -1,0 +1,38 @@
+{
+  "name": "@mm/cli",
+  "version": "0.0.1",
+  "description": "Runs MagicMirror.",
+  "keywords": [
+    "magicmirror",
+    "modules"
+  ],
+  "author": "Josh Wilson <joshua.wilson@vanderbilt.edu>",
+  "homepage": "https://github.com/joshwilsonvu/mm#readme",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/cli.cjs.js",
+  "bin": "bin/cli.js",
+  "directories": {
+    "lib": "src",
+    "test": "__tests__"
+  },
+  "files": [
+    "dist",
+    "src",
+    "bin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joshwilsonvu/mm.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/joshwilsonvu/mm/issues"
+  },
+  "devDependencies": {
+  }
+}
