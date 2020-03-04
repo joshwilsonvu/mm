@@ -9,9 +9,6 @@
 
 let port = 8080;
 const address = "localhost";
-if (typeof(mmPort) !== "undefined") {
-	port = mmPort;
-}
 export default {
 	address: address,
 	port: port,
@@ -76,6 +73,3 @@ export default {
 		vendor: "vendor"
 	},
 };
-
-/*************** DO NOT EDIT THE LINE BELOW ***************/
-if (typeof module !== "undefined") {module.exports = defaults;}

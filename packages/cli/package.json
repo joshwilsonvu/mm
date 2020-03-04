@@ -33,6 +33,8 @@
   "bugs": {
     "url": "https://github.com/joshwilsonvu/mm/issues"
   },
-  "devDependencies": {
+  "devDependencies": {},
+  "dependencies": {
+    "babel-watch": "^7.0.0"
   }
 }

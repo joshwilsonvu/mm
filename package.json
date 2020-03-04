@@ -13,6 +13,7 @@
     "test": "jest",
     "lint": "eslint packages/*",
     "changeset": "changeset",
+    "precommit": "manypkg check && yarn lint && yarn test",
     "release": "yarn build && changeset publish"
   },
   "repository": {
@@ -61,7 +62,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "manypkg check && yarn lint && yarn test"
+      "pre-commit": "yarn precommit"
     }
   }
 }
