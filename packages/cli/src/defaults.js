@@ -9,7 +9,7 @@
 
 let port = 8080;
 const address = "localhost";
-export default {
+module.exports = {
 	address: address,
 	port: port,
 	kioskmode: false,

@@ -35,6 +35,7 @@
   },
   "devDependencies": {},
   "dependencies": {
-    "babel-watch": "^7.0.0"
+    "babel-watch": "^7.0.0",
+    "esm": "^3.2.25"
   }
 }

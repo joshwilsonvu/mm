@@ -1,7 +1,9 @@
-const defaults = require("./defaults").default;
+const defaults = require("./defaults");
 const path = require("path");
 const fs = require("fs");
 const express = require("express");
+const esm = require("esm");
+const esmRequire = esm(module);
 
 // find all of the node_helper.js files in the modules
 function resolveApp(...p) {
@@ -29,17 +31,19 @@ const moduleDirs = readChildDirs(paths.appModules)
 // Load the config
 const config = require(paths.appConfigJs);
 
+
 // Collect all of the node_helper.js paths
-//let nodeHelpersToRequire = [];
+let nodeHelpers = {};
 for (const moduleDir of moduleDirs) {
   const moduleName = moduleDir.slice(moduleDir.lastIndexOf(path.sep) + 1);
   console.log(`Requiring module ${moduleDir}.`);
   const nodeHelperPath = path.join(moduleDir, `node_helper.js`);
   if (fs.existsSync(nodeHelperPath)) {
-    //nodeHelpersToRequire.push(nodeHelperPath);
-    const ModuleNodeHelper = require(nodeHelperPath); //
+    nodeHelpers[moduleName] = nodeHelperPath;
   }
 }
+
+// TODO: on requests to start Node Helpers from the client, import nodeHelpers[moduleName] with esmLoader()
 
 // Initialize the express app
 const app = express();
