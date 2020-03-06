@@ -36,6 +36,11 @@
   "devDependencies": {},
   "dependencies": {
     "babel-watch": "^7.0.0",
-    "esm": "^3.2.25"
+    "esm": "^3.2.25",
+    "express": "^4.17.1",
+    "express-ipfilter": "^1.1.1",
+    "helmet": "^3.21.3",
+    "parcel-bundler": "^1.12.4",
+    "socket.io": "^2.3.0"
   }
 }
