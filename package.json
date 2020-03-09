@@ -31,7 +31,7 @@
     "url": "https://github.com/joshwilsonvu/mm/issues"
   },
   "dependencies": {
-    "@babel/core": "^7.8.6",
+    "@babel/core": "^7.8.7",
     "@babel/preset-env": "^7.8.4",
     "@babel/preset-react": "^7.8.3",
     "@changesets/cli": "^2.5.2",
@@ -40,6 +40,7 @@
     "@preconstruct/cli": "^1.1.7",
     "@typescript-eslint/eslint-plugin": "2.x",
     "@typescript-eslint/parser": "2.x",
+    "axios": "^0.19.2",
     "babel-eslint": "10.x",
     "babel-jest": "^25.1.0",
     "babel-plugin-tester": "^8.0.1",
@@ -52,8 +53,10 @@
     "eslint-plugin-monorepo": "^0.2.1",
     "eslint-plugin-react": "7.x",
     "eslint-plugin-react-hooks": "1.x",
+    "execa": "^4.0.0",
     "husky": "^4.2.3",
-    "jest": "^24.9.0"
+    "jest": "^24.9.0",
+    "wait-for-localhost": "^3.2.0"
   },
   "preconstruct": {
     "packages": [
