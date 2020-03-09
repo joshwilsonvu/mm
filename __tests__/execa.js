@@ -31,7 +31,7 @@ function execaSafe(...args) {
         stripAnsi(
           err.message
             .split('\n')
-            .slice(2)
+            .slice(5)
             .join('\n')
         )
       ),

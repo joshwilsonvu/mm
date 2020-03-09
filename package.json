@@ -36,6 +36,7 @@
     "@babel/preset-react": "^7.8.3",
     "@changesets/cli": "^2.5.2",
     "@manypkg/cli": "^0.10.0",
+    "@mm/cli": "*",
     "@mm/core": "^0.0.3",
     "@preconstruct/cli": "^1.1.7",
     "@typescript-eslint/eslint-plugin": "2.x",

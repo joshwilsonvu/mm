@@ -44,27 +44,23 @@ function execaSafe(...args) {
     }));
 }
 
-class Scripts {
+class Test {
   constructor(root) {
     this.root = root;
   }
 
-  async start({ smoke = false, env = {} } = {}) {
-    const port = await getPort();
+  async start({ env = {} } = {}) {
     const options = {
       cwd: this.root,
       env: env,
     };
 
-    if (smoke) {
-      return await execaSafe('yarnpkg', ['start', '--smoke-test'], options);
-    }
-    const startProcess = execa('yarnpkg', ['start'], options);
-    await waitForLocalhost({ port });
+    const startProcess = execa('yarnpkg', ['dev'], options);
+    await waitForLocalhost({ port: 8080 });
     return {
       port,
       done() {
-        startProcess.kill('SIGKILL');
+        startProcess.cancel();
       },
     };
   }
@@ -107,8 +103,8 @@ class Scripts {
 };
 
 class TestSetup {
-  constructor(fixtureName, templateDirectory, { pnp = true } = {}) {
-    this.fixtureName = fixtureName;
+  constructor(templateDirectory, { pnp = true } = {}) {
+    this.fixtureName = path.basename(fixtureName);
 
     this.templateDirectory = templateDirectory;
     this.testDirectory = null;

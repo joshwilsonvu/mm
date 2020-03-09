@@ -3,5 +3,8 @@
   "version": "1.0.0",
   "main": "index.html",
   "license": "MIT",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "roboto-fontface": "^0.10.0"
+  }
 }
