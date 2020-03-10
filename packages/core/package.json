@@ -29,19 +29,16 @@
     "url": "https://github.com/joshwilsonvu/mm/issues"
   },
   "peerDependencies": {
-    "react": "^16.9.0",
-    "redux": "^4.0.0"
+    "react": "^16.9.0"
   },
   "dependencies": {
     "@mm/hooks": "*",
     "nanoid": "^2.1.11",
     "path": "^0.12.7",
-    "react-redux": "^7.2.0",
     "use-constant": "^1.0.0"
   },
   "devDependencies": {
     "react": "^16.13.0",
-    "react-dom": "^16.13.0",
-    "redux": "^4.0.5"
+    "react-dom": "^16.13.0"
   }
 }

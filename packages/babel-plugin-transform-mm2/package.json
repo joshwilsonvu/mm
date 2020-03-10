@@ -34,6 +34,7 @@
   },
   "gitHead": "4226212ac168ad91a9d9d0250487193d813858d1",
   "devDependencies": {
+    "@babel/core": "^7.8.7",
     "babel-plugin-tester": "^8.0.1"
   }
 }

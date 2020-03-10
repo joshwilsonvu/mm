@@ -1,7 +1,6 @@
 {
     "extends": [
-        "react-app",
-        "plugin:monorepo/recommended"
+        "react-app"
     ],
     "ignorePatterns": [
         "dist/",

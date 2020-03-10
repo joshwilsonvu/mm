@@ -4,17 +4,19 @@
   "version": "0.0.1",
   "description": "Libraries for the MagicMirror experimental branch.",
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "__tests__"
   ],
   "scripts": {
-    "postinstall": "yarn dev && manypkg check",
+    "postinstall": "yarn dev",
     "build": "preconstruct build",
     "dev": "preconstruct dev",
     "test": "jest",
-    "lint": "eslint packages/*",
+    "lint": "eslint 'packages/*'",
     "changeset": "changeset",
-    "precommit": "manypkg check && yarn lint && yarn test",
-    "release": "yarn build && changeset publish"
+    "precommit": "yarn lint && yarn test",
+    "release": "yarn build && changeset publish",
+    "doctor": "yarn dlx @yarnpkg/doctor ."
   },
   "repository": {
     "type": "git",
@@ -35,9 +37,6 @@
     "@babel/preset-env": "^7.8.4",
     "@babel/preset-react": "^7.8.3",
     "@changesets/cli": "^2.5.2",
-    "@manypkg/cli": "^0.10.0",
-    "@mm/cli": "*",
-    "@mm/core": "^0.0.3",
     "@preconstruct/cli": "^1.1.7",
     "@typescript-eslint/eslint-plugin": "2.x",
     "@typescript-eslint/parser": "2.x",
@@ -45,13 +44,12 @@
     "babel-eslint": "10.x",
     "babel-jest": "^25.1.0",
     "babel-plugin-tester": "^8.0.1",
-    "eslint": "6.x",
+    "eslint": "^6.8.0",
     "eslint-config-react-app": "^5.2.0",
     "eslint-plugin-flowtype": "3.x",
     "eslint-plugin-import": "2.x",
     "eslint-plugin-jest": "^23.8.1",
     "eslint-plugin-jsx-a11y": "6.x",
-    "eslint-plugin-monorepo": "^0.2.1",
     "eslint-plugin-react": "7.x",
     "eslint-plugin-react-hooks": "1.x",
     "execa": "^4.0.0",

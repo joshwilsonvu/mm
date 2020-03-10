@@ -39,8 +39,6 @@
     "execa": "^4.0.0"
   },
   "dependencies": {
-    "@mm/babel-plugin-transform-config": "^0.0.4",
-    "@mm/core": "^0.0.3",
     "chalk": "^3.0.0",
     "electron": "^8.1.0",
     "esm": "^3.2.25",
