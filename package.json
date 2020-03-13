@@ -12,11 +12,10 @@
     "build": "preconstruct build",
     "dev": "preconstruct dev",
     "test": "jest",
-    "lint": "eslint 'packages/*'",
+    "lint": "eslint packages/*",
     "changeset": "changeset",
     "precommit": "yarn lint && yarn test",
-    "release": "yarn build && changeset publish",
-    "doctor": "yarn dlx @yarnpkg/doctor ."
+    "release": "yarn build && changeset publish"
   },
   "repository": {
     "type": "git",
@@ -37,6 +36,8 @@
     "@babel/preset-env": "^7.8.4",
     "@babel/preset-react": "^7.8.3",
     "@changesets/cli": "^2.5.2",
+    "@mm/cli": "^0.0.1",
+    "@mm/core": "^0.0.3",
     "@preconstruct/cli": "^1.1.7",
     "@typescript-eslint/eslint-plugin": "2.x",
     "@typescript-eslint/parser": "2.x",
@@ -55,6 +56,8 @@
     "execa": "^4.0.0",
     "husky": "^4.2.3",
     "jest": "^24.9.0",
+    "react": "^16.13.0",
+    "strip-ansi": "^6.0.0",
     "wait-for-localhost": "^3.2.0"
   },
   "preconstruct": {
@@ -66,5 +69,8 @@
     "hooks": {
       "pre-commit": "yarn precommit"
     }
+  },
+  "installConfig": {
+    "pnp": true
   }
 }

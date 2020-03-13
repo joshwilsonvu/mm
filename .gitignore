@@ -18,9 +18,11 @@ jspm_modules
 .node_repl_history
 
 # Yarn
-/.yarn/cache/
-/.yarn/unplugged/
-/.yarn/build-state.yml
+.pnp
+.pnp.*
+.yarn/unplugged
+.yarn/build-state.yml
+
 
 # Visual Studio Code ignoramuses.
 .vscode/

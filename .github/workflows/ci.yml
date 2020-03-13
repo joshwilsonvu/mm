@@ -16,7 +16,7 @@ jobs:
           node-version: 12.x
 
       - name: Install Dependencies
-        run: yarn
+        run: yarn install --frozen-lockfile --ignore-optional
       - name: Lint
         run: yarn lint
       - name: Test
