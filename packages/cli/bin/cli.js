@@ -9,47 +9,62 @@ process.on('unhandledRejection', err => {
   throw err;
 });
 
-const argv = yargs
-  .command("dev", "start in development mode", {
-    "serveronly": {
+
+
+const commands = [
+  {
+    command: "dev",
+    describe: "start in development mode",
+    serveronly: {
       describe: "don't open an electron app window"
     }
-  }, argv => Scripts(argv).dev())
-  .command("build", "create an optimized build", {}, argv => Scripts(argv).build())
-  .command("serve", "run MagicMirror from a build", {
-    "serveronly": {
+  },
+  {
+    command: "build",
+    describe: "create an optimized build"
+  },
+  {
+    command: "serve",
+    describe: "run MagicMirror from a build",
+    serveronly: {
       describe: "don't open an electron app window",
       conflicts: "clientonly",
     },
-    "clientonly": {
+    clientonly: {
       describe: "only open an electron app window, and use another server with --address and --port",
       conflicts: "serveronly",
     },
     "no-build": {
       describe: "if MagicMirror hasn't been built, abort instead of running a build before serving",
     },
-    "address": {
+    address: {
       type: "string",
       describe: "the IP address of the server to connect to",
       implies: "clientonly",
     },
-    "port": {
+    port: {
       type: "number",
       describe: "the port of the server to connect to",
       implies: "clientonly",
     }
-  }, argv => Scripts(argv).serve())
-  .demandCommand(1, '')
-  .showHelpOnFail(true)
+  }
+];
+
+const argv = commands
+  .reduce((yargs, command) => yargs.command(command), yargs) // returns yargs for chaining
+  .strictCommands()
   .help()
   .version(require("../package.json").version)
   .epilogue("Run $0 <command> --help for more informaton about each command.")
   .argv;
 
-function Scripts(argv) {
-  // Only require if necessary
-  return new (require('..'))(argv);
+console.log(argv);
+
+if (argv._.length && commands.map(c => c.command).includes(argv._[0])) {
+  argv.command = argv._[0];
+  require("../lib")(argv);
+} else {
+  yargs.showHelp();
+  process.exit()
 }
 
-// run the comand line tool
-require("..");

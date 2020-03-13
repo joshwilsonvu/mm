@@ -4,12 +4,13 @@ const axios = require("axios");
 const { execa, execaSafe } = require("./execa");
 const waitForLocalhost = require("wait-for-localhost");
 
-test.skip("builds in production mode", async () => {
+test("builds in production mode", async () => {
   jest.setTimeout(10000);
-  //expect.assertions(4)
   const testDirectory = path.join(__dirname, "__fixtures__", "basic");
   expect(fs.existsSync(path.join(testDirectory, "index.html"))).toBe(true);
-  const { fulfilled, stdout, stderr } = await execa("yarn", ["mm", "build"], {
+  const { stdout: bin } = await execa("yarn", ["bin", "mm"]);
+  expect(bin).toMatch(/mm$/);
+  const { fulfilled, stdout, stderr } = await execa(bin, ["build"], {
     cwd: testDirectory
   });
 

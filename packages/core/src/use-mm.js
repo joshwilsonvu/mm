@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { useSendNotification } from '@mm/hooks';
 
 // Expose a backwards-compatible hook version of the global MM variable

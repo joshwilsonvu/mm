@@ -3,8 +3,6 @@
  */
 
 import React, { lazy, Suspense } from 'react';
-import { createStore } from 'redux';
-import { Provider as ReduxProvider, useSelector } from 'react-redux';
 import nanoid from 'nanoid';
 import path from 'path';
 import { Provider as NotificationProvider } from '@mm/hooks';

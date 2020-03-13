@@ -13,14 +13,14 @@
   "publishConfig": {
     "access": "public"
   },
-  "main": "dist/babel-plugin-transform-mm2.cjs.js",
+  "main": "lib/index.js",
   "directories": {
-    "lib": "src",
+    "lib": "lib",
     "test": "__tests__"
   },
   "files": [
     "dist",
-    "src"
+    "lib"
   ],
   "repository": {
     "type": "git",

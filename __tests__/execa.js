@@ -29,7 +29,7 @@ function execaSafe(...args) {
       stdout: '',
       stderr: stripYarn(
         stripAnsi(
-          err.message
+          err.stderr // err.message
             .split('\n')
             .slice(5)
             .join('\n')
