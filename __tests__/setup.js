@@ -44,29 +44,32 @@ function execaSafe(...args) {
     }));
 }
 
-class Test {
+class MMBin {
   constructor(root) {
     this.root = root;
   }
 
-  async start({ env = {} } = {}) {
+  async dev({ env = {} } = {}) {
+    const port = await getPort();
     const options = {
       cwd: this.root,
-      env: env,
+      env: { ...env, MM_PORT: port }
     };
 
-    const startProcess = execa('yarnpkg', ['dev'], options);
-    await waitForLocalhost({ port: 8080 });
+    const devProcess = execa('yarnpkg', ['run', 'dev'], options);
+    await waitForLocalhost({ port });
     return {
+      process: devProcess,
       port,
       done() {
-        startProcess.cancel();
-      },
+        devProcess.cancel();
+        return devProcess;
+      }
     };
   }
 
   async build({ env = {} } = {}) {
-    return await execaSafe('yarnpkg', ['build'], {
+    return await execaSafe('yarnpkg', ['run', 'build'], {
       cwd: this.root,
       env: Object.assign({}, { CI: 'false', FORCE_COLOR: '0' }, env),
     });
@@ -75,36 +78,26 @@ class Test {
   async serve() {
     const port = await getPort();
     const serveProcess = execa(
-      'yarnpkg',
-      ['serve', '--', '-p', port, '-s', 'build/'],
+      'yarnpkg', ['run', 'serve', '--port', port],
       {
         cwd: this.root,
+        env: { MM_PORT: port }
       }
     );
     await waitForLocalhost({ port });
     return {
       port,
       done() {
-        serveProcess.kill('SIGKILL');
+        serveProcess.cancel();
+        return serveProcess;
       },
     };
-  }
-
-  async test({ jestEnvironment = 'jsdom', env = {} } = {}) {
-    return await execaSafe(
-      'yarnpkg',
-      ['test', '--env', jestEnvironment, '--ci'],
-      {
-        cwd: this.root,
-        env: Object.assign({}, { CI: 'true' }, env),
-      }
-    );
   }
 };
 
 class TestSetup {
   constructor(templateDirectory, { pnp = true } = {}) {
-    this.fixtureName = path.basename(fixtureName);
+    this.fixtureName = path.basename(templateDirectory);
 
     this.templateDirectory = templateDirectory;
     this.testDirectory = null;
@@ -120,12 +113,7 @@ class TestSetup {
   async setup() {
     await this.teardown();
     this.testDirectory = tempy.directory();
-    await fs.copy(
-      path.resolve(__dirname, '..', 'template'),
-      this.testDirectory
-    );
     await fs.copy(this.templateDirectory, this.testDirectory);
-    await fs.remove(path.resolve(this.testDirectory, 'test.partial.js'));
     await fs.remove(path.resolve(this.testDirectory, '.disable-pnp'));
 
     const packageJson = await fs.readJson(
@@ -135,13 +123,13 @@ class TestSetup {
     const shouldInstallScripts = !this.isLocal;
     if (shouldInstallScripts) {
       packageJson.dependencies = Object.assign({}, packageJson.dependencies, {
-        'react-scripts': 'latest',
+        '@mm/cli': '*',
       });
     }
     packageJson.scripts = Object.assign({}, packageJson.scripts, {
-      start: 'react-scripts start',
-      build: 'react-scripts build',
-      test: 'react-scripts test',
+      dev: 'mm dev',
+      build: 'mm build',
+      serve: 'mm serve',
     });
     packageJson.license = packageJson.license || 'UNLICENSED';
     await fs.writeJson(

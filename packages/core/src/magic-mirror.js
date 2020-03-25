@@ -31,7 +31,7 @@ function hideModule(hidden, state, payload) {
 function MMInit({ children, config }) {
   if (children) {
     return {
-      modules: React.Children.map(child => ({
+      modules: React.Children.map(children, child => ({
         hidden: false,
 
       }))
@@ -64,8 +64,6 @@ function MMInit({ children, config }) {
   };
 };
 
-const useModules = () => useSelector(state => state.modules);
-
 const WrapModule = ({ module }) => {
   const { Component, hidden, speed, identifier, name, classes, header, config, path, file } = module;
   let timeout = typeof speed === 'number' ? speed : 1000;
@@ -73,9 +71,9 @@ const WrapModule = ({ module }) => {
   // add CSSTransition here to apply key and make it a direct child of TransitionGroup
   return (
     /*<FadeTransition speed={speed} pose={hidden && "hidden"}>*/
-      <Suspense fallback={<div>...</div>}>
-        <Component {...props} duration={timeout}/>
-      </Suspense>
+    <Suspense fallback={<div>...</div>}>
+      <Component {...props} duration={timeout} />
+    </Suspense>
     /*</FadeTransition>*/
   );
 };
@@ -120,7 +118,7 @@ function MMLayout() {
         {WrapGroup(middle_center)}
       </div>
       <div className="region lower third">
-        <br/>{WrapGroup(lower_third)}
+        <br />{WrapGroup(lower_third)}
       </div>
       <div className="region bottom bar">
         {WrapGroup(bottom_bar)}
@@ -160,10 +158,11 @@ const defaultRegions = [
 
 function getRegions(modules) {
   // Divide modules into the various regions by their .position property
-  const regions = defaultRegions.reduce((regions, region) => {
-    regions[region] = modules.filter(module => !module.disabled && (module.position || 'none') === region /*&& React.isValidElement(module.Component)*/);
+  const regions = {};
+  defaultRegions.reduce((regions, region) => {
+    regions[region] = modules.filter(module => !module.disabled && (module.position || 'none') === region);
     return regions;
-  }, {});
+  }, regions);
   return regions;
 }
 
@@ -173,7 +172,7 @@ function MagicMirror({ children, config }) {
   return (
     <ReduxProvider store={store}>
       <NotificationProvider>
-        <MMLayout/>
+        <MMLayout />
       </NotificationProvider>
     </ReduxProvider>
   );

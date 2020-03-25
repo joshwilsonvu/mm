@@ -1,26 +1,57 @@
 const execa = require("execa");
-const path = require("path");
+const stripAnsi = require("strip-ansi");
 
-test("shows help message on '$ mm --help'", async () => {
-  const { exitCode, stdout, stderr } = await execa.node(
-    path.resolve(__dirname, "..", "bin", "cli.js"),
-    ["--help"]
-  );
-
-  expect(exitCode).toBe(0);
-  expect(stdout).toMatchInlineSnapshot(`
-    "cli.js <command>
+test("shows help message on '$ mm'", async (...args) => {
+  let { stderr } = await execaSafe("yarn", ["mm"]);
+  expect(stderr).toMatchInlineSnapshot(`
+    "mm [command]
 
     Commands:
-      cli.js dev    start in development mode
-      cli.js build  create an optimized build
-      cli.js serve  run MagicMirror from a build
+      mm build  Create an optimized build
+      mm dev    Start serving MagicMirror in development mode
+      mm serve  Run MagicMirror from a build, creating one if necessary
 
     Options:
       --help     Show help                                                 [boolean]
       --version  Show version number                                       [boolean]
 
-    Run cli.js <command> --help for more informaton about each command."
+    Run mm <command> --help for more informaton about each command."
   `);
-  expect(stderr).toMatchInlineSnapshot(`""`);
 });
+
+function stripYarn(output) {
+  let lines = output.split("\n");
+
+  let runIndex = lines.findIndex(line => line.match(/^yarn run/));
+  if (runIndex !== -1) {
+    lines.splice(0, runIndex + 2);
+    lines = lines.filter(line => !line.match(/^info Visit.*yarnpkg/));
+  }
+
+  return lines.join("\n");
+}
+
+function execaSafe(...args) {
+  return execa(...args)
+    .then(({ stdout, stderr, ...rest }) => ({
+      fulfilled: true,
+      rejected: false,
+      stdout: stripYarn(stripAnsi(stdout)),
+      stderr: stripYarn(stripAnsi(stderr)),
+      ...rest
+    }))
+    .catch(err => ({
+      fulfilled: false,
+      rejected: true,
+      reason: err,
+      stdout: "",
+      stderr: stripYarn(
+        stripAnsi(
+          err.stderr // err.message
+            .split("\n")
+            .slice(5)
+            .join("\n")
+        )
+      )
+    }));
+}
