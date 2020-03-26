@@ -12,8 +12,9 @@
   "publishConfig": {
     "access": "public"
   },
+  "main": "lib/index.js",
   "bin": {
-    "mm": "bin/cli.js"
+    "mm": "lib/index.js"
   },
   "directories": {
     "lib": "lib",
@@ -28,6 +29,7 @@
     "url": "git+https://github.com/joshwilsonvu/mm.git"
   },
   "scripts": {
+    "build": "exit 0",
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "bugs": {

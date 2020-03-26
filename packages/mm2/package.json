@@ -10,7 +10,7 @@
   "author": "Josh Wilson <joshua.wilson@vanderbilt.edu>",
   "homepage": "https://github.com/joshwilsonvu/mm#readme",
   "license": "MIT",
-  "main": "dist/mm2.cjs.js",
+  "main": "dist/index.js",
   "directories": {
     "lib": "src",
     "test": "__tests__"
@@ -27,6 +27,7 @@
     "url": "git+https://github.com/joshwilsonvu/mm.git"
   },
   "scripts": {
+    "build": "babel --root-mode upward -d dist src",
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "bugs": {

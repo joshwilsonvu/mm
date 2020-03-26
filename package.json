@@ -7,14 +7,13 @@
     "packages/*"
   ],
   "scripts": {
-    "postinstall": "manypkg check && yarn dev",
-    "build": "preconstruct build",
-    "dev": "preconstruct dev",
+    "postinstall": "manypkg check && yarn build",
+    "build": "yarn workspaces run build",
     "test": "jest",
     "test:changed": "jest --onlyChanged",
     "lint": "eslint packages/*",
     "changeset": "changeset",
-    "precommit": "manypkg check && yarn lint && yarn test",
+    "precommit": "yarn && yarn lint && yarn test",
     "release": "yarn build && changeset publish"
   },
   "repository": {
@@ -32,6 +31,7 @@
     "url": "https://github.com/joshwilsonvu/mm/issues"
   },
   "dependencies": {
+    "@babel/cli": "^7.8.4",
     "@babel/core": "^7.8.7",
     "@babel/preset-env": "^7.8.4",
     "@babel/preset-react": "^7.8.3",
@@ -63,13 +63,6 @@
     "strip-ansi": "^6.0.0",
     "unique-filename": "^1.1.1",
     "wait-for-localhost": "^3.2.0"
-  },
-  "preconstruct": {
-    "packages": [
-      "packages/*",
-      "!packages/cli",
-      "!packages/babel-plugin-*"
-    ]
   },
   "husky": {
     "hooks": {

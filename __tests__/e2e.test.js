@@ -6,15 +6,6 @@ const { execa, execaSafe } = require("./execa");
 const waitForLocalhost = require("wait-for-localhost");
 const uniqueFilename = require("unique-filename");
 
-let mm;
-beforeAll(async () => {
-  let stdout = (await execa("yarn", ["bin", "mm"])).stdout.trim(); // obtain path to mm binary
-  expect(stdout).toMatch(/mm(\.js)?$/);
-  console.log(stdout);
-  expect(await fs.pathExists(stdout)).toBe(true);
-  mm = stdout;
-});
-
 describe.each([
   [path.join(__dirname, "__fixtures__", "basic")]
 ])("fixture '%s'", (_fixtureDirectory) => {
@@ -30,7 +21,6 @@ describe.each([
     expect(await fs.pathExists(_fixtureDirectory)).toBe(true);
     testDirectory = uniqueFilename(path.join(__dirname, "__fixtures__"), path.basename(_fixtureDirectory));
     await fs.copy(_fixtureDirectory, testDirectory);
-    expect(await fs.pathExists(testDirectory)).toBe(true);
   });
   // Clean up the temporary test directory
   afterEach(async () => {
@@ -44,7 +34,7 @@ describe.each([
     jest.setTimeout(5 * 60 * 1000);
 
     expect(await fs.pathExists(paths.entry)).toBe(true);
-    const { reason, stdout, stderr } = await execaSafe(mm, ["build"], {
+    const { reason, stdout, stderr } = await execaSafe("yarn", ["mm", "--cwd", testDirectory, "build"], {
       cwd: testDirectory
     });
 
