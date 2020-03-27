@@ -42,7 +42,7 @@ const parse = yargs
       implies: "clientonly",
     }
   })
-  .option("cwd", "run mm in this directory")
+  .option("cwd", { describe: "run mm in this directory" })
   .help()
   .showHelpOnFail()
   .version(require("../package.json").version)
@@ -50,7 +50,7 @@ const parse = yargs
   .parse;
 
 async function cli(...argv) {
-  const opts = parse(argv);
+  const opts = parse(["node", "mm", ...argv]);
   if (!opts._.length) {
     yargs.showHelp();
   }
@@ -71,7 +71,7 @@ async function cli(...argv) {
       case "serve":
         return require("./serve");
       default:
-        yargs.showHelp();
+        return null;
     };
   })();
   if (commandModule) {
@@ -82,11 +82,13 @@ async function cli(...argv) {
       console.log(formatError(err));
       return 1;
     }
+  } else {
+    yargs.showHelp();
   }
 }
 module.exports = cli;
 
 // parse command line arguments if this script was run directly
 if (require.main === module) {
-  cli(process.argv);
+  cli(...process.argv.slice(2));
 }

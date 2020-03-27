@@ -8,7 +8,7 @@ module.exports = function formatError(err) {
     // omit device-specific portion of paths
     const basename = path.basename(paths.cwd);
     fileName = fileName && fileName.replace(paths.cwd, basename);
-    stack = stack && stack.replace(paths.cwd, basename);
+    stack = stack && stack.replace(paths.cwd, basename).split("\n").map(line => line.match(/node_modules/) ? chalk.dim(line) : line).join("\n");
     message = message.replace(paths.cwd, basename);
   }
   message = message.replace(/error: /i, "");

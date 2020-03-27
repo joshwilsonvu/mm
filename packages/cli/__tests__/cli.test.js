@@ -1,9 +1,26 @@
 const execa = require("execa");
 const stripAnsi = require("strip-ansi");
+const mockConsole = require("jest-mock-console").default;
 
-test("shows help message on '$ mm'", async (...args) => {
-  let { stderr } = await execaSafe("yarn", ["mm"]);
-  expect(stderr).toMatchInlineSnapshot(`
+const mmCli = require("..");
+
+let restoreConsole;
+
+test("shows help message on '$ mm'", async () => {
+  restoreConsole = mockConsole();
+  // Run the CLI programmatically. Equivalent to '$ yarn mm'
+  await mmCli();
+
+  // TODO replace console.log with mock from {
+  // const { Console } = require("console");
+  // const stream = get stream somehow
+  // jest.mock(global, "console", new Console(stream));
+  // ...
+  // now we have all console output
+
+  expect(console.log).toHaveBeenCalled();
+  const output = console.log.mock.calls.map(args => args.join(" ")).join("\n");
+  expect(output).toMatchInlineSnapshot(`
     "mm [command]
 
     Commands:
@@ -19,6 +36,9 @@ test("shows help message on '$ mm'", async (...args) => {
   `);
 });
 
+afterAll(() => restoreConsole && restoreConsole());
+
+/*
 function stripYarn(output) {
   let lines = output.split("\n");
 
@@ -55,3 +75,4 @@ function execaSafe(...args) {
       )
     }));
 }
+*/
