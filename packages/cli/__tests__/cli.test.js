@@ -1,13 +1,12 @@
 const execa = require("execa");
 const stripAnsi = require("strip-ansi");
-const mockConsole = require("jest-mock-console").default;
 
 const mmCli = require("..");
 
-let restoreConsole;
+let restore;
 
 test("shows help message on '$ mm'", async () => {
-  restoreConsole = mockConsole();
+  restore = mockStdout();
   // Run the CLI programmatically. Equivalent to '$ yarn mm'
   await mmCli();
 
@@ -17,26 +16,26 @@ test("shows help message on '$ mm'", async () => {
   // jest.mock(global, "console", new Console(stream));
   // ...
   // now we have all console output
+  expect(process.stdout.content()).toMatchInlineSnapshot(`
+    "   mm [command]
+        
+        Commands:
+          mm build  Create an optimized build
+          mm dev    Start serving MagicMirror in development mode
+          mm serve  Run MagicMirror from a build
+        
+        Options:
+          --cwd      run mm in this directory
+          --help     Show help                                                 [boolean]
+          --version  Show version number                                       [boolean]
+        
+        Run mm <command> --help for more informaton about each command.
 
-  expect(console.log).toHaveBeenCalled();
-  const output = console.log.mock.calls.map(args => args.join(" ")).join("\n");
-  expect(output).toMatchInlineSnapshot(`
-    "mm [command]
-
-    Commands:
-      mm build  Create an optimized build
-      mm dev    Start serving MagicMirror in development mode
-      mm serve  Run MagicMirror from a build, creating one if necessary
-
-    Options:
-      --help     Show help                                                 [boolean]
-      --version  Show version number                                       [boolean]
-
-    Run mm <command> --help for more informaton about each command."
+    "
   `);
 });
 
-afterAll(() => restoreConsole && restoreConsole());
+afterAll(() => restore && restore());
 
 /*
 function stripYarn(output) {
@@ -76,3 +75,5 @@ function execaSafe(...args) {
     }));
 }
 */
+
+
