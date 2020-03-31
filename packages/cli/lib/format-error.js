@@ -3,15 +3,15 @@ const paths = require("./paths");
 const chalk = require("chalk");
 
 module.exports = function formatError(err) {
-  let { name, fileName, loc, codeFrame, highlightedCodeFrame, message, stack } = err;
+  let { name = "", fileName = "", loc, codeFrame = "", highlightedCodeFrame = "", message = "", stack = "" } = err;
   if (paths.cwd) {
     // omit device-specific portion of paths
     const basename = path.basename(paths.cwd);
     fileName = fileName && fileName.replace(paths.cwd, basename);
     stack = stack && stack.replace(paths.cwd, basename).split("\n").map(line => line.match(/node_modules/) ? chalk.dim(line) : line).join("\n");
-    message = message.replace(paths.cwd, basename);
+    message = message && message.replace(paths.cwd, basename);
   }
-  message = message.replace(/error: /i, "");
+  message = message && message.replace(/error: /i, "");
 
   let parts = [];
   if (fileName && loc) {

@@ -1,25 +1,25 @@
 const Bundler = require("parcel-bundler");
+const chalk = require("chalk");
+const ora = require("ora");
 const { Server } = require("./server");
+const loadConfig = require("./load-config");
+const paths = require("./paths");
 const formatError = require("./format-error");
 
-module.exports = async opts => {
-  try {
-    return dev(opts);
-  } catch (err) {
-    console.log(formatError);
-    return 1;
-  }
-}
+module.exports = dev;
 
 /**
  * Run MagicMirror, with watching and reloading. Stop with C^c
  *
  * Returns a Promise with a done() property that will clean up and resolve the promise.
  */
-async function dev({ config, paths, argv }) {
-  process.env.NODE_ENV = 'development';
+function dev(opts) {
+  if (!process.env.NODE_ENV) {
+    process.env.NODE_ENV = 'development';
+  }
 
-  let server = new Server(config, !argv.serveronly);
+  const config = loadConfig(paths.appConfigJs);
+  let server = new Server(config, !opts.serveronly);
   server.addNodeHelpers();
 
   console.log(`Starting server on port ${server.port}...`);
@@ -33,20 +33,56 @@ async function dev({ config, paths, argv }) {
     outDir: paths.appBuild,
     target: "browser",
     watch: true,
-    logLevel: 2
+    logLevel: 0,
+    killWorkers: true,
   });
   server.app.use(bundler.middleware());
 
-  const promise = new Promise((resolve, reject) => {
-    promise.done = resolve; // call done() to manually resolve
-    process.on("SIGINT", () => {
-      Promise.race([
-        server.stop(),
-        new Promise((_, rej) => setTimeout(rej, 1000, 1)),
-      ])
-        .then(resolve, reject);
-    });
+  const spinner = ora({ color: "" })
+  bundler.on("buildStart", () => {
+    spinner.start("Building...");
+  });
+  bundler.on("bundled", () => {
+    spinner.succeed(`MagicMirror built ${chalk.bold.green("successfully")}!`);
+  });
+  bundler.on("buildError", (err) => {
+    spinner.fail(formatError(err));
+  });
+
+  function finish() {
+    return Promise.race([
+      Promise.all([() => server.stop(), () => bundler.stop()]),
+      new Promise((_, rej) => setTimeout(rej, 6000, new Error("1"))),
+    ])
+  }
+  const promise = new Oath(() => {});
+  promise.then(finish, finish).then(() => spinner.stop("")); // run on resolve or reject
+  process.once("SIGINT", () => {
+    console.error("GOT SIGINT");
+    promise.return()
   });
   return promise;
 }
 
+// Adds return() and throw() methods to manually resolve/reject the promise
+class Oath extends Promise {
+  constructor(fn) {
+    let _resolve, _reject;
+    super((resolve, reject) => {
+      _resolve = resolve;
+      _reject = reject;
+      fn(resolve, reject);
+    });
+    Object.assign(this, { _resolve, _reject });
+  }
+
+  return(x) {
+    this._resolve && this._resolve(x);
+    return this;
+  }
+
+  throw(e) {
+    this._reject && this._reject(e);
+    return this;
+  }
+}

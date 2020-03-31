@@ -2,7 +2,7 @@
  * This component implements the MagicMirror
  */
 
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense, useReducer } from 'react';
 import nanoid from 'nanoid';
 import path from 'path';
 import { Provider as NotificationProvider } from '@mm/hooks';
@@ -86,8 +86,7 @@ const WrapGroup = modules => (
 /*   </FaderGroup>
  */);
 
-function MMLayout() {
-  const modules = useModules();
+function MMLayout({ modules }) {
   const {
     none, fullscreen_below, top_bar, top_left, top_center, top_right, upper_third, middle_center,
     lower_third, bottom_bar, bottom_left, bottom_center, bottom_right, fullscreen_above,
@@ -168,13 +167,11 @@ function getRegions(modules) {
 
 function MagicMirror({ children, config }) {
   // config is only initial arg, changing props doesn't do anything
-  const store = useConstant(() => createStore(MMReducer, MMInit({ children, config })));
+  const [state, dispatch] = useReducer(MMReducer, { children, config }, MMInit);
   return (
-    <ReduxProvider store={store}>
-      <NotificationProvider>
-        <MMLayout />
-      </NotificationProvider>
-    </ReduxProvider>
+    <NotificationProvider>
+      <MMLayout modules={state.modules} />
+    </NotificationProvider>
   );
 }
 

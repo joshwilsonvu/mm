@@ -44,15 +44,15 @@ const parse = yargs
   })
   .option("cwd", { describe: "run mm in this directory" })
   .help()
-  .showHelpOnFail()
   .version(require("../package.json").version)
   .epilogue("Run $0 <command> --help for more informaton about each command.")
   .parse;
 
-async function cli(...argv) {
-  const opts = parse(["node", "mm", ...argv]);
+function cli(...argv) {
+  const opts = parse([...argv]);
   if (!opts._.length) {
     yargs.showHelp();
+    return;
   }
 
   // handle cwd option, only if run as standalone
@@ -75,15 +75,24 @@ async function cli(...argv) {
     };
   })();
   if (commandModule) {
-    try {
-      return await commandModule(opts);
-    } catch (err) {
+    function onError(err) {
       const formatError = require("./format-error");
       console.log(formatError(err));
-      return 1;
+      return new Error("1");
     }
+    let commandModuleResult;
+    try {
+      commandModuleResult = commandModule(opts);
+    } catch (err) {
+      return onError(err);
+    }
+    if (commandModuleResult.catch) {
+      commandModuleResult.catch(err => onError(err));
+    }
+    return commandModuleResult;
   } else {
     yargs.showHelp();
+    return;
   }
 }
 module.exports = cli;

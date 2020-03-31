@@ -2,31 +2,31 @@ import { useMemo } from 'react';
 import { useSendNotification } from '@mm/hooks';
 
 // Expose a backwards-compatible hook version of the global MM variable
-export const useMM = ({ includeDeprecated }) => {
-  const modules = useSelector(s => s.modules);
-  const dispatch = useDispatch();
-  const publish = useSendNotification();
+// export const useMM = ({ includeDeprecated }) => {
+//   const modules = useSelector(s => s.modules);
+//   const dispatch = useDispatch();
+//   const publish = useSendNotification();
 
-  return useMemo(() => {
-    const selectionMethodsModules = setSelectionMethodsForModules(modules);
-    return {
-      sendNotification: publish,
-      getModules: () => selectionMethodsModules,
-      hideModule: (module, speed, cb, options) => {
-        dispatch({ type: 'HIDE_MODULE', identifier: module.identifier, speed, cb, options });
-      },
-      showModule: (module, speed, cb, options) => {
-        dispatch({ type: 'SHOW_MODULE', identifier: module.identifier, speed, cb, options });
-      },
-      // add the following properties if includeDeprecated is truthy
-      ...(includeDeprecated && {
-        updateDom: (module, speed) => publish("UPDATE_DOM", { speed }, module.identifier),
-      })
-    };
-  }, [modules, includeDeprecated, dispatch, publish]);
-};
+//   return useMemo(() => {
+//     const selectionMethodsModules = setSelectionMethodsForModules(modules);
+//     return {
+//       sendNotification: publish,
+//       getModules: () => selectionMethodsModules,
+//       hideModule: (module, speed, cb, options) => {
+//         dispatch({ type: 'HIDE_MODULE', identifier: module.identifier, speed, cb, options });
+//       },
+//       showModule: (module, speed, cb, options) => {
+//         dispatch({ type: 'SHOW_MODULE', identifier: module.identifier, speed, cb, options });
+//       },
+//       // add the following properties if includeDeprecated is truthy
+//       ...(includeDeprecated && {
+//         updateDom: (module, speed) => publish("UPDATE_DOM", { speed }, module.identifier),
+//       })
+//     };
+//   }, [modules, includeDeprecated, dispatch, publish]);
+// };
 
-export const useMM2 = () => useMM({includeDeprecated: true});
+// export const useMM2 = () => useMM({includeDeprecated: true});
 
 function setSelectionMethodsForModules(modules) {
   return Object.assign([...modules], selectionMethods);

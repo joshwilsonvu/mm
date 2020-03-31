@@ -1,8 +1,15 @@
 const esm = require("esm");
 const esmRequire = esm(module);
+const paths = require("./paths");
+
+let cached;
 
 // Load and normalize the config file
-module.exports = function loadConfig(configPath) {
+module.exports = function loadConfig() {
+  if (cached) {
+    return cached;
+  }
+
   const defaults = {
     address: "localhost",
     port: 8080,
@@ -18,10 +25,10 @@ module.exports = function loadConfig(configPath) {
   };
   let rawConfig = {};
   try {
-    rawConfig = esmRequire(configPath);
+    rawConfig = esmRequire(paths.appConfigJs);
   } catch(err) {
     if (err.code === "MODULE_NOT_FOUND") {
-      console.warn(`Config file ${configPath} not found, using defaults.`);
+      console.warn(`Config file ${paths.appConfigJs} not found, using defaults.`);
     } else {
       throw err;
     }
@@ -30,6 +37,7 @@ module.exports = function loadConfig(configPath) {
   config.port = process.env.MM_PORT || config.port;
   config.address = config.address || null;
   checkDeprecatedConfig(config);
+  cached = config;
   return config;
 }
 

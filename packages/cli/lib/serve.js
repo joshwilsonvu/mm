@@ -1,17 +1,10 @@
 const { Server } = require("./server");
-const loadConfig = require("./config");
+const loadConfig = require("./load-config");
 const paths = require("./paths");
-const formatError = require("./format-error");
 
-module.exports = async opts => {
-  try {
-    return await serve
-  } catch (err) {
-    console.log(formatError)
-  }
-}
+module.exports = serve;
 
-function serve(argv) {
+async function serve(opts) {
   const config = loadConfig(paths.appConfigJs);
   let server = new Server(config);
   server.listen();

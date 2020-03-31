@@ -2,16 +2,8 @@ const Bundler = require("parcel-bundler");
 const fs = require("fs");
 const paths = require("./paths");
 const chalk = require("chalk");
-const formatError = require("./format-error");
 
-module.exports = async (opts) => {
-  try {
-    return await build(opts);
-  } catch (err) {
-    console.log(formatError(err));
-    return 1;
-  }
-}
+module.exports = build;
 
 async function build() {
   process.env.NODE_ENV = 'production';
