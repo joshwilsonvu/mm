@@ -1,11 +1,9 @@
-const { Server } = require("./server");
-const loadConfig = require("./load-config");
-const paths = require("./paths");
+const { Server } = require("./shared/server");
 
 module.exports = serve;
 
-async function serve(opts) {
-  const config = loadConfig(paths.appConfigJs);
-  let server = new Server(config);
+// will be applied with a CLI 'this' argument with config, paths, etc.
+async function serve() {
+  let server = new Server(this.config);
   server.listen();
 }

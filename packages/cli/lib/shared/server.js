@@ -1,6 +1,5 @@
 const fs = require("fs");
 const path = require("path");
-const paths = require("./paths");
 const http = require("http");
 const express = require("express");
 const { IpFilter, IpDeniedError } = require("express-ipfilter");
@@ -26,9 +25,9 @@ function readChildDirs(parentDir) {
 // returns object of { [helper]: { path: string, helper?: object } }
 function collectNodeHelpers() {
   // Collect all modules dirs except default/, and all modules within default/
-  const moduleDirs = readChildDirs(paths.appModules)
-    .filter(dir => dir === paths.appModulesDefault)
-    .concat(readChildDirs(paths.appModulesDefault));
+  const moduleDirs = readChildDirs(this.paths.appModules)
+    .filter(dir => dir === this.paths.appModulesDefault)
+    .concat(readChildDirs(this.paths.appModulesDefault));
   let nodeHelpers = {};
 
   for (const moduleDir of moduleDirs) {

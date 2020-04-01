@@ -1,11 +1,10 @@
 const esm = require("esm");
 const esmRequire = esm(module);
-const paths = require("./paths");
 
 let cached;
 
 // Load and normalize the config file
-module.exports = function loadConfig() {
+module.exports = function loadConfig(configPath) {
   if (cached) {
     return cached;
   }
@@ -25,10 +24,10 @@ module.exports = function loadConfig() {
   };
   let rawConfig = {};
   try {
-    rawConfig = esmRequire(paths.appConfigJs);
+    rawConfig = esmRequire(configPath);
   } catch(err) {
     if (err.code === "MODULE_NOT_FOUND") {
-      console.warn(`Config file ${paths.appConfigJs} not found, using defaults.`);
+      console.warn(`Config file ${configPath} not found, using defaults.`);
     } else {
       throw err;
     }
