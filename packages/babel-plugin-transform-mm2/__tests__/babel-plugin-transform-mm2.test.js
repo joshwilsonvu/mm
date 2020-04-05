@@ -9,37 +9,19 @@ pluginTester({
     'transforms MM2 modules': {
       code: `
         Module.register("helloworld", {
-          // Default module config.
-          defaults: {
-            text: "Hello World!"
-          },
-          // Override dom generator.
-          getDom: function() {
-            var wrapper = document.createElement("div");
-            wrapper.innerHTML = this.config.text;
-            return wrapper;
-          }
+          foo: "bar"
         });
       `,
       output: `
         import { Module } from "@mm/mm2";
         export default Module.register("helloworld", {
-          // Default module config.
-          defaults: {
-            text: "Hello World!"
-          },
-          // Override dom generator.
-          getDom: function() {
-            var wrapper = document.createElement("div");
-            wrapper.innerHTML = this.config.text;
-            return wrapper;
-          }
+          foo: "bar"
         });
       `,
     },
   },
   babelOptions: {
-    filename: "/root/modules/asdf/asdf.js", // basename matches dirname--this is an MM2 module file
+    filename: require.resolve('./dummy-module/dummy-module'), // basename matches dirname--this is an MM2 module file
     babelrc: false,
     configFile: false,
     root: __dirname,
@@ -60,7 +42,7 @@ pluginTester({
     },
   },
   babelOptions: {
-    filename: "/root/modules/asdf/ghjkl.js", // basename doesn't match dirname
+    filename: require.resolve('./dummy-module/something-else'), // basename doesn't match dirname
     babelrc: false,
     configFile: false,
     root: __dirname,
