@@ -1,17 +1,14 @@
-const fs = require("fs");
+const fs = require("fs-extra");
 const path = require("path");
 const http = require("http");
 const express = require("express");
 const { IpFilter, IpDeniedError } = require("express-ipfilter");
 const socketIo = require("socket.io");
+const morgan = require("morgan");
 const helmet = require("helmet");
 const esm = require("esm");
 const esmRequire = esm(module);
 
-
-function resolveApp(...p) {
-  return path.resolve(process.cwd(), ...p);
-}
 
 // returns array of absolute paths to child directories within parentDir
 function readChildDirs(parentDir) {
@@ -23,11 +20,11 @@ function readChildDirs(parentDir) {
 }
 
 // returns object of { [helper]: { path: string, helper?: object } }
-function collectNodeHelpers() {
+function collectNodeHelpers(paths) {
   // Collect all modules dirs except default/, and all modules within default/
-  const moduleDirs = readChildDirs(this.paths.appModules)
-    .filter(dir => dir === this.paths.appModulesDefault)
-    .concat(readChildDirs(this.paths.appModulesDefault));
+  const moduleDirs = readChildDirs(paths.appModules)
+    .filter(dir => dir === paths.appModulesDefault)
+    .concat(readChildDirs(paths.appModulesDefault));
   let nodeHelpers = {};
 
   for (const moduleDir of moduleDirs) {
@@ -47,9 +44,8 @@ class Server {
   /**
    *
    * @param {*} config
-   * @param {*} openAppWindow
    */
-  constructor(config, openAppWindow = false) {
+  constructor(config, paths) {
     // Initialize the express app
     const app = express();
     const server = http.Server(app);
@@ -58,12 +54,16 @@ class Server {
     if (config.ipWhitelist.length) {
       //app.use(IpFilter(config.ipWhitelist, { mode: "deny", log: false }));
     }
+    // Add logging
+    if (process.env.NODE_ENV === "development") {
+      app.use(morgan("dev"));
+    }
     // Add various security measures
     app.use(helmet());
     // Serve client-side files
     app.use(express.urlencoded({ extended: true }));
     for (const directory of ["css", "fonts", "modules", "vendor", "translations"]) {
-      const dirpath = resolveApp(directory);
+      const dirpath = path.resolve(directory);
       if (fs.existsSync(dirpath)) {
         app.get(`/${directory}`, express.static(dirpath));
       }
@@ -83,26 +83,12 @@ class Server {
       }
     });
 
-    /**
-     * The app's configuration
-     */
-    this.config = config;
-    /**
-     * The app's Express instance
-     */
-    this.app = app;
-    /**
-     * The http server
-     */
-    this.server = server;
-    /**
-     * The socket.io instance
-     */
-    this.io = io;
-    /**
-     * A map of module => { path, helper }
-     */
-    this.nodeHelpers = {};
+    this.config = config; // the app's configuration
+    this.paths = paths; // useful filesystem paths
+    this.app = app; // the app's express instance
+    this.server = server; // the http server
+    this.io = io; // the socket.io instance
+    this.nodeHelpers = {}; // a map of module => { path, helper }
   }
 
   addNodeHelpers() {
@@ -143,18 +129,18 @@ class Server {
 
   listen() {
     this.server.listen(this.port, this.config.address || null);
-    this.server.once("error", this.stop.bind(this));
+    //this.server.once("error", this.stop.bind(this));
   }
 
   stop() {
     //this.server.on('connection', (socket) => socket.unref());
     Object.values(this.nodeHelpers).forEach(nh => nh.helper && nh.helper.stop());
-    //return new Promise((resolve, reject) => {
-    //  this.server.once("close", err => err ? reject(err) : resolve);
-    //  this.server.close(err => err ? reject(err) : resolve);
-    //  this.server.once("error", reject);
-    //});
-    this.server.close();
+    return new Promise((resolve, reject) => {
+     this.server.once("close", err => err ? reject(err) : resolve);
+     this.server.close(err => err ? reject(err) : resolve);
+     this.server.once("error", reject);
+    });
+    //this.server.close();
   }
 
   get port() {

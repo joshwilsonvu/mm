@@ -45,6 +45,10 @@ function useEmitter() { return useContext(Context); }
   *     useSubscribe("*", (event, payload, sender) => console.log("Received event " + event));
   */
 function useNotification(event, subscriber) {
+  if (typeof event === "function") {
+    subscriber = event;
+    event = "*";
+  }
   const emitter = useEmitter();
   const subscriberRef = useRef(null);
   subscriberRef.current = subscriber;
@@ -52,11 +56,6 @@ function useNotification(event, subscriber) {
     function cb(...args) {
       subscriberRef.current && subscriberRef.current(...args);
     }
-    // Provide the correct 'length' property for inspection
-    Object.defineProperty(cb, 'length', {
-      configurable: true,
-      get: () => subscriberRef.current && subscriberRef.current.length || 0
-    })
     emitter.on(event, cb);
     return () => emitter.off(event, cb);
   }, [event, emitter]);

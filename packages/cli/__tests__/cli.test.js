@@ -4,17 +4,17 @@ const cliPath = require.resolve("..");
 test("shows help message on '$ mm'", async () => {
   // Run the CLI programmatically. Equivalent to '$ yarn mm'
   const result = await execa(cliPath, [], { all: true });
-  expect(result.all)
-    .toMatchInlineSnapshot(`
+  expect(result.all).toMatchInlineSnapshot(`
     "mm [command]
 
     Commands:
+      mm start  Start serving MagicMirror in development mode
       mm build  Create an optimized build
-      mm dev    Start serving MagicMirror in development mode
       mm serve  Run MagicMirror from a build
 
     Options:
-      --cwd      run mm in this directory
+      --cwd      run mm in this directory                                   [string]
+      --config   the path to the MagicMirror config file                    [string]
       --help     Show help                                                 [boolean]
       --version  Show version number                                       [boolean]
 

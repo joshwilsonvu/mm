@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect, useLayoutEffect, useCallback } from "react";
 import useConstant from "use-constant";
-import { useMM2, ModuleGuard } from "../../../../MagicMirror/modules/count/node_modules/@mm/core";
 import { useSubscribe } from "@mm/hooks";
 import semver from "semver";
 

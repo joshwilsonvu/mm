@@ -41,7 +41,6 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.12.1",
-    "@mm/core": "*",
     "@mm/hooks": "*",
     "moment-timezone": "^0.5.28",
     "nunjucks": "^3.2.0",
@@ -52,7 +51,7 @@
     "weathericons": "^2.1.0"
   },
   "devDependencies": {
-    "react": "^16.13.0",
-    "react-dom": "^16.13.0"
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
   }
 }

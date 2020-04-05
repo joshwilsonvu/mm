@@ -1,6 +1,4 @@
 const Bundler = require("parcel-bundler");
-const fs = require("fs");
-const chalk = require("chalk");
 
 module.exports = build;
 
@@ -10,8 +8,7 @@ async function build() {
 
   this.preflightCheck();
 
-  // Build the client bundle once in production mode,
-  // or use whatever is in the build folder if there is no source code
+  // Build the client bundle once in production mode
   const bundler = new Bundler(this.paths.appIndexHtml, {
     outDir: this.paths.appBuild,
     target: "browser",
@@ -20,9 +17,5 @@ async function build() {
   });
   this.formatBundlerEvents(bundler);
   await bundler.bundle();
-  console.log(
-    `MagicMirror built ${chalk.bold.green("successfully")}!`,
-    `You can now start it with ${chalk.bold.cyan("mm serve")}.`
-  );
   return 0;
 }

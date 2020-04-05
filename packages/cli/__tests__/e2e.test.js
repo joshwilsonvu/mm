@@ -4,7 +4,7 @@ const axios = require("axios");
 const uniqueFilename = require("unique-filename");
 const execa = require("execa");
 const stripAnsi = require("strip-ansi");
-const cliPath = require.resolve("@mm/cli");
+const cliPath = require.resolve("..");
 
 describe.each([[path.join(__dirname, "__fixtures__", "basic")]])(
   "execa fixture '%s'",
@@ -21,24 +21,25 @@ describe.each([[path.join(__dirname, "__fixtures__", "basic")]])(
       });
 
       expect(result.exitCode).toBe(0);
-      expect(stripAnsi(result.all)).toMatchInlineSnapshot(
-        `"MagicMirror built successfully! You can now start it with mm serve."`
-      );
+      expect(stripAnsi(result.all)).toMatchInlineSnapshot(`
+        "ℹ Building...
+        ✔ MagicMirror built successfully!"
+      `);
       expect(await fs.pathExists(paths.buildEntry)).toBe(true);
     });
 
-    test("watches and serves in development mode", async () => {
+    test("starts and watches in development mode", async () => {
       jest.setTimeout(60 * 1000);
 
       expect(await fs.pathExists(paths.entry)).toBe(true);
-      const subprocess = execa(cliPath, ["dev", "--serveronly"], {
+      const subprocess = execa(cliPath, ["start", "--serveronly"], {
         all: true,
         cwd: paths.cwd
       });
 
       // wait for server to start up
       await delay(10000);
-      let response = await axios.get("http://localhost:8080/version")
+      let response = await axios.get("http://localhost:8080/version");
       expect(response.data).toMatchInlineSnapshot(`"0.0.0"`);
       response = await axios.get("http://localhost:8080/");
       expect(response.data).toMatch(/<script src=/);
@@ -55,9 +56,9 @@ describe.each([[path.join(__dirname, "__fixtures__", "basic")]])(
         expect(error.isCanceled).toBe(true);
         expect(stripAnsi(error.all)).toMatchInlineSnapshot(`
           "Starting server on port 8080...
-          - Building...
+          ℹ Building...
           ✔ MagicMirror built successfully!
-          - Building...
+          ℹ Building...
           ✔ MagicMirror built successfully!"
         `);
       }
