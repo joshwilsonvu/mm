@@ -13,7 +13,8 @@ async function build() {
     outDir: this.paths.appBuild,
     target: "browser",
     watch: false,
-    logLevel: 0
+    logLevel: 0,
+    autoInstall: false,
   });
   this.formatBundlerEvents(bundler);
   await bundler.bundle();

@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect, useLayoutEffect, useCallback } from "react";
 import useConstant from "use-constant";
 import { useSubscribe } from "@mm/hooks";
-import semver from "semver";
 
 const makeCompat = (MM2, name, globalConfig) => {
   // access an instance of the MM2 class
@@ -19,20 +18,14 @@ const makeCompat = (MM2, name, globalConfig) => {
         MM
       });
       console.log(mm2.data);
-      if (mm2.requiresVersion && globalConfig.version && !semver.gt(mm2.requiresVersion, globalConfig.version)) {
-        throw new Error(
-          `Module ${name} requires MM version ${mm2.requiresVersion}, running ${globalConfig.version}`
-        );
-      }
       return mm2;
     });
   };
 
   // Create a React component wrapping the given subclass
   function Compat(props) {
-    const { identifier, hidden, classes, header } = props;
+    const { identifier, hidden, classes, header, MM } = props;
 
-    const MM = useMM2(identifier);
     const mm2 = useMM2Instance(props, MM);
 
     const [dom, setDom] = useState(null);
@@ -57,19 +50,11 @@ const makeCompat = (MM2, name, globalConfig) => {
     });
 
     return (
-      <div
-        id={identifier}
-        className={classes}
-      >
+      <div id={identifier} className={classes}>
         {typeof header !== "undefined" && header !== "" && (
           <header className="module-header" dangerouslySetInnerHTML={header} />
         )}
-        <ModuleGuard name={name}>
-          <Escape
-            className="module-content"
-            dom={dom}
-          />
-        </ModuleGuard>
+        <Escape className="module-content" dom={dom} />
       </div>
     );
   }

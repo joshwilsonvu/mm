@@ -26,7 +26,7 @@ function start() {
     target: "browser",
     watch: true,
     logLevel: 0,
-    killWorkers: true,
+    autoInstall: false
   });
   server.app.use(bundler.middleware());
 
