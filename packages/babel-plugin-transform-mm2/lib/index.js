@@ -6,11 +6,12 @@ const nodepath = require("path");
  */
 module.exports = function(babel) {
   const t = babel.types;
-  // find the relative path to the nearest modules/ folder within the project
-
   return {
     name: "babel-plugin-transform-mm2",
     visitor: {
+      /*
+       * Replace "Module.register({...});" with "export default Module.register({...});"
+       */
       ExpressionStatement(path, state) {
         // bail if this is not the MM2 module file, i.e. not like /a/b/module-name/module-name.js
         const filename = state.file.opts.filename;
@@ -35,6 +36,18 @@ module.exports = function(babel) {
               t.stringLiteral("@mm/mm2")
             )
           );
+        }
+      },
+      /*
+       * Replace "require('node_helper')" with "require('@mm/node-helper')"
+       * Only "require" is needed, as MM2 modules wouldn't be using ES6 imports
+       */
+      CallExpression(path) {
+        if (path.get('callee').isIdentifier({ name: "require" })) {
+          const args = path.get('arguments');
+          if (args.length === 1 && args[0].isStringLiteral({ value: "node_helper" })) {
+            args[0].replaceWith(t.stringLiteral("@mm/node-helper"));
+          }
         }
       },
     },

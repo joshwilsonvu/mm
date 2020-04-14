@@ -1,0 +1,15 @@
+{
+  "name": "@mm/node-helper",
+  "version": "0.0.1",
+  "description": "The node-helper package required by MagicMirror node_helper.js files.",
+  "main": "lib/index.js",
+  "license": "MIT",
+  "peerDependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "express": "^4.17.1"
+  },
+  "scripts": {
+  }
+}

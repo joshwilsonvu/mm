@@ -42,7 +42,6 @@ function start() {
         ]),
         new Promise((_, rej) => setTimeout(() => rej(new Error("Couldn't shut down gracefully.")))),
       ]).then(resolve, reject);
-
     }
   });
   // must call stop() to settle promise and await stop to await it.

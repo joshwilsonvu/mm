@@ -10,6 +10,31 @@ const esm = require("esm");
 const esmRequire = esm(module);
 
 
+function helperWrapper(modulePath) {
+  const moduleName = path.basename(modulePath);
+  const nodeHelperPath = path.resolve(modulePath, `node_helper.js`);
+  if (fs.existsSync(nodeHelperPath)) {
+    return {
+      name: moduleName,
+      path: nodeHelperPath,
+      helper: null,
+      load(...constructorArgs) {
+        if (!this.isLoaded) {
+          this.helper = new (esmRequire(nodeHelperPath))(...constructorArgs);
+        }
+        return this.helper;
+      },
+      unload() {
+        this.helper = null;
+        delete require.cache[nodeHelperPath];
+      },
+      isLoaded() {
+        return Boolean(this.helper);
+      }
+    }
+  }
+}
+
 // returns array of absolute paths to child directories within parentDir
 function readChildDirs(parentDir) {
   return fs.existsSync(parentDir) ?
@@ -26,15 +51,10 @@ function collectNodeHelpers(paths) {
     .filter(dir => dir === paths.appModulesDefault)
     .concat(readChildDirs(paths.appModulesDefault));
   let nodeHelpers = {};
-
-  for (const moduleDir of moduleDirs) {
-    const moduleName = moduleDir.slice(moduleDir.lastIndexOf(path.sep) + 1);
-    const nodeHelperPath = path.resolve(moduleDir, `node_helper.js`);
-    if (fs.existsSync(nodeHelperPath)) {
-      nodeHelpers[moduleName] = {
-        path: nodeHelperPath,
-        helper: null // helper property will be added when the helper is started
-      };
+  for (const modulePath of moduleDirs) {
+    const wrapper = helperWrapper(modulePath);
+    if (wrapper) {
+      nodeHelpers[wrapper.name] = wrapper;
     }
   }
   return nodeHelpers;
@@ -98,11 +118,11 @@ class Server {
     ioCore.on("startHelper", helperName => {
       // Start helper if not already started
       if (this.nodeHelpers[helperName]) {
-        if (!this.nodeHelpers[helperName].helper) {
+        if (!this.nodeHelpers[helperName].isLoaded()) {
           // Load helper with esm for ES6 import/export
-          const Helper = esmRequire(this.nodeHelpers[helperName].path);
-          const helper = new Helper();
-          this.nodeHelpers[helperName].helper = helper;
+          const helper = this.nodeHelpers[helperName].load(
+            helperName,
+          )
           helper.setName(helperName);
           helper.setPath(this.nodeHelpers[helperName].path);
           helper.setExpressApp(this.app);

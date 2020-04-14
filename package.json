@@ -4,18 +4,18 @@
   "version": "0.0.0",
   "description": "Libraries for the MagicMirror experimental branch.",
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "MagicMirror"
   ],
   "scripts": {
     "postinstall": "manypkg check && yarn build",
-    "build": "yarn workspaces run build",
+    "build": "wsrun --serial --exclude MagicMirror --exclude-missing build",
     "test": "jest",
     "test:changed": "jest --onlyChanged",
     "test:inspect": "node --inspect node_modules/.bin/jest --runInBand",
     "lint": "eslint packages/*",
     "changeset": "changeset",
-    "precommit": "yarn && yarn lint && yarn test",
-    "release": "yarn build && changeset publish"
+    "precommit": "yarn && yarn lint && yarn test"
   },
   "repository": {
     "type": "git",
@@ -50,7 +50,8 @@
     "eslint-plugin-react-hooks": "1.x",
     "husky": "^4.2.3",
     "jest": "^24.9.0",
-    "jest-watch-suspend": "^1.1.2"
+    "jest-watch-suspend": "^1.1.2",
+    "wsrun": "^5.2.0"
   },
   "husky": {
     "hooks": {

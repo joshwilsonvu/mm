@@ -46,8 +46,8 @@ pluginTester({
           ]
         };
         export default config;
-      `
-    },
+      `,
+    }
   },
   babelOptions: {
     filename: require.resolve("./config/dummy"),

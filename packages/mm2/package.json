@@ -40,7 +40,7 @@
     "node": "current"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.12.1",
+    "@fortawesome/fontawesome-free": "^5.13.0",
     "@mm/hooks": "*",
     "moment-timezone": "^0.5.28",
     "nunjucks": "^3.2.0",

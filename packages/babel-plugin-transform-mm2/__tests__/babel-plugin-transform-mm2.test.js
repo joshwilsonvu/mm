@@ -28,7 +28,6 @@ pluginTester({
   }
 });
 
-
 pluginTester({
   plugin: plugin,
   tests: {
@@ -46,5 +45,23 @@ pluginTester({
     babelrc: false,
     configFile: false,
     root: __dirname,
+  }
+});
+
+pluginTester({
+  plugin: plugin,
+  tests: {
+    'rewrites require("node_helper")': {
+      code: `
+        const NodeHelper = require("node_helper");
+      `,
+      output: `
+        const NodeHelper = require("@mm/node-helper");
+      `,
+    },
+  },
+  babelOptions: {
+    babelrc: false,
+    configFile: false,
   }
 });
