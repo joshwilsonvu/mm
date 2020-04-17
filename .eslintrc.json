@@ -4,6 +4,12 @@
     ],
     "ignorePatterns": [
         "dist/",
-        "node_modules/"
-    ]
+        "build/",
+        "node_modules/",
+        "MagicMirror/",
+        ".pnp"
+    ],
+    "rules": {
+        "strict": "off"
+    }
 }

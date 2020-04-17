@@ -1,3 +1,6 @@
+# Allow development & testing of MagicMirror by cloning it directly into mm/MagicMirror as a workspace
+/MagicMirror
+
 # Various Node ignoramuses.
 
 logs

@@ -1,3 +1,5 @@
+'use strict';
+
 const esm = require("esm");
 const esmRequire = esm(module);
 
