@@ -6,7 +6,6 @@ const createCompiler = require("./shared/create-compiler");
 const printBuildError = require("react-dev-utils/printBuildError");
 const chalk = require("chalk");
 
-const Bundler = require("parcel-bundler");
 const { Server } = require("./shared/server");
 
 module.exports = start;
@@ -31,7 +30,7 @@ function start() {
   }, () => {});
 
   // stop and wait with "await stop()";
-  return stoppable(watching.close.bind(watching));
+  return stoppable(() => watching.close());
 }
 
 // returns a function that, when called, calls stopFn with an err-first callback and any additional args provided.

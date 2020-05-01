@@ -6,7 +6,8 @@ const path = require("path");
 const chalk = require("chalk");
 const logSymbols = require("log-symbols");
 const clear = require("clear");
-const loadConfig = require("./shared/load-config")
+const resolve = require("resolve");
+const loadConfig = require("./shared/load-config");
 
 const commands = [
   {
@@ -80,13 +81,16 @@ class CLI {
       appModulesDefault: path.resolve("modules", "default"),
       appBuild: path.resolve("build"),
       appConfigJs: (options.config && path.resolve(options.config)) || process.env.MM_CONFIG_FILE || path.resolve("config", "config.js"),
-      appIndexJs: path.resolve("src", "index.js"),
       appIndexHtml: path.resolve("index.html"),
       appPackageJson: path.resolve("package.json"),
       appTsConfig: path.resolve("tsconfig.json"),
       appNodeModules: path.resolve("node_modules"),
+      extensions: ['.web.mjs', '.mjs', '.web.js', '.js', '.web.ts', '.ts', '.web.tsx', '.tsx', '.json', '.web.jsx', '.jsx'],
     };
-    this.config = loadConfig(this.paths.appConfigJs)
+    this.paths.appIndex = resolve.sync("./src/index", {
+      extensions: this.paths.extensions, basedir: this.paths.cwd
+    });
+    this.config = loadConfig(this.paths.appConfigJs);
   }
 
   run() {
@@ -163,16 +167,6 @@ class CLI {
     parts.push(`\n`)
     return parts.join("");
   }
-
-  preflightCheck(paths = [this.paths.appIndexJs, this.paths.appConfigJs]) {
-    paths.forEach(p => {
-      if (!fs.existsSync(p)) {
-        throw new Error(`Couldn't find ${p}.`)
-      }
-    });
-  }
-
-
 }
 
 module.exports = CLI;

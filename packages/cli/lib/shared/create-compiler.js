@@ -3,14 +3,13 @@
 const webpack = require("webpack");
 const chalk = require("chalk");
 const forkTsCheckerWebpackPlugin = require("react-dev-utils/ForkTsCheckerWebpackPlugin");
-const clear = () => {} //require("react-dev-utils/clearConsole")
 const formatWebpackMessages = require('react-dev-utils/formatWebpackMessages');
 const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
 
-const isInteractive = process.stdout.isTTY;
 
 module.exports = createCompiler;
-function createCompiler({ config, useTypeScript }) {
+function createCompiler({ config, useTypeScript, handlers }) {
+  handlers = {...defaultOutputHandlers, ...handlers};
   let compiler = webpack(config);
 
   // "invalid" event fires when you have changed a file, and webpack is
@@ -18,10 +17,7 @@ function createCompiler({ config, useTypeScript }) {
   // bundle, so if you refresh, it'll wait instead of serving the old one.
   // "invalid" is short for "bundle invalidated", it doesn't imply any errors.
   compiler.hooks.invalid.tap('invalid', () => {
-    if (isInteractive) {
-      clear();
-    }
-    console.log('Compiling...');
+    handlers.invalid();
   });
 
   let tsMessagesPromise;
@@ -48,10 +44,6 @@ function createCompiler({ config, useTypeScript }) {
   // "done" event fires when webpack has finished recompiling the bundle.
   // Whether or not you have warnings or errors, you will get this event.
   compiler.hooks.done.tap('done', async stats => {
-    if (isInteractive) {
-      clear();
-    }
-
     // We have switched off the default webpack output in WebpackDevServer
     // options so we are going to "massage" the warnings and errors and present
     // them in a readable focused way.
@@ -64,16 +56,7 @@ function createCompiler({ config, useTypeScript }) {
     });
 
     if (useTypeScript && statsData.errors.length === 0) {
-      const delayedMsg = setTimeout(() => {
-        console.log(
-          chalk.yellow(
-            'Files successfully emitted, waiting for typecheck results...'
-          )
-        );
-      }, 100);
-
       const messages = await tsMessagesPromise;
-      clearTimeout(delayedMsg);
 
       statsData.errors.push(...messages.errors);
       statsData.warnings.push(...messages.warnings);
@@ -82,25 +65,42 @@ function createCompiler({ config, useTypeScript }) {
     const messages = formatWebpackMessages(statsData);
     const isSuccessful = !messages.errors.length && !messages.warnings.length;
     if (isSuccessful) {
-      console.log(chalk.green('Compiled successfully!'));
+      handlers.success();
     } else if (messages.errors.length > 0) {
-      // If errors exist, only show errors.
+      // If errors exist, only show errors, and only show the first error.
       messages.errors.length = 1;
-      // Only show the first error. Others are often indicative
-      // of the same problem, but confuse the reader with noise.
-      console.log(chalk.red('Failed to compile.\n'));
-      console.log(messages.errors[0]);
+      handlers.error(messages);
       return;
     } else {
       // Show warnings if no errors were found.
-      console.log(chalk.yellow('Compiled with warnings.\n'));
-      console.log(messages.warnings.join('\n\n'));
-
-      // Teach some ESLint tricks.
-      console.log(`\nSearch for the ${chalk.underline(chalk.yellow('keywords'))} to learn more about each warning.`);
-      console.log(`To ignore, add ${chalk.cyan('// eslint-disable-next-line')} to the line before.\n`);
+      handlers.warning(messages);
     }
   });
 
+  if (handlers.progress) {
+    new webpack.ProgressPlugin(handlers.progress.bind(handlers)).apply(compiler);
+  }
+
   return compiler;
+}
+
+const defaultOutputHandlers = {
+  invalid() {
+    console.log('Compiling...');
+  },
+  success() {
+    console.log(chalk.green('Compiled successfully!'));
+  },
+  warning(messages) {
+    console.log(chalk.yellow('Compiled with warnings.\n'));
+    console.log(messages.warnings.join('\n\n'));
+
+    // Teach some ESLint tricks.
+    console.log(`\nSearch for the ${chalk.underline(chalk.yellow('keywords'))} to learn more about each warning.`);
+    console.log(`To ignore, add ${chalk.cyan('// eslint-disable-next-line')} to the line before.\n`);
+  },
+  error(messages) {
+    console.log(chalk.red('Failed to compile.\n'));
+    console.log(messages.errors[0]);
+  }
 }

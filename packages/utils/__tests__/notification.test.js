@@ -1,8 +1,8 @@
 
 import { renderHook, act } from "@testing-library/react-hooks";
-import { NotificationProvider, useNotification, useSendNotification } from '../src';
+import { Provider, useNotification, useSendNotification } from '../src';
 
-describe('useNotification', () => {
+describe('notification system', () => {
   let subscriberFn = jest.fn();
 
   function setup(event) {
@@ -11,7 +11,7 @@ describe('useNotification', () => {
       useNotification.apply(null, [event, subscriberFn].filter(Boolean));
       // set up useSendNotification
       return useSendNotification();
-    }, { wrapper: NotificationProvider });
+    }, { wrapper: Provider });
   }
 
   beforeEach(() => subscriberFn.mockReset());
@@ -21,21 +21,21 @@ describe('useNotification', () => {
     // ...and use sendNotification to send out an 'event' notification
     act(() => {
       let sendNotification = result.current;
-      sendNotification('event', 'payload', 'sender');
+      sendNotification('event', 'payload');
     });
 
     expect(subscriberFn).toHaveBeenCalledTimes(1);
-    expect(subscriberFn).toHaveBeenCalledWith('payload', 'sender');
+    expect(subscriberFn).toHaveBeenCalledWith('payload');
   });
 
   test('passes type to "*" subscribers"', () => {
     const { result } = setup(undefined); // equivalent to '*'
     act(() => {
       let sendNotification = result.current;
-      sendNotification('event', 'payload', 'sender');
+      sendNotification('event', 'payload');
     });
 
     expect(subscriberFn).toHaveBeenCalledTimes(1);
-    expect(subscriberFn).toHaveBeenCalledWith('event', 'payload', 'sender');
+    expect(subscriberFn).toHaveBeenCalledWith('event', 'payload');
   });
 });

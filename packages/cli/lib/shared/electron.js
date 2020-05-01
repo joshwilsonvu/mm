@@ -3,10 +3,16 @@
  */
 
 import electron from "electron";
-import config from "../config/config";
-import core from "./core";
 // Modules to control application life and create native browser window
 const {app, BrowserWindow, Menu, MenuItem} = electron;
+
+export function start(config) {
+
+  function stop() {
+
+  }
+  return stop;
+}
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.

@@ -1,17 +1,20 @@
 /*
- * MM2 modules expect these global variables and CSS. 
+ * MM2 modules expect these global variables and CSS.
  * These files are only imported if there are MM2 modules preset.
  */
-import moment from "moment-timezone";
+
+// Because this package will be used with @mm/cli, it's okay to import CSS file
 import "weathericons/css/weather-icons.css";
 import "weathericons/css/weather-icons-wind.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "@fortawesome/fontawesome-free/css/v4-shims.min.css";
-import nunjucks from "nunjucks";
-import SunCalc from "suncalc";
 
-Object.assign(window, {
+const moment: any = require("moment-timezone");
+const nunjucks: any = require("nunjucks");
+const SunCalc: any = require("suncalc");
+
+export {
     moment,
     nunjucks,
-    SunCalc
-});
+    SunCalc,
+}

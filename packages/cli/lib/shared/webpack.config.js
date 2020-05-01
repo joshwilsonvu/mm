@@ -5,8 +5,12 @@ const webpack = require("webpack");
 const PnpWebpackPlugin = require("pnp-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ForkTsCheckerWebpackPlugin = require('react-dev-utils/ForkTsCheckerWebpackPlugin');
+const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
+const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const postcssNormalize = require("postcss-normalize");
+const path = require("path");
 const resolve = require("resolve");
+const slash = require("slash");
 
 
 module.exports = webpackConfig;
@@ -16,7 +20,7 @@ function webpackConfig({ mode = "development", paths }) {
 
   return {
     mode: mode,
-    entry: paths.appIndexJs,
+    entry: paths.appIndex,
     output: {
       path: paths.appBuild,
     },
@@ -25,6 +29,7 @@ function webpackConfig({ mode = "development", paths }) {
       // We placed these paths second because we want `node_modules` to "win"
       // if there are any conflicts. This matches Node resolution mechanism.
       modules: ["node_modules", paths.appNodeModules],
+      extensions: paths.extensions,
       plugins: [
         // Adds support for installing with Plug'n'Play, leading to faster installs and adding
         // guards against forgotten dependencies and such.
@@ -176,6 +181,12 @@ function webpackConfig({ mode = "development", paths }) {
         inject: true,
         template: paths.appIndexHtml,
       }),
+      // This gives some necessary context to module not found errors, such as
+      // the requesting resource.
+      new ModuleNotFoundPlugin(paths.cwd),
+      // Watcher doesn't work well if you mistype casing in a path so we use
+      // a plugin that prints an error when you attempt to do this.
+      mode !== 'production' && new CaseSensitivePathsPlugin(),
       // This is necessary to emit hot updates (currently CSS only):
       mode !== 'production' && new webpack.HotModuleReplacementPlugin(),
       new webpack.DefinePlugin({
@@ -195,7 +206,7 @@ function webpackConfig({ mode = "development", paths }) {
         }),
         async: mode !== 'production',
         useTypescriptIncrementalApi: true,
-        checkSyntacticErrors: true,
+        //checkSyntacticErrors: true,
         resolveModuleNameModule: process.versions.pnp
           ? require.resolve("./pnpTs.js")
           : undefined,
