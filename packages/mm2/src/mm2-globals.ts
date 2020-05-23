@@ -9,9 +9,12 @@ import "weathericons/css/weather-icons-wind.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "@fortawesome/fontawesome-free/css/v4-shims.min.css";
 
-const moment: any = require("moment-timezone");
-const nunjucks: any = require("nunjucks");
-const SunCalc: any = require("suncalc");
+// @ts-ignore
+import moment from "moment-timezone";
+// @ts-ignore
+import nunjucks from "nunjucks";
+// @ts-ignore
+import SunCalc from "suncalc";
 
 export {
     moment,

@@ -8,9 +8,7 @@ const ForkTsCheckerWebpackPlugin = require('react-dev-utils/ForkTsCheckerWebpack
 const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const postcssNormalize = require("postcss-normalize");
-const path = require("path");
 const resolve = require("resolve");
-const slash = require("slash");
 
 
 module.exports = webpackConfig;
@@ -73,6 +71,7 @@ function webpackConfig({ mode = "development", paths }) {
           use: [
             {
               options: {
+                config: require("eslint-config-react-app"),
                 cache: true,
                 formatter: require.resolve('react-dev-utils/eslintFormatter'),
                 eslintPath: require.resolve('eslint'),
@@ -92,9 +91,32 @@ function webpackConfig({ mode = "development", paths }) {
               exclude: /node_modules|@babel(?:\/|\\{1,2})runtime/,
               loader: require.resolve("babel-loader"),
               options: {
+                root: paths.cwd,
                 cacheDirectory: true,
                 cacheCompression: false,
                 compact: mode === "production",
+                presets: [
+                  [require.resolve("babel-preset-react-app"), {
+                    "targets": {
+                      "node": "current"
+                    }
+                  }]
+                ],
+                overrides: [
+                  {
+                    include: paths.appModules,
+                    plugins: [
+                      require.resolve("@mm/babel-plugin-transform-mm2")
+                    ]
+                  },
+                  {
+                    include: paths.appConfigJs,
+                    plugins: [
+                      require.resolve("@mm/babel-plugin-transform-config")
+                    ]
+                  }
+                ],
+                sourceMaps: true
               }
             },
             // "postcss" loader applies autoprefixer to our CSS.
@@ -135,7 +157,7 @@ function webpackConfig({ mode = "development", paths }) {
                 {
                   importLoaders: 3,
                 },
-                'sass-loader'
+                require.resolve('sass-loader')
               ),
               // Don't consider CSS imports dead code even if the
               // containing package claims to have no side effects.
@@ -152,7 +174,7 @@ function webpackConfig({ mode = "development", paths }) {
                   importLoaders: 3,
                   modules: true,
                 },
-                'sass-loader'
+                require.resolve('sass-loader')
               ),
             },
             // "file" loader makes sure those assets get served by WebpackDevServer.
@@ -227,6 +249,14 @@ function webpackConfig({ mode = "development", paths }) {
     ].filter(Boolean),
     stats: false,
     bail: mode === "production",
+    infrastructureLogging: {
+      level: 'none'
+    },
+    node: {
+      // Include Node.js __dirname/__filename even for browser files
+      __dirname: true,
+      __filename: true,
+    },
   }
 }
 
@@ -269,7 +299,7 @@ function getStyleLoaders(cssOptions, preProcessor) {
         loader: require.resolve('resolve-url-loader'),
       },
       {
-        loader: require.resolve(preProcessor),
+        loader: preProcessor,
         options: {
           sourceMap: true,
         },

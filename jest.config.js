@@ -3,7 +3,7 @@ module.exports = {
   verbose: true,
   bail: false,
   testMatch: ["<rootDir>/**/*.test.js"],
-  watchPathIgnorePatterns: ["__fixtures__"],
+  watchPathIgnorePatterns: ["__fixtures__", "MagicMirror"],
   watchPlugins: [
     "jest-watch-suspend",
   ]

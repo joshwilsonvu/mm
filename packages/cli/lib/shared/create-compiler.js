@@ -5,18 +5,19 @@ const chalk = require("chalk");
 const forkTsCheckerWebpackPlugin = require("react-dev-utils/ForkTsCheckerWebpackPlugin");
 const formatWebpackMessages = require('react-dev-utils/formatWebpackMessages');
 const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
+const ora = require('ora');
 
 
 module.exports = createCompiler;
-function createCompiler({ config, useTypeScript, handlers }) {
-  handlers = {...defaultOutputHandlers, ...handlers};
+function createCompiler({ config, useTypeScript }) {
   let compiler = webpack(config);
+  let handlers = new Handlers();
 
   // "invalid" event fires when you have changed a file, and webpack is
   // recompiling a bundle. WebpackDevServer takes care to pause serving the
   // bundle, so if you refresh, it'll wait instead of serving the old one.
   // "invalid" is short for "bundle invalidated", it doesn't imply any errors.
-  compiler.hooks.invalid.tap('invalid', () => {
+  compiler.hooks.watchRun.tap('invalid', () => {
     handlers.invalid();
   });
 
@@ -77,30 +78,29 @@ function createCompiler({ config, useTypeScript, handlers }) {
     }
   });
 
-  if (handlers.progress) {
-    new webpack.ProgressPlugin(handlers.progress.bind(handlers)).apply(compiler);
-  }
-
   return compiler;
 }
 
-const defaultOutputHandlers = {
+class Handlers {
+  constructor() {
+    this.spinner = ora();
+  }
   invalid() {
-    console.log('Compiling...');
-  },
+    this.spinner.start(`Compiling...`)
+  }
   success() {
-    console.log(chalk.green('Compiled successfully!'));
-  },
+    this.spinner.succeed('Compiled successfully!');
+  }
   warning(messages) {
-    console.log(chalk.yellow('Compiled with warnings.\n'));
+    this.spinner.stop(chalk.yellow('Compiled with warnings.\n'));
     console.log(messages.warnings.join('\n\n'));
 
     // Teach some ESLint tricks.
     console.log(`\nSearch for the ${chalk.underline(chalk.yellow('keywords'))} to learn more about each warning.`);
     console.log(`To ignore, add ${chalk.cyan('// eslint-disable-next-line')} to the line before.\n`);
-  },
+  }
   error(messages) {
-    console.log(chalk.red('Failed to compile.\n'));
+    this.spinner.fail('Failed to compile.\n');
     console.log(messages.errors[0]);
   }
 }

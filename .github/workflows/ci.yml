@@ -3,22 +3,32 @@ name: CI
 on: push
 
 jobs:
+  setup:
+    runs-on
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mm
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repo
+        uses: actions/checkout@v2
         with:
           # This makes Actions fetch all Git history for Changesets
           fetch-depth: 0
+          path: mm
       - name: Use Node.js 12.x
         uses: actions/setup-node@v1
         with:
           node-version: 12.x
 
       - name: Install Dependencies
-        run: yarn install --frozen-lockfile --ignore-optional
+        run: yarn install --immutable
+        working-directory:
       - name: Lint
         run: yarn lint
+      - name: Build
+        run: yarn build
       - name: Test
         run: yarn test
 
@@ -27,7 +37,7 @@ jobs:
         uses: changesets/action@master
         with:
           # this expects you to have a script called release which does a build for your packages and calls changeset publish
-          publish: yarn release
+          publish: yarn changeset publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -4,18 +4,15 @@
   "version": "0.0.0",
   "description": "Libraries for the MagicMirror experimental branch.",
   "workspaces": [
-    "packages/*",
-    "MagicMirror"
+    "packages/*"
   ],
   "scripts": {
-    "postinstall": "manypkg check && yarn build",
-    "build": "wsrun --serial --exclude magicmirror --exclude-missing build",
+    "build": "yarn workspaces foreach --verbose --parallel --topological-dev run build",
     "test": "jest",
     "test:changed": "jest --onlyChanged",
-    "test:inspect": "node --inspect node_modules/.bin/jest --runInBand",
-    "lint": "eslint packages/*",
+    "lint": "eslint packages",
     "changeset": "changeset",
-    "precommit": "yarn && yarn lint && yarn test"
+    "precommit": "yarn && yarn build && yarn lint && yarn test"
   },
   "repository": {
     "type": "git",
@@ -38,25 +35,26 @@
     "@babel/preset-react": "^7.8.3",
     "@babel/preset-typescript": "^7.9.0",
     "@changesets/cli": "^2.5.2",
-    "@manypkg/cli": "^0.11.1",
+    "@typescript-eslint/eslint-plugin": "^2.33.0",
+    "@typescript-eslint/parser": "^2.33.0",
     "axios": "^0.19.2",
-    "babel-eslint": "10.x",
+    "babel-eslint": "^10.1.0",
     "babel-jest": "^25.1.0",
     "eslint": "^6.8.0",
-    "eslint-config-react-app": "^5.2.0",
-    "eslint-plugin-flowtype": "3.x",
-    "eslint-plugin-import": "2.x",
+    "eslint-config-react-app": "^5.2.1",
+    "eslint-plugin-flowtype": "^4.7.0",
+    "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-jest": "^23.8.1",
-    "eslint-plugin-jsx-a11y": "6.x",
-    "eslint-plugin-react": "7.x",
-    "eslint-plugin-react-hooks": "1.x",
-    "execa": "^4.0.0",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.20.0",
+    "eslint-plugin-react-hooks": "^2",
+    "execa": "^4.0.1",
     "fs-extra": "^9.0.0",
     "husky": "^4.2.3",
     "jest": "^24.9.0",
     "jest-watch-suspend": "^1.1.2",
     "strip-ansi": "^6.0.0",
-    "wsrun": "^5.2.0"
+    "typescript": "^3.9.2"
   },
   "husky": {
     "hooks": {

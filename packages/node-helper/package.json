@@ -2,14 +2,44 @@
   "name": "@mm/node-helper",
   "version": "0.0.1",
   "description": "The node-helper package required by MagicMirror node_helper.js files.",
-  "main": "lib/index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "license": "MIT",
+  "scripts": {
+    "build": "tsc"
+  },
+  "directories": {
+    "lib": "src",
+    "test": "__tests__"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joshwilsonvu/mm.git"
+  },
+  "bugs": {
+    "url": "https://github.com/joshwilsonvu/mm/issues"
+  },
   "peerDependencies": {
     "express": "^4.17.1"
   },
   "devDependencies": {
-    "express": "^4.17.1"
+    "@types/express": "^4.17.6",
+    "@types/node": "^14.0.1",
+    "@types/socket.io": "^2.1.8",
+    "express": "^4.17.1",
+    "mitt": "^1.2.0",
+    "socket.io": "^2.3.0",
+    "typescript": "^3.9.2"
   },
-  "scripts": {
+  "dependencies": {
+    "@mm/utils": "workspace:*",
+    "tslib": "^2.0.0"
   }
 }

@@ -3,9 +3,8 @@
  * existing MagicMirror plugins. These plugins will subclass this class,
  * and the resulting instance will be wrapped in a React component.
  */
-import io from 'socket.io-client';
 import path from 'path';
-import nunjucks from 'nunjucks';
+import { nunjucks } from './mm2-globals';
 
 // The type of the MM2 data property
 export type Data = {
@@ -251,14 +250,14 @@ export class Module {
    * Retrieve the path to a module file.
    */
   file(file: string) {
-    return path.normalize(path.join(this.data.path, file));
+    return path.resolve(this.data.path, file);
   }
 
   /**
    * Load all required stylesheets and call cb when done.
    */
   loadStyles(cb: () => void) {
-    Promise.all(this.getStyles().map(dep => {
+    Promise.all(this.getStyles().map(pathToUrlPath).map(dep => {
       return new Promise((resolve, reject) => {
         const link = document.createElement("link");
         link.addEventListener("load", resolve);
@@ -318,25 +317,36 @@ export class Module {
 }
 
 function MMSocket(moduleName: string) {
-  const socket = io("/" + moduleName);
+  const socket = new WebSocket("/" + moduleName);
+  socket.onopen = event => {
+    socket.onmessage = event => {
+
+    }
+
+  }
+
   // Warning: this is not a public Socket.io API!!! Look for a better way to catch all events
   let onevent = (socket as any).onevent;
   if (typeof onevent === "function") {
     (socket as any).onevent = (packet: { data: any[] }, ...rest: unknown[]) => {
-      onevent.call(socket, packet); // original call
+      onevent.apply(socket, [packet, ...rest]); // original call
       packet.data = ["*", ...packet.data];
-      onevent.call(socket, packet); // additional call to catch-all
+      onevent.apply(socket, [packet, ...rest]); // additional call to catch-all
     };
   };
 
   return {
     sendNotification(notification: string, payload: any = {}, sender?: string) {
-      socket.emit("notification", {
+      socket.send(JSON.stringify([
+        "notification",
         notification,
         payload,
         sender
-      });
+      ]));
     },
+    close() {
+      socket.close();
+    }
   };
 }
 
@@ -365,3 +375,7 @@ function getSocket(module: Module) {
   }
   return socket;
 };
+
+function pathToUrlPath(p: string) {
+  return path.relative(process.cwd(), p).replace("\\", "/");
+}

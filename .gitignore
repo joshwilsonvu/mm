@@ -1,6 +1,3 @@
-# Allow development & testing of MagicMirror by cloning it directly into mm/MagicMirror as a workspace
-/MagicMirror
-
 # Various Node ignoramuses.
 
 logs
@@ -20,15 +17,14 @@ jspm_modules
 .npm
 .node_repl_history
 
-# Yarn
-.pnp
+# Yarn 2
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
 .pnp.*
-.yarn/unplugged
-.yarn/build-state.yml
 
-
-# Visual Studio Code ignoramuses.
-.vscode/
+# Ignore __tests__ MagicMirror repo
+/__tests__/MagicMirror
 
 # IDE Code ignoramuses.
 .idea/

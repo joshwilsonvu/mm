@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useLayoutEffect, useCallback, ReactChildren } from "react";
 import useConstant from "use-constant";
 import { Module, MMGlobal } from "./module";
+import Escape from "./escape";
 import { useNotification } from "@mm/utils";
 
 function makeCompat(MM2: typeof Module, name: string, globalConfig: object) {
@@ -38,7 +39,7 @@ function makeCompat(MM2: typeof Module, name: string, globalConfig: object) {
       updateDom();
     }, [mm2, updateDom]);
     useNotification("ALL_MODULES_LOADED", () => mm2.start());
-    useNotification("UPDATE_DOM", () => updateDom, identifier);
+    useNotification("UPDATE_DOM", () => updateDom);
     useEffect(() => {
       mm2.hidden = hidden;
     });
@@ -61,38 +62,6 @@ function makeCompat(MM2: typeof Module, name: string, globalConfig: object) {
 
   return Compat;
 };
-
-
-function useLayoutPrevious<T>(value: T): T | undefined {
-  const ref = useRef<T>();
-  useLayoutEffect(() => {
-    ref.current = value;
-  }, [value]);
-  return ref.current;
-};
-
-// An escape hatch from React. Pass the dom prop to imperatively add HTMLElements.
-function Escape({ dom, children: _, ...rest }: { dom: HTMLElement | Falsy, [k: string]: any }) {
-  const div = useRef<HTMLDivElement>(null);
-  const oldDom = useLayoutPrevious(dom);
-  // add/replace/remove dom content
-  useLayoutEffect(() => replace(div.current, oldDom, dom), [dom, oldDom]);
-  // cleanup on unmount
-  useLayoutEffect(() => () => void (div.current && replace(div.current, div.current.firstChild as HTMLElement, null)), []);
-  return (<div {...rest} ref={div} />);
-}
-
-function replace(parent: HTMLElement | null, oldDom: HTMLElement | Falsy, newDom: HTMLElement | Falsy) {
-  if (parent) {
-    if (oldDom && newDom) {
-      parent.replaceChild(newDom, oldDom);
-    } else if (newDom && !oldDom) {
-      parent.appendChild(newDom);
-    } else if (!newDom && oldDom) {
-      parent.removeChild(oldDom);
-    } // else do nothing
-  }
-}
 
 // Returns true if it is a DOM element
 function isElement(o: any): o is HTMLElement {
@@ -121,5 +90,3 @@ interface ModuleProps {
   },
   MM: MMGlobal,
 }
-
-type Falsy = undefined | null | false | "" | 0;

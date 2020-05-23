@@ -182,10 +182,21 @@ if (require.main === module) {
       result.then(() => process.exit(0), () => setTimeout(() => process.exit(1), 2500));
     }
     if (typeof result === "function") {
-      // begin cleanup on SIGINT
-      process.on("SIGINT", () => {
-        result();
-      });
+      // begin cleanup on SIGINT/SIGTERM
+      function stop() {
+        let closePromise = result();
+        process.exitCode = 0
+        if (closePromise && closePromise.then) {
+          closePromise.then(undefined, () => {
+            setTimeout(() => process.exit(1), 1000);
+          });
+        }
+      }
+      process.on("SIGINT", stop);
+      process.on("SIGTERM", () => {
+        stop();
+        setTimeout(() => process.exit(1), 1000);
+      })
     }
   } catch (err) {
     console.log(logSymbols.error, instance.formatError(err));

@@ -1,6 +1,6 @@
 
 import { renderHook, act } from "@testing-library/react-hooks";
-import { Provider, useNotification, useSendNotification } from '../src';
+import { NotificationProvider, useNotification, useSendNotification } from '../src';
 
 describe('notification system', () => {
   let subscriberFn = jest.fn();
@@ -11,7 +11,7 @@ describe('notification system', () => {
       useNotification.apply(null, [event, subscriberFn].filter(Boolean));
       // set up useSendNotification
       return useSendNotification();
-    }, { wrapper: Provider });
+    }, { wrapper: NotificationProvider });
   }
 
   beforeEach(() => subscriberFn.mockReset());

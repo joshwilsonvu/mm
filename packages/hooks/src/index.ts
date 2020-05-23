@@ -88,7 +88,7 @@ export function useFetchText(url: string, refetchIntervalMs?: number, options?: 
 function fetch_(url: string, options: Parameters<typeof fetch>[1], method: "json" | "text") {
   // Create a new AbortController signal and abort() for this request
   const { signal, abort } = new AbortController();
-  const promise = fetch(url, {
+  const promise = fetch(new URL(url).toString(), {
     // Pass the signal to your request
     signal,
     ...options,

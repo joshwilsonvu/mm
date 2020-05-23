@@ -4,11 +4,9 @@ const cliPath = require.resolve("..");
 /*
  * The best way to test the CLI's functionality is to test the application as a whole,
  * since it is responsible for building, serving, and reloading MagicMirror. Therefore,
- * 
+ * tests in e2e.test.js may uncover problems here that these tests don't find.
  */
-
 test("shows help message on '$ mm'", async () => {
-  // Run the CLI programmatically. Equivalent to '$ yarn mm'
   const result = await execa(cliPath, [], { all: true });
   expect(result.all).toMatchInlineSnapshot(`
     "mm [command]
