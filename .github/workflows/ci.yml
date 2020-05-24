@@ -11,7 +11,6 @@ jobs:
         with:
           # This makes Actions fetch all Git history for Changesets
           fetch-depth: 0
-          path: mm
       - name: Use Node.js 12.x
         uses: actions/setup-node@v1
         with:
