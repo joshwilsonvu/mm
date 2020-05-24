@@ -6,10 +6,8 @@ import electron from "electron";
 // Modules to control application life and create native browser window
 const {app, BrowserWindow, Menu, MenuItem} = electron;
 
-
 module.exports = async function Window(config, cleanup, options) {
   await app.whenReady();
-  app.commandLine.appendSwitch("autoplay-policy", "no-user-gesture-required");
 
   // Create the browser window.
   let window = new BrowserWindow({
@@ -20,10 +18,11 @@ module.exports = async function Window(config, cleanup, options) {
     darkTheme: true,
     backgroundColor: "#000",
     ...(process.env.NODE_ENV === "production" ? { fullscreen: true, autoHideMenuBar: true, 	titleBarStyle: "hidden" } : {}),
-    ...config.electronOptions,
+    ...config.electronOptions, // override from config
     webPreferences: {
       nodeIntegration: false,
       zoomFactor: config.zoom,
+      autoplayPolicy: "no-user-gesture-required",
       ...(config.electronOptions && config.electronOptions.webPreferences),
     },
   });

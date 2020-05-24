@@ -2286,7 +2286,7 @@ __metadata:
     chalk: ^3.0.0
     clear: ^0.1.0
     css-loader: ^3.5.2
-    electron: ^8.1.0
+    electron: ^9.0.0
     eslint: ^6.8.0
     eslint-config-react-app: ^5.2.1
     eslint-loader: ^4.0.0
@@ -2367,6 +2367,15 @@ __metadata:
     weathericons: ^2.1.0
   peerDependencies:
     react: ^16.12.0
+  languageName: unknown
+  linkType: soft
+
+"@mm/moduleslist@workspace:packages/moduleslist":
+  version: 0.0.0-use.local
+  resolution: "@mm/moduleslist@workspace:packages/moduleslist"
+  dependencies:
+    is-github-url: ^1.2.2
+    yaml: ^1.10.0
   languageName: unknown
   linkType: soft
 
@@ -6058,16 +6067,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:^8.1.0":
-  version: 8.1.1
-  resolution: "electron@npm:8.1.1"
+"electron@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "electron@npm:9.0.0"
   dependencies:
     "@electron/get": ^1.0.1
     "@types/node": ^12.0.12
     extract-zip: ^1.0.3
   bin:
     electron: cli.js
-  checksum: 3/c80b372c96e6edbc05fb30d102a56001d58c1342031c2ed8f6e97d7c78f3a11c8786fa657587da026b63b786d720d70fbbb4c9000bd9c5024619c609cd3716fb
+  checksum: 3/7eee858a05292282fceae698db035c5aaada058166815cbdfab606fcaf39bdc0f12c289de8418d358be8cdf4a26f1d2bed8db4576b476dfa177ac71ce35d420e
   languageName: node
   linkType: hard
 
@@ -8532,6 +8541,13 @@ fsevents@^1.2.7:
   version: 2.1.0
   resolution: "is-generator-fn@npm:2.1.0"
   checksum: 3/9639f8167925388f07d0ae190f1ebfe026e90db954480e6d28e776cf94040a00ea9158e1ac816bf77676e539bcbcf9cb4e997a599d80171e4bc52df76965e453
+  languageName: node
+  linkType: hard
+
+"is-github-url@npm:^1.2.2":
+  version: 1.2.2
+  resolution: "is-github-url@npm:1.2.2"
+  checksum: 3/46af03936767f51d7f9c526b2f4a58d968059a9e4beeea7ee96a739749f33b646555af0db768fbed4887eaee1dacc35ee8f9a0e029be9c43690b12e556d58ddf
   languageName: node
   linkType: hard
 
@@ -15094,6 +15110,13 @@ typescript@^3.9.2:
   version: 3.1.1
   resolution: "yallist@npm:3.1.1"
   checksum: 3/f352c93b92f601bb0399210bca37272e669c961e9bd886bac545380598765cbfdfb4f166e7b6c57ca4ec8a5af4ab3fa0fd78a47f9a7d655a3d580ff0fc9e7d79
+  languageName: node
+  linkType: hard
+
+"yaml@npm:^1.10.0":
+  version: 1.10.0
+  resolution: "yaml@npm:1.10.0"
+  checksum: 3/d4cc9f9724f8d0aebc2cf52e4e6aa7059f12d50deb54b5225d103462fb2af36e5c0bb419101ca4b1f0cd3b4db9e4139cf2c690e863ac6227648d39d6f4e2522c
   languageName: node
   linkType: hard
 

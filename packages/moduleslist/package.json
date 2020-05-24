@@ -1,0 +1,35 @@
+{
+  "name": "@mm/moduleslist",
+  "version": "0.0.1",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "author": "Josh Wilson",
+  "license": "MIT",
+  "keywords": [
+    "magicmirror",
+    "modules"
+  ],
+  "homepage": "https://github.com/joshwilsonvu/mm#readme",
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joshwilsonvu/mm.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/joshwilsonvu/mm/issues"
+  },
+  "devDependencies": {
+    "is-github-url": "^1.2.2"
+  },
+  "dependencies": {
+    "yaml": "^1.10.0"
+  }
+}
