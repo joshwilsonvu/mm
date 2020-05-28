@@ -6,47 +6,52 @@ const plugin = require('..');
 pluginTester({
   plugin: plugin,
   tests: {
-    "adds import": {
+    "adds import to modules": {
       code: `
-        const config = {
+        export default {
           port: 8080,
           modules: [
             {
-              module: "helloworld",
-              position: "top_left",
-              config: {
-                text: "Hello world"
-              }
-            },
-            {
-              module: "MMM-clock",
+              module: "a-module",
               position: "top_right"
             }
           ]
         };
-        export default config;
       `,
       output: `
-        const config = {
+        export default {
           port: 8080,
           modules: [
             {
-              module: "helloworld",
-              _import: () => import("../modules/default/helloworld/helloworld"),
-              position: "top_left",
-              config: {
-                text: "Hello world"
-              }
-            },
-            {
-              module: "MMM-clock",
-              _import: () => import("../modules/MMM-clock/MMM-clock"),
+              module: "a-module",
+              _import: () => import("../modules/a-module/a-module"),
               position: "top_right"
             }
           ]
         };
-        export default config;
       `,
+    },
+    "resolves default modules": {
+      code: `
+      export default {
+        modules: [
+          {
+            module: "a-default-module"
+          }
+        ]
+      };
+    `,
+    output: `
+      export default {
+        modules: [
+          {
+            module: "a-default-module",
+            _import: () =>
+              import("../modules/default/a-default-module/a-default-module")
+          }
+        ]
+      };
+    `,
     }
   },
   babelOptions: {

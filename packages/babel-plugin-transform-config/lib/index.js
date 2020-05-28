@@ -69,7 +69,7 @@ module.exports = function(babel) {
                   const moduleName = property.node.value.value;
                   // find the relative path to the nearest modules/ folder within the project
                   const dirname = nodepath.dirname(state.file.opts.filename);
-                  let moduleBasePath = findModulePath(dirname);
+                  let { moduleBasePath, defaultModules } = findModulePath(dirname);
                   moduleBasePath = moduleBasePath ? nodepath.relative(dirname, moduleBasePath).replace("\\", "/"): "modules";
                   // add the path of the module being requested
                   const modulePath = `${moduleBasePath}/${defaultModules.indexOf(moduleName) !== -1 ? 'default/' : ''}${moduleName}/${moduleName}`;
@@ -87,20 +87,6 @@ module.exports = function(babel) {
   };
 };
 
-// preface default/ if one of these modules is listed
-const defaultModules = [
-  'alert',
-  'calendar',
-  'clock',
-  'compliments',
-  'currentweather',
-  'helloworld',
-  'newsfeed',
-  'weatherforecast',
-  'updatenotification',
-  'weather',
-];
-
 // find the absolute path of the nearest modules/ folder up the tree, or null
 const findModulePath = memoize(function(dirName) {
   function findModulePath(dirName) {
@@ -108,16 +94,22 @@ const findModulePath = memoize(function(dirName) {
     const actualDirName = path.resolve(dirName);
     const {root} = path.parse(actualDirName);
     // return the nearest .../modules/ path
-    const modulePath = path.join(actualDirName, "modules");
-    const moduleExists = fs.existsSync(modulePath);
+    const moduleBasePath = path.join(actualDirName, "modules");
+    const moduleExists = fs.existsSync(moduleBasePath);
     if (moduleExists) {
-      return modulePath;
+      // record which modules are in default/, for if one of these modules is listed
+      let defaultModules = [];
+      const defaultModulesDir = path.join(moduleBasePath, "default");
+      if (fs.existsSync(defaultModulesDir)) {
+        defaultModules = fs.readdirSync(defaultModulesDir).filter(f => !f.startsWith("."));
+      }
+      return { moduleBasePath, defaultModules };
     }
     // stop when we reach the nearest package.json file
     const pkgPath = path.join(actualDirName, "package.json");
     const pkgExists = fs.existsSync(pkgPath);
     if (pkgExists || dirName === root) {
-      return null;
+      return {};
     }
     return findModulePath(path.dirname(dirName));
   }

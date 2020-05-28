@@ -64,8 +64,10 @@ function webpackConfig({ mode = "development", paths, analyze }) {
 
         // First, run the linter.
         // It's important to do this before Babel processes the JS.
+        // Ensure dependencies are not linted.
         {
           test: /\.(js|mjs|jsx|ts|tsx)$/,
+          exclude: /node_modules|\.yarn/,
           enforce: "pre",
           use: [
             {
@@ -85,9 +87,11 @@ function webpackConfig({ mode = "development", paths, analyze }) {
           // match the requirements. When no loader matches it will fall
           // back to the "file" loader at the end of the loader list.
           oneOf: [
+            // Compile JS and TS with Babel, which includes transformations from @mm/babel-plugin-*.
+            // Ensure dependencies are not compiled.
             {
               test: /\.(js|mjs|jsx|ts|tsx)$/,
-              exclude: /node_modules|@babel(?:\/|\\{1,2})runtime/,
+              exclude: /node_modules|\.yarn|@babel(?:\/|\\{1,2})runtime/,
               loader: require.resolve("babel-loader"),
               options: {
                 cacheDirectory: true,

@@ -25,7 +25,7 @@ async function start() {
 
   const server = await Server(this.config, this.paths, devMiddleware);
   server.listen();
-  if (!this.options.browser) {
+  if (!this.options.browser && !this.options.serveronly) {
     const window = Window(this.config, this.options);
     await window.open();
   } else {

@@ -20,6 +20,10 @@ test("Module", () => {
   const instance = new Subclass({});
   expect(instance).toBeInstanceOf(Module);
   expect(instance.myMethod()).toBe(5);
+  expect(() => {
+    class Subclass2 extends Module {}
+    (new Subclass2({}));
+  }).not.toThrow();
 });
 
 test("makeCompat", () => {

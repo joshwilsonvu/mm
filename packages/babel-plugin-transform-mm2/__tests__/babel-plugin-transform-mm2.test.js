@@ -5,6 +5,9 @@ const plugin = require('..');
 
 pluginTester({
   plugin: plugin,
+  pluginOptions: {
+    imports: ["optionalImport", "Module"]
+  },
   tests: {
     'transforms MM2 modules': {
       code: `
@@ -12,8 +15,9 @@ pluginTester({
           foo: "bar"
         });
       `,
+      // "Module" is included even if not given and listed first
       output: `
-        import { Module } from "@mm/mm2";
+        import { Module, optionalImport } from "@mm/mm2";
         export default Module.register("helloworld", {
           foo: "bar"
         });

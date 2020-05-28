@@ -41,22 +41,16 @@ describe("MagicMirror template works with mm packages", () => {
     jest.setTimeout(5 * 60 * 1000);
 
     expect(await fs.pathExists(paths.entry)).toBe(true);
-    const { stdout } = await execa("yarn", ["build"], {
-      cwd: paths.cwd
+    const { all } = await execa("yarn", ["build"], {
+      cwd: paths.cwd,
+      all: true,
     });
 
-    expect(stripAnsi(stdout)).toMatchInlineSnapshot(`
-    "$ mm build
-    Compiled successfully.
-    "
-  `);
+    expect(stripAnsi(all)).toMatch(/Compiled successfully!/)
     expect(await fs.pathExists(paths.buildHtml)).toBe(true);
   });
 
-  test("serves HTML", async () => {
-    jest.setTimeout(5 * 60 * 1000);
-    
-  })
+  test.todo("serves HTML");
 
   test.skip("starts and watches in development mode", async () => {
     jest.setTimeout(60 * 1000);
@@ -68,9 +62,7 @@ describe("MagicMirror template works with mm packages", () => {
 
     // wait for server to start up
     await delay(10000);
-    let response = await axios.get("http://localhost:8080/version");
-    expect(response.data).toMatchInlineSnapshot(`"0.0.0"`);
-    response = await axios.get("http://localhost:8080/");
+    const response = await axios.get("http://localhost:8080/");
     expect(response.data).toMatch(/<script src=/);
     expect(response.status).toBe(200);
 

@@ -87,7 +87,7 @@ class Handlers {
     console.log(logSymbols.success, 'Compiled successfully!');
   }
   warning(messages) {
-    console.warn(logSymbols.warning, chalk.yellow('Compiled with warnings.\n'));
+    console.warn(logSymbols.warning, chalk.bold.yellow('Compiled with warnings.\n'));
     console.warn(messages.warnings.join('\n\n'));
 
     // Teach some ESLint tricks.
@@ -95,7 +95,7 @@ class Handlers {
     console.log(`To ignore, add ${chalk.cyan('// eslint-disable-next-line')} to the line before.\n`);
   }
   error(messages) {
-    console.error(logSymbols.error, 'Failed to compile.\n');
+    console.error(logSymbols.error, chalk.bold.red('Failed to compile.\n'));
     console.error(messages.errors[0]);
   }
 }

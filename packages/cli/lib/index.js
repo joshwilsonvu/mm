@@ -19,7 +19,12 @@ const commands = [
     describe: "Start serving MagicMirror in development mode",
     builder: y => y.options({
       browser: {
-        describe: "open a web browser instead of an electron window"
+        describe: "open a web browser instead of an electron window",
+        conflicts: "serveronly",
+      },
+      serveronly: {
+        describe: "don't open an electron window or a web browser",
+        conflicts: "browser",
       }
     })
   },
@@ -28,7 +33,7 @@ const commands = [
     describe: "Create an optimized build",
     builder: y => y.options({
       analyze: {
-        describe: "after the build, show the contents of the bundle"
+        describe: "after the build, show the contents of the bundle in a web page"
       }
     })
   },
@@ -87,7 +92,6 @@ class CLI {
       extensions: extensions,
       resolve: resolveExtensions,
     };
-    console.log(this.paths);
     // transpile server-side user files, including MagicMirror config
     const { register } = require("./shared/babel-config");
     register(this.paths);

@@ -2316,10 +2316,10 @@ __metadata:
     browserslist: ^4.12.0
     case-sensitive-paths-webpack-plugin: ^2.3.0
     chalk: ^3.0.0
+    confusing-browser-globals: ^1.0.9
     css-loader: ^3.5.2
     electron: ^9.0.0
     eslint: ^6.8.0
-    eslint-config-react-app: ^5.2.1
     eslint-loader: ^4.0.0
     eslint-plugin-flowtype: ^4.7.0
     eslint-plugin-import: ^2.20.2
@@ -3121,15 +3121,16 @@ __metadata:
   linkType: hard
 
 "@typescript-eslint/experimental-utils@npm:^2.5.0":
-  version: 2.23.0
-  resolution: "@typescript-eslint/experimental-utils@npm:2.23.0"
+  version: 2.34.0
+  resolution: "@typescript-eslint/experimental-utils@npm:2.34.0"
   dependencies:
     "@types/json-schema": ^7.0.3
-    "@typescript-eslint/typescript-estree": 2.23.0
+    "@typescript-eslint/typescript-estree": 2.34.0
     eslint-scope: ^5.0.0
+    eslint-utils: ^2.0.0
   peerDependencies:
     eslint: "*"
-  checksum: 3/ea56a10bdac0ebd074b384ed3f5e0e4059f1d25364d4c0495cf97c58d75cba745fd5f4c92c56c2a29348ddb384821376cf338e9bf5b42c25a7653d4e05e333cc
+  checksum: 3/53cbbcfe67ddc53b4bc23f78b3726b0c2de5ea04ee849ca8b619f1fcad16f644d9d72bb3ea9a08aabfc605ea4a9769fe1b81931af09ce2223ec49de749cde2d4
   languageName: node
   linkType: hard
 
@@ -3151,26 +3152,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/typescript-estree@npm:2.23.0":
-  version: 2.23.0
-  resolution: "@typescript-eslint/typescript-estree@npm:2.23.0"
-  dependencies:
-    debug: ^4.1.1
-    eslint-visitor-keys: ^1.1.0
-    glob: ^7.1.6
-    is-glob: ^4.0.1
-    lodash: ^4.17.15
-    semver: ^6.3.0
-    tsutils: ^3.17.1
-  peerDependencies:
-    typescript: "*"
-  peerDependenciesMeta:
-    typescript:
-      optional: true
-  checksum: 3/45211add44a6d548b0067ffda998440cc13afa665f5e9f669477ba795bc89db024f2a658dc2f3df4183dc486471e4be2cbc661f856995192c442a7423c85ea1b
-  languageName: node
-  linkType: hard
-
 "@typescript-eslint/typescript-estree@npm:2.33.0":
   version: 2.33.0
   resolution: "@typescript-eslint/typescript-estree@npm:2.33.0"
@@ -3188,6 +3169,26 @@ __metadata:
     typescript:
       optional: true
   checksum: 3/d917169d05f709fd5ae4e5b7b336b832f59eeb4a5ecd2a812f63a5c68dd4212366ff321c8c8444cad687047a37454feafa2400652d87022e51d85e6b9cb1621f
+  languageName: node
+  linkType: hard
+
+"@typescript-eslint/typescript-estree@npm:2.34.0":
+  version: 2.34.0
+  resolution: "@typescript-eslint/typescript-estree@npm:2.34.0"
+  dependencies:
+    debug: ^4.1.1
+    eslint-visitor-keys: ^1.1.0
+    glob: ^7.1.6
+    is-glob: ^4.0.1
+    lodash: ^4.17.15
+    semver: ^7.3.2
+    tsutils: ^3.17.1
+  peerDependencies:
+    typescript: "*"
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 3/77d1a758dfd4a2813fb51d6102aa79d7eccb006c66db8cff49a10706c8cf64cae6b256b8ec6694058c1c333775e1dbc6ca7501769138fc89165b9c10f8201e40
   languageName: node
   linkType: hard
 
@@ -6641,13 +6642,13 @@ __metadata:
   linkType: hard
 
 "eslint-plugin-jest@npm:^23.8.1":
-  version: 23.8.2
-  resolution: "eslint-plugin-jest@npm:23.8.2"
+  version: 23.13.2
+  resolution: "eslint-plugin-jest@npm:23.13.2"
   dependencies:
     "@typescript-eslint/experimental-utils": ^2.5.0
   peerDependencies:
     eslint: ">=5"
-  checksum: 3/eec0f788a98f3c6b962e47533a421a15e2cc6e74fd971ae890ac322446a7b964775b8eb781898ac45d0508f25922765e0dc118d4c4385e6ca3281db104d036ee
+  checksum: 3/8b081a20dc86d655156b577125bf8923558462331fd9c99a9f7944e892c45ee31d74600a049362bef851eb03041a61df12590e8aa0da5687d95da3ada9a5f4db
   languageName: node
   linkType: hard
 

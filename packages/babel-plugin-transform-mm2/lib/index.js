@@ -28,11 +28,14 @@ module.exports = function(babel) {
         && expression.get('callee.property').isIdentifier({ name: "register" })) {
           // Change `Module.register(...);` to `export default Module.register(...);`
           path.replaceWith(t.exportDefaultDeclaration(expression.node));
-          // Add `import {Module} from "@mm/mm2";` to top of program
+          // Add `import {Module, ...opts.imports} from "@mm/mm2";` to top of program
           const program = path.findParent(p => p.isProgram());
+          const imports = (state.opts.imports || []).filter(imp => imp !== "Module");
+          imports.unshift("Module");
           program.node.body.unshift(
             t.importDeclaration(
-              [t.importSpecifier(t.identifier("Module"), t.identifier("Module"))],
+              // import all identifiers in plugin options.import
+              imports.map(imp => t.importSpecifier(t.identifier(imp), t.identifier(imp))),
               t.stringLiteral("@mm/mm2")
             )
           );
