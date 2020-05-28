@@ -33,7 +33,7 @@ describe("MagicMirror template works with mm packages", () => {
     expect(yarnVersion.startsWith("2.")).toBe(true);
 
     // use local @mm packages from this monorepo
-    await execa("yarn", ["link", process.cwd() /* mm, not MagicMirror */, "--all"], { cwd: paths.cwd });
+    await execa("yarn", ["link", process.cwd() /* mm, not MagicMirror */, "--all", "--relative"], { cwd: paths.cwd });
     await execa("yarn", ["install"], { cwd: paths.cwd });
   });
 
@@ -52,6 +52,11 @@ describe("MagicMirror template works with mm packages", () => {
   `);
     expect(await fs.pathExists(paths.buildHtml)).toBe(true);
   });
+
+  test("serves HTML", async () => {
+    jest.setTimeout(5 * 60 * 1000);
+    
+  })
 
   test.skip("starts and watches in development mode", async () => {
     jest.setTimeout(60 * 1000);

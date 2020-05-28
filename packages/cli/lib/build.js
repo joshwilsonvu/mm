@@ -14,6 +14,7 @@ async function build() {
   const webpackConfig = require("./shared/webpack.config")({
     mode: "production",
     paths: this.paths,
+    analyze: Boolean(this.options.analyze),
   });
   const compiler = createCompiler({
     config: webpackConfig,
@@ -25,8 +26,7 @@ async function build() {
     // build errors will be logged here
   } catch (err) {
     // log webpack errors, not build errors
-    console.log(chalk.red('Failed to compile.\n'));
+    this.console.error(chalk.red('Failed to compile.\n'));
     printBuildError(err);
   }
-
 }

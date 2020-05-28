@@ -1,18 +1,15 @@
 'use strict';
 
 const fs = require("fs");
-const { promisify } = require("util");
 const createCompiler = require("./shared/create-compiler");
 const webpackDevMiddleware = require("webpack-dev-middleware");
+const openBrowser = require("react-dev-utils/openBrowser");
 
 const Server = require("./shared/server");
+const Window = require("./shared/window");
 
 module.exports = start;
-function start() {
-  if (!process.env.NODE_ENV) {
-    process.env.NODE_ENV = 'development';
-  }
-
+async function start() {
   const webpackConfig = require("./shared/webpack.config")({
     mode: "development",
     paths: this.paths,
@@ -25,14 +22,18 @@ function start() {
   const devMiddleware = webpackDevMiddleware(compiler, {
     logLevel: "silent",
   });
-  const server = new Server(this.config, this.paths, devMiddleware);
-  server.listen();
 
-  // stop and wait with "await stop()";
-  return () => Promise.all([
-    //promisify(watching.close.bind(watching)),
-    server.stop(),
-    promisify(devMiddleware.close.bind(devMiddleware))()
-  ]);
+  const server = await Server(this.config, this.paths, devMiddleware);
+  server.listen();
+  if (!this.options.browser) {
+    const window = Window(this.config, this.options);
+    await window.open();
+  } else {
+    openBrowser(this.config.url);
+  }
+
+  process.on("SIGINT", () => {
+    devMiddleware.close();
+  });
 }
 

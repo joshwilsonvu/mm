@@ -5,8 +5,7 @@ const chalk = require("chalk");
 const forkTsCheckerWebpackPlugin = require("react-dev-utils/ForkTsCheckerWebpackPlugin");
 const formatWebpackMessages = require('react-dev-utils/formatWebpackMessages');
 const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
-const ora = require('ora');
-
+const logSymbols = require("log-symbols");
 
 module.exports = createCompiler;
 function createCompiler({ config, useTypeScript }) {
@@ -14,8 +13,7 @@ function createCompiler({ config, useTypeScript }) {
   let handlers = new Handlers();
 
   // "invalid" event fires when you have changed a file, and webpack is
-  // recompiling a bundle. WebpackDevServer takes care to pause serving the
-  // bundle, so if you refresh, it'll wait instead of serving the old one.
+  // recompiling a bundle. If you refresh, it'll wait instead of serving the old one.
   // "invalid" is short for "bundle invalidated", it doesn't imply any errors.
   compiler.hooks.watchRun.tap('invalid', () => {
     handlers.invalid();
@@ -45,8 +43,8 @@ function createCompiler({ config, useTypeScript }) {
   // "done" event fires when webpack has finished recompiling the bundle.
   // Whether or not you have warnings or errors, you will get this event.
   compiler.hooks.done.tap('done', async stats => {
-    // We have switched off the default webpack output in WebpackDevServer
-    // options so we are going to "massage" the warnings and errors and present
+    // We have switched off the default webpack output
+    // so we are going to "massage" the warnings and errors and present
     // them in a readable focused way.
     // We only construct the warnings and errors for speed:
     // https://github.com/facebook/create-react-app/issues/4492#issuecomment-421959548
@@ -82,25 +80,22 @@ function createCompiler({ config, useTypeScript }) {
 }
 
 class Handlers {
-  constructor() {
-    this.spinner = ora();
-  }
   invalid() {
-    this.spinner.start(`Compiling...`)
+    console.log(logSymbols.info, 'Compiling...')
   }
   success() {
-    this.spinner.succeed('Compiled successfully!');
+    console.log(logSymbols.success, 'Compiled successfully!');
   }
   warning(messages) {
-    this.spinner.stop(chalk.yellow('Compiled with warnings.\n'));
-    console.log(messages.warnings.join('\n\n'));
+    console.warn(logSymbols.warning, chalk.yellow('Compiled with warnings.\n'));
+    console.warn(messages.warnings.join('\n\n'));
 
     // Teach some ESLint tricks.
     console.log(`\nSearch for the ${chalk.underline(chalk.yellow('keywords'))} to learn more about each warning.`);
     console.log(`To ignore, add ${chalk.cyan('// eslint-disable-next-line')} to the line before.\n`);
   }
   error(messages) {
-    this.spinner.fail('Failed to compile.\n');
-    console.log(messages.errors[0]);
+    console.error(logSymbols.error, 'Failed to compile.\n');
+    console.error(messages.errors[0]);
   }
 }

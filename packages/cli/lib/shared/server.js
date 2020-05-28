@@ -2,34 +2,29 @@
 
 const fs = require("fs-extra");
 const path = require("path");
-const http = require("http");
 const express = require("express");
-const SocketIo = require("socket.io");
+const SocketIO = require("socket.io");
 const { IpFilter, IpDeniedError } = require("express-ipfilter");
 const morgan = require("morgan");
 const helmet = require("helmet");
-const esm = require("esm");
-const esmImport = esm(module);
+const { promisify } = require("util");
 
 
 /**
- *
+ * Runs a express/socket.io server that serves MagicMirror files and runs node helpers.
  * @param {object} config
  * @param {object} paths
- * @param {function} middleware required to serve application html/js/css etc.
+ * @param {function} middleware optional middleware to serve application html/js/css etc.
  */
-module.exports = function Server(config, paths, middleware) {
+module.exports = async function Server(config, paths, middleware) {
   // Initialize the express app
   const app = express();
-  const server = http.Server(app);
-  const io = SocketIo(server);
+  const server = await createHttpServer(config, app);
+  const io = SocketIO(); //**** */
+  // Minimize amount of data sent
   // Only allow whitelisted IP addresses
   if (config.ipWhitelist.length) {
-    app.use(IpFilter(config.ipWhitelist, { mode: "deny", log: false }));
-  }
-  // Add logging
-  if (process.env.NODE_ENV === "development") {
-    app.use(morgan("dev"));
+    app.use(IpFilter(config.ipWhitelist, { mode: "allow", log: false }));
   }
   // Add various security measures
   app.use(helmet());
@@ -42,15 +37,59 @@ module.exports = function Server(config, paths, middleware) {
     }
   }
 
-  // Add stubs for compatibility
-  app.get("/version", (req, res) => res.send("0.0.0"));
-  app.get("/config", (req, res) => res.send(config)); // client may dynamically change config
+  // Use top-level package version
+  const version = (fs.existsSync(paths.appPackageJson) && fs.readJsonSync(paths.appPackageJson).version) || "0.0.0";
+  app.get("/version", (req, res) => res.send(version));
+  // Config goes stale if client dynamically changes config
+  app.get("/config", (req, res) => res.send(config));
+
+  const nodeHelpers = collectNodeHelpers(paths);
+  io.on("connect", socket => {
+    let helperName = socket.nsp;
+    if (helperName.startsWith("/")) {
+      helperName = helperName.substr(1);
+    }
+    console.log("connecting namespace", helperName);
+    // Start helper if not already started
+    const helper = nodeHelpers[helperName];
+    if (helper) {
+      helper.ref(io);
+    } else {
+      console.log(`No helper found for module ${helperName}.`);
+    }
+    socket.on("disconnect", () => {
+      if (nodeHelpers[helperName]) {
+        nodeHelpers[helperName].unref();
+      }
+    })
+  });
+
+  // Use each helper's router, if the helper is currently loaded
+  Object.values(nodeHelpers)
+    .map(helper => (res, req, next) => {
+      if (helper.isLoaded() && typeof helper.instance.router === "function") {
+        helper.instance.router(res, req, next);
+      } else {
+        next();
+      }
+    })
+    .forEach(router => app.use(router));
 
   // Add the middleware needed to serve html/js/css, defaulting to statically serving the "/build" folder
   if (!middleware && paths.appBuild) {
     middleware = express.static(paths.appBuild)
   }
   middleware && app.use(middleware);
+
+  app.get("*", (req, res) => {
+    res.status(404).send(`
+    <html><head>
+      <style>body { background: #000; color: #FFF; width: 100%; text-align: center } main { display: inline-block; }</style>
+    </head><body><main>
+      <h1>Something is wrong.</h4>
+      <p>Check the output of your terminal for more information.</p>
+    </main></body></html>`);
+  })
 
   // Error handler, for when a device not on the ipWhitelist tries to access
   app.use(function (err, req, res, next) {
@@ -62,80 +101,83 @@ module.exports = function Server(config, paths, middleware) {
     }
   });
 
-  const nodeHelpers = collectNodeHelpers(paths);
-
-  io.of("_").on("startHelper", (helperName) => {
-    // Start helper if not already started
-    if (nodeHelpers[helperName]) {
-      if (!nodeHelpers[helperName].isLoaded()) {
-        // Load helper with esm for ES6 import/export
-        nodeHelpers[helperName].load(io)
-      }
-    } else {
-      console.log(`No helper found for module ${helperName}.`);
-    }
-  });
-  io.of("_").on("stopHelper", (helperName) => {
-    // Stop helper if already started
-    if (nodeHelpers[helperName] && nodeHelpers[helperName].isLoaded()) {
-      nodeHelpers[helperName].unload();
-    }
-  })
-
   return {
     listen() {
-      server.listen(config.port, config.address || null);
+      const port = config.port, host = config.address;
+      server.listen({ port, host }, () => console.log(`Listening on ${config.url}`));
       //this.server.once("error", this.stop.bind(this));
+
+      process.on("SIGINT", () => {
+        Object.values(nodeHelpers).forEach(helper => helper.unref());
+        server.close();
+      })
     },
-    stop() {
-      //this.server.on('connection', (socket) => socket.unref());
-      Object.values(this.nodeHelpers).forEach(helper => helper.unload());
-      return new Promise((resolve, reject) => {
-        this.server.once("close", err => err ? reject(err) : resolve);
-        this.server.close(err => err ? reject(err) : resolve);
-        this.server.once("error", reject);
-        setTimeout(resolve, 100);
-      });
-      //this.server.close();
+    reload() {
+      Object.values(nodeHelpers).forEach(helper => helper.reload());
     },
-    port: config.port
+    port: config.port,
   }
 }
 
 /**
- *
- * @param {*} modulePath
+ * Returns an object representing the node helper for a given path
+ * @param {*} modulePath the path to the directory containing a `node_helper`
  */
-function getHelperFor(modulePath) {
+function getHelperFor(modulePath, paths) {
   const moduleName = path.basename(modulePath);
-  const nodeHelperPath = path.resolve(modulePath, `node_helper.js`);
-  if (fs.existsSync(nodeHelperPath)) {
-    return {
-      name: moduleName,
-      path: nodeHelperPath,
-      instance: null,
-      load(io) {
-        try {
-          if (!this.instance) {
-            this.instance = new (esmImport(nodeHelperPath))(io);
-          }
-        } catch (e) {
-          return false;
-        }
-        this.instance.start();
-      },
-      unload() {
-        if (this.instance) {
-          this.instance.stop();
-          this.instance = null;
-          delete require.cache[nodeHelperPath];
-        }
-      },
-      isLoaded() {
-        return Boolean(this.instance);
-      }
-    };
+  const requirePath = path.relative(paths.cwd, path.resolve(modulePath, "node_helper")).replace("\\", "/");
+  let nodeHelperPath;
+  try {
+    nodeHelperPath = paths.resolve(requirePath); // adds appropriate file extension and ensures file exists
+  } catch (err) {
+    return null;
   }
+  return {
+    name: moduleName,
+    path: nodeHelperPath,
+    instance: null,
+    refcount: 0,
+    ref(io) {
+      if (this.refcount === 0) {
+        this._load(io);
+      }
+      this.refcount += 1;
+    },
+    unref() {
+      this.refcount -= 1;
+      if (this.refcount <= 0) {
+        this.refcount = 0;
+        this._unload();
+      }
+    },
+    _load(io) {
+      if (!this.instance) {
+        this.instance = new (require(nodeHelperPath))(io);
+      } else {
+        throw new Error("already loaded");
+      }
+      this.instance.start();
+    },
+    _unload() {
+      if (this.instance) {
+        this.instance.stop();
+        this.instance = null;
+        delete require.cache[nodeHelperPath];
+      } else {
+        throw new Error("not loaded");
+      }
+    },
+    reload(io) {
+      // preserve existing refcount and force reload
+      if (this.refcount > 0) {
+        this._unload();
+        this._load(io);
+      }
+    },
+    isLoaded() {
+      return Boolean(this.instance);
+    }
+  };
 }
 
 // returns array of absolute paths to child directories within parentDir
@@ -155,10 +197,39 @@ function collectNodeHelpers(paths) {
     .concat(readChildDirs(paths.appModulesDefault));
   const nodeHelpers = {};
   for (const modulePath of moduleDirs) {
-    const helper = getHelperFor(modulePath);
+    const helper = getHelperFor(modulePath, paths);
     if (helper) {
       nodeHelpers[helper.name] = helper;
     }
   }
   return nodeHelpers;
+}
+
+async function createHttpServer(config, app) {
+  if (config.useHttps) {
+    let options;
+    if (config.httpsPrivateKey && config.httpsCertificate) {
+      options = {
+        key: fs.readFileSync(config.httpsPrivateKey),
+        cert: fs.readFileSync(config.httpsCertificate)
+      };
+    } else {
+      // if useHttps is set but not httpsPrivateKey and httpsCertificate, generate them on the fly
+      const pem = require("pem");
+      console.log("Generating HTTPS certificate...");
+      const { certificate, serviceKey } = await promisify(pem.createCertificate.bind(pem))({ selfSigned: true, days: 365 });
+      options = { key: serviceKey, cert: certificate };
+    }
+    // redirect http:// to https://
+    app.set("trust proxy", true);
+    app.use("/", (req, res, next) => {
+      if (!req.secure) {
+        return res.redirect(`https://${req.get("Host")}/`)
+      }
+      next();
+    });
+    return require("https").Server(options, app);
+  } else {
+    return require("http").Server(app);
+  }
 }

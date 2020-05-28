@@ -47,6 +47,6 @@
     "@types/react-query": "^1.1.2",
     "react": "^16.13.1",
     "react-test-renderer": "^16.13.1",
-    "typescript": "^3.9.2"
+    "typescript": "^3.9.3"
   }
 }

@@ -8,11 +8,10 @@ const ForkTsCheckerWebpackPlugin = require('react-dev-utils/ForkTsCheckerWebpack
 const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const postcssNormalize = require("postcss-normalize");
-const resolve = require("resolve");
 
 
 module.exports = webpackConfig;
-function webpackConfig({ mode = "development", paths }) {
+function webpackConfig({ mode = "development", paths, analyze }) {
   // Check if TypeScript is setup
   const useTypeScript = fs.existsSync(paths.appTsConfig);
 
@@ -71,7 +70,7 @@ function webpackConfig({ mode = "development", paths }) {
           use: [
             {
               options: {
-                config: require("eslint-config-react-app"),
+                configFile: require.resolve("./eslint-config"),
                 cache: true,
                 formatter: require.resolve('react-dev-utils/eslintFormatter'),
                 eslintPath: require.resolve('eslint'),
@@ -91,32 +90,9 @@ function webpackConfig({ mode = "development", paths }) {
               exclude: /node_modules|@babel(?:\/|\\{1,2})runtime/,
               loader: require.resolve("babel-loader"),
               options: {
-                root: paths.cwd,
                 cacheDirectory: true,
                 cacheCompression: false,
-                compact: mode === "production",
-                presets: [
-                  [require.resolve("babel-preset-react-app"), {
-                    "targets": {
-                      "node": "current"
-                    }
-                  }]
-                ],
-                overrides: [
-                  {
-                    include: paths.appModules,
-                    plugins: [
-                      require.resolve("@mm/babel-plugin-transform-mm2")
-                    ]
-                  },
-                  {
-                    include: paths.appConfigJs,
-                    plugins: [
-                      require.resolve("@mm/babel-plugin-transform-config")
-                    ]
-                  }
-                ],
-                sourceMaps: true
+                ...require("./babel-config").config(paths, mode)
               }
             },
             // "postcss" loader applies autoprefixer to our CSS.
@@ -223,9 +199,7 @@ function webpackConfig({ mode = "development", paths }) {
       // TypeScript type checking
       useTypeScript &&
       new ForkTsCheckerWebpackPlugin({
-        typescript: resolve.sync('typescript', {
-          basedir: paths.appNodeModules,
-        }),
+        typescript: require.resolve("typescript"),
         async: mode !== 'production',
         useTypescriptIncrementalApi: true,
         //checkSyntacticErrors: true,
@@ -246,9 +220,15 @@ function webpackConfig({ mode = "development", paths }) {
         silent: true,
         // The formatter is invoked directly in WebpackDevServerUtils during development
       }),
+      // If analyze is true, open up a bundle analysis page after the build
+      analyze && new (require("webpack-bundle-analyzer").BundleAnalyzerPlugin)({ analyzerMode: "static" })
     ].filter(Boolean),
     stats: false,
     bail: mode === "production",
+    performance: {
+      maxEntrypointSize: 1024 * 1024,
+      hints: mode === "production" ? "warning" : false,
+    },
     infrastructureLogging: {
       level: 'none'
     },

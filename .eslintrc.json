@@ -1,15 +1,14 @@
 {
-    "extends": [
-        "react-app"
-    ],
-    "ignorePatterns": [
-        "dist/",
-        "build/",
-        "node_modules/",
-        "MagicMirror/",
-        ".pnp"
-    ],
-    "rules": {
-        "strict": "off"
-    }
+  "extends": [
+    "react-app"
+  ],
+  "ignorePatterns": [
+    "dist/",
+    "build/",
+    "node_modules/",
+    ".pnp*"
+  ],
+  "rules": {
+    "strict": "off"
+  }
 }

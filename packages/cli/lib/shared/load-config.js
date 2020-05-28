@@ -1,11 +1,7 @@
 'use strict';
 
-const esm = require("esm");
-const esmImport = esm(module);
-
-let cached;
 const defaults = {
-  address: "localhost",
+  address: "0.0.0.0",
   port: 8080,
   kioskmode: false,
   electronOptions: {},
@@ -18,29 +14,19 @@ const defaults = {
   timeFormat: 24,
   units: "metric",
   zoom: 1,
-  customCss: "css/custom.css",
 };
 
 // Load and normalize the config file
 module.exports = function loadConfig(configPath) {
-  if (cached) {
-    return cached;
-  }
-  let rawConfig = {};
-  try {
-    rawConfig = esmImport(configPath);
-  } catch(err) {
-    if (err.code === "MODULE_NOT_FOUND") {
-      console.warn(`Config file ${configPath} not found, using defaults.`);
-    } else {
-      throw err;
-    }
+  let rawConfig = require(configPath);
+  if (rawConfig.default) {
+    rawConfig = rawConfig.default; // export default
   }
   let config = Object.assign({}, defaults, rawConfig);
   config.port = process.env.MM_PORT || config.port;
-  config.address = config.address || null;
+  // add `url` for convenience
+  config.url = `${config.useHttps ? "https" : "http"}://${config.address}:${config.port}/`;
   checkDeprecatedConfig(config);
-  cached = config;
   return config;
 }
 
