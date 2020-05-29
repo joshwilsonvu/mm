@@ -1,6 +1,6 @@
 {
   "name": "@mm/mm2",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Provides backwards-compatibility for MM2 modules.",
   "keywords": [
     "magicmirror",
@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.13.0",
-    "@mm/hooks": "0.0.5",
+    "@mm/hooks": "0.0.6",
     "@mm/utils": "0.0.1",
     "moment-timezone": "^0.5.29",
     "nunjucks": "^3.2.1",

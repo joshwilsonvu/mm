@@ -1,6 +1,6 @@
 {
   "name": "@mm/hooks",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Builtin and community-created React Hooks for MagicMirror.",
   "keywords": [
     "react",

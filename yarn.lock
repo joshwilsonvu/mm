@@ -2360,7 +2360,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@mm/hooks@0.0.5, @mm/hooks@workspace:packages/hooks":
+"@mm/hooks@0.0.6, @mm/hooks@workspace:packages/hooks":
   version: 0.0.0-use.local
   resolution: "@mm/hooks@workspace:packages/hooks"
   dependencies:
@@ -2382,7 +2382,7 @@ __metadata:
   resolution: "@mm/mm2@workspace:packages/mm2"
   dependencies:
     "@fortawesome/fontawesome-free": ^5.13.0
-    "@mm/hooks": 0.0.5
+    "@mm/hooks": 0.0.6
     "@mm/utils": 0.0.1
     "@testing-library/jest-dom": ^5.5.0
     "@testing-library/react": ^10.0.4
