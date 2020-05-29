@@ -27,7 +27,7 @@ jobs:
       - name: Test
         run: yarn test
       - name: Publish if versioned
-        if: ${{ github.ref == 'master' }}
+        if: contains(github.ref, 'master')
         run: yarn publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
