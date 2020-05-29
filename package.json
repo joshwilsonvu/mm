@@ -12,8 +12,9 @@
     "test:changed": "jest --onlyChanged",
     "lint": "eslint packages",
     "changeset": "changeset",
-    "precommit": "yarn && yarn build && yarn lint && yarn test",
-    "publish": "yarn version check && yarn workspaces foreach --exclude mm --verbose npm publish --tolerate-republish"
+    "precommit": "yarn version check && yarn && yarn build && yarn lint && yarn test",
+    "version:all": "yarn version apply --all",
+    "publish": "yarn workspaces foreach --exclude mm --verbose npm publish --tolerate-republish"
   },
   "repository": {
     "type": "git",
