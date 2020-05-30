@@ -1,11 +1,11 @@
-# `mm2`
+# `@mm/mm2`
 
-> TODO: description
+![CI status](https://github.com/joshwilsonvu/mm/workflows/CI/badge.svg)
+[![npm version](https://img.shields.io/npm/v/@mm/mm2)](https://yarnpkg.com/package/@mm/mm2)
 
-## Usage
+Provides backwards-compatibility for MM2 modules.
 
-```
-const mm2 = require('mm2');
-
-// TODO: DEMONSTRATE API
-```
+This package provides the global variables from MM2 and is
+used internally by [`@mm/cli`](../cli).
+Please refer to its documentation. You should not normally need to
+worry about this package.

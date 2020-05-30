@@ -6,6 +6,7 @@ const plugin = require('..');
 pluginTester({
   plugin: plugin,
   tests: {
+    // adds an "_import" field to each module
     "adds import to modules": {
       code: `
         export default {
@@ -31,6 +32,7 @@ pluginTester({
         };
       `,
     },
+    // correctly resolves modules in a "modules/default" folder
     "resolves default modules": {
       code: `
       export default {

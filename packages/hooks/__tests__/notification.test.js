@@ -4,7 +4,8 @@
 
 import { waitFor } from "@testing-library/dom";
 import { renderHook, act } from "@testing-library/react-hooks";
-import { NotificationProvider, useNotification, useSocketNotification, serverSocketEmitter } from '../src';
+import { NotificationProvider, useNotification, useSocketNotification } from '..';
+import { serverSocketEmitter } from '../dist/server-notification'; // not directly accessible from '..'
 import Server from "socket.io";
 
 describe('useNotification', () => {

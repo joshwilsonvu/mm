@@ -18,10 +18,13 @@ export class ModuleGuard extends React.Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.log(`Whoops! There was an uncaught exception in module ${this.props.name}`);
-    console.error(error, errorInfo);
-    console.log('MagicMirror will not quit, but it might be a good idea to check why this happened.');
-    console.log(`If you think this really is an issue, please open an issue on ${this.props.name}'s GitHub page.`);
+    console.error(`
+    Whoops! There was an uncaught exception in module ${this.props.name}:
+
+    ${error}
+
+    MagicMirror will not quit, but it might be a good idea to check why this happened.
+    If you think this really is an issue, please open an issue on ${this.props.name}'s GitHub page.`);
     this.setState({ error, errorInfo });
   }
 
@@ -31,7 +34,7 @@ export class ModuleGuard extends React.Component<Props, State> {
         return (
           <div>
             <h4>{`Something went wrong in module ${this.props.name}.`}</h4>
-            {this.state.error && <pre>{this.state.error}</pre>}
+            {this.state.error && <pre>{this.state.error.toString()}</pre>}
             {this.state.errorInfo && <pre>{this.state.errorInfo}</pre>}
           </div>
         );

@@ -231,6 +231,7 @@ function webpackConfig({ mode = "development", paths, analyze }) {
     bail: mode === "production",
     performance: {
       maxEntrypointSize: 1024 * 1024,
+      maxAssetSize: 1024 * 1024,
       hints: mode === "production" ? "warning" : false,
     },
     infrastructureLogging: {

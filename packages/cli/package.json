@@ -7,7 +7,7 @@
     "modules"
   ],
   "author": "Josh Wilson <joshua.wilson@vanderbilt.edu>",
-  "homepage": "https://github.com/joshwilsonvu/mm#readme",
+  "homepage": "https://github.com/joshwilsonvu/mm/blob/master/packages/cli/README.md",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
@@ -25,7 +25,8 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/joshwilsonvu/mm.git"
+    "url": "git+https://github.com/joshwilsonvu/mm.git",
+    "directory": "packages/cli"
   },
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1"

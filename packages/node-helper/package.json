@@ -21,7 +21,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/joshwilsonvu/mm.git"
+    "url": "git+https://github.com/joshwilsonvu/mm.git",
+    "directory": "packages/node-helper"
   },
   "bugs": {
     "url": "https://github.com/joshwilsonvu/mm/issues"
@@ -39,7 +40,7 @@
     "typescript": "^3.9.3"
   },
   "dependencies": {
-    "@mm/utils": "workspace:*",
+    "@mm/hooks": "workspace:*",
     "tslib": "^2.0.0"
   }
 }

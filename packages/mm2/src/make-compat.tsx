@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useLayoutEffect, useCallback, React
 import useConstant from "use-constant";
 import { Module, MMGlobal } from "./module";
 import Escape from "./escape";
-import { useNotification } from "@mm/utils";
+import { useNotification } from "@mm/hooks";
 
 function makeCompat(MM2: typeof Module, name: string, globalConfig: object) {
   // access an instance of the MM2 class

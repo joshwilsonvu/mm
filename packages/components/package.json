@@ -1,5 +1,5 @@
 {
-  "name": "@mm/utils",
+  "name": "@mm/components",
   "version": "0.0.1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -24,7 +24,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/joshwilsonvu/mm.git"
+    "url": "git+https://github.com/joshwilsonvu/mm.git",
+    "directory": "packages/components"
   },
   "scripts": {
     "build": "tsc",
@@ -35,14 +36,10 @@
   },
   "devDependencies": {
     "@testing-library/dom": "^7.5.7",
-    "@testing-library/react-hooks": "^3.2.1",
     "@types/node": "^14.0.1",
     "@types/react": "^16.9.35",
-    "@types/socket.io": "^2.1.6",
-    "@types/socket.io-client": "^1.4.33",
     "react": "^16.13.1",
     "react-test-renderer": "^16.13.1",
-    "socket.io": "^2.3.0",
     "typescript": "^3.9.3"
   },
   "dependencies": {
@@ -50,7 +47,6 @@
     "execa": "^4.0.1",
     "fs-extra": "^9.0.0",
     "mitt": "^1.2.0",
-    "socket.io-client": "^2.3.0",
     "strip-ansi": "^6.0.0",
     "tslib": "^2.0.0",
     "use-constant": "^1.0.0"

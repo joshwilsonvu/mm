@@ -8,7 +8,7 @@
 import path from "path";
 import express from "express";
 import type SocketIO from "socket.io";
-import { serverSocketEmitter } from "@mm/utils";
+import { serverSocketEmitter } from "@mm/hooks/dist/server-notification";
 import type mitt from "mitt";
 
 export default class NodeHelper {

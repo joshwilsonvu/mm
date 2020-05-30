@@ -1,11 +1,7 @@
-# `babel-plugin-transform-mm2`
+# `@mm/cli`
 
-> TODO: description
+![CI status](https://github.com/joshwilsonvu/mm/workflows/CI/badge.svg)
+[![npm version](https://img.shields.io/npm/v/@mm/cli)](https://yarnpkg.com/package/@mm/cli)
 
-## Usage
+The command line tool for all things Magic Mirror.
 
-```
-const babelPluginTransformMm2 = require('babel-plugin-transform-mm2');
-
-// TODO: DEMONSTRATE API
-```

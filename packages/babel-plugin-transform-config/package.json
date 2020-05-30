@@ -24,7 +24,8 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/joshwilsonvu/mm.git"
+    "url": "git+https://github.com/joshwilsonvu/mm.git",
+    "directory": "packages/babel-plugin-transform-config"
   },
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1"

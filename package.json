@@ -10,6 +10,7 @@
     "build": "yarn workspaces foreach --verbose --parallel --topological-dev run build",
     "test": "jest",
     "test:changed": "jest --onlyChanged",
+    "test:fast": "jest --testPathIgnorePatterns packages/e2e",
     "lint": "eslint packages",
     "changeset": "changeset",
     "precommit": "yarn version check && yarn && yarn build && yarn lint && yarn test",

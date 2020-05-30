@@ -1,14 +1,6 @@
-# `@mm/hooks`
+# `@mm/node-helper`
 
 ![CI status](https://github.com/joshwilsonvu/mm/workflows/CI/badge.svg)
 [![npm version](https://img.shields.io/npm/v/@mm/hooks)](https://yarnpkg.com/package/@mm/hooks)
 
-Builtin and community-created React Hooks for MagicMirror.
-
-## Usage
-
-```
-const hooks = require('@mm/hooks');
-
-// TODO: DEMONSTRATE API
-```
+The node-helper package required by MagicMirror node_helper.js files.
