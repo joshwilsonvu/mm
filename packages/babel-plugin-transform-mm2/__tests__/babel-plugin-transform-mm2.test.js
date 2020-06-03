@@ -22,19 +22,13 @@ pluginTester({
           foo: "bar"
         });
       `,
+      babelOptions: {
+        filename: require.resolve('./dummy-module/dummy-module'), // basename matches dirname--this is an MM2 module file
+        babelrc: false,
+        configFile: false,
+        root: __dirname,
+      }
     },
-  },
-  babelOptions: {
-    filename: require.resolve('./dummy-module/dummy-module'), // basename matches dirname--this is an MM2 module file
-    babelrc: false,
-    configFile: false,
-    root: __dirname,
-  }
-});
-
-pluginTester({
-  plugin: plugin,
-  tests: {
     'skips non mm2 entry points': {
       code: `
         Module.register("helloworld", {});
@@ -42,19 +36,13 @@ pluginTester({
       output: `
         Module.register("helloworld", {});
       `,
+      babelOptions: {
+        filename: require.resolve('./dummy-module/something-else'), // basename doesn't match dirname
+        babelrc: false,
+        configFile: false,
+        root: __dirname,
+      }
     },
-  },
-  babelOptions: {
-    filename: require.resolve('./dummy-module/something-else'), // basename doesn't match dirname
-    babelrc: false,
-    configFile: false,
-    root: __dirname,
-  }
-});
-
-pluginTester({
-  plugin: plugin,
-  tests: {
     'rewrites require("node_helper")': {
       code: `
         const NodeHelper = require("node_helper");
@@ -62,10 +50,10 @@ pluginTester({
       output: `
         const NodeHelper = require("@mm/node-helper");
       `,
+      babelOptions: {
+        babelrc: false,
+        configFile: false,
+      }
     },
   },
-  babelOptions: {
-    babelrc: false,
-    configFile: false,
-  }
 });

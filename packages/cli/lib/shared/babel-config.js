@@ -25,7 +25,8 @@ exports.config = (paths, mode) => ({
       ]
     }
   ],
-  sourceMaps: true
+  sourceMaps: true,
+  inputSourceMap: true,
 });
 
 let registered = false;

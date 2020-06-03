@@ -1,7 +1,9 @@
+"use strict";
+
 const nodepath = require("path");
 
 /*
- * This Babel plugin imports Module from "@mm/mm2" and exports the result
+ * This Babel plugin imports Module (and ...opts.imports) from "@mm/mm2" and exports the result
  * of Module.register, only in MM2-style modules.
  */
 module.exports = function(babel) {

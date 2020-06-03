@@ -45,7 +45,7 @@
     "@fortawesome/fontawesome-free": "^5.13.0",
     "@mm/hooks": "0.0.6",
     "@mm/utils": "0.0.1",
-    "moment-timezone": "^0.5.29",
+    "moment-timezone": "^0.5.31",
     "nunjucks": "^3.2.1",
     "path": "^0.12.7",
     "socket.io-client": "^2.3.0",
@@ -63,6 +63,6 @@
     "@types/socket.io-client": "^1.4.32",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "typescript": "^3.9.3"
+    "typescript": "^3.9.4"
   }
 }

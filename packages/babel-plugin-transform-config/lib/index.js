@@ -21,7 +21,7 @@
  *     {
  *       module: "module-name",
  *       ...otherProperties: "anything",
- *   ==> _import: () => import("modules/module-name") <==
+ *   ==> _component: require("react").lazy(() => import("modules/module-name")) <==
  *     },
  *     ...
  *   ],
@@ -29,21 +29,34 @@
  * }
  */
 
+"use strict";
+
 const nodepath = require("path");
 const fs = require("fs");
 const memoize = require("memoize-one");
-module.exports = function(babel) {
+const { createRequire } = require("module");
+
+module.exports = function (babel) {
   const t = babel.types;
   t.isIdentifierOrLiteral = (node, name) =>
     t.isIdentifier(node, { name }) || t.isStringLiteral(node, { value: name });
-  const buildImport = path =>
-    t.objectProperty(
-      t.identifier('_import'),
-      t.arrowFunctionExpression(
+  const buildReactLazy = path => (
+    // require("react").lazy(() => import("<path>"))
+    // (we can require React multiple times without a problem)
+    t.callExpression(
+      t.memberExpression(
+        t.callExpression(
+          t.identifier("require"),
+          [t.stringLiteral("react")]
+        ),
+        t.identifier("lazy")
+      ),
+      [t.arrowFunctionExpression(
         [], // params
         t.callExpression(t.import(), [t.stringLiteral(path)])
-      )
-    );
+      )]
+    )
+  );
   return {
     name: "babel-plugin-transform-config",
     visitor: {
@@ -57,29 +70,51 @@ module.exports = function(babel) {
           const elements = path.get('value.elements'); // get the array elements
           for (const element of elements) {
             // iterate over the objects in the array
-            if (element.isObjectExpression()) {
-              const properties = element.get('properties');
-              for (const property of properties) {
-                // find the "module" property of the object
-                if (
-                  !property.node.computed &&
-                  t.isIdentifierOrLiteral(property.node.key, 'module') &&
-                  t.isStringLiteral(property.node.value)
-                ) {
-                  const moduleName = property.node.value.value;
-                  // find the relative path to the nearest modules/ folder within the project
-                  const dirname = nodepath.dirname(state.file.opts.filename);
-                  let { moduleBasePath, defaultModules } = findModulePath(dirname);
-                  moduleBasePath = moduleBasePath ? nodepath.relative(dirname, moduleBasePath).replace("\\", "/"): "modules";
-                  // add the path of the module being requested
-                  const modulePath = `${moduleBasePath}/${defaultModules.indexOf(moduleName) !== -1 ? 'default/' : ''}${moduleName}/${moduleName}`;
-                  // insert an _import property with a lazy dynamic import as its value
-                  const _import = buildImport(modulePath);
-                  property.insertAfter(_import);
-                  break; // don't search through other properties
-                }
-              }
+            if (!element.isObjectExpression()) {
+              continue;
             }
+            const properties = element.get('properties');
+            const moduleProperty = properties.find(p => (
+              !p.node.computed &&
+              t.isIdentifierOrLiteral(p.node.key, 'module') &&
+              t.isStringLiteral(p.node.value)
+            ));
+            if (!moduleProperty) {
+              continue;
+            }
+            const moduleName = moduleProperty.node.value.value;
+            // find the relative path to the nearest modules/ folder within the project
+            const dirname = nodepath.dirname(state.file.opts.filename);
+            let { moduleBasePath, defaultModules } = findModulePath(dirname);
+            moduleBasePath = moduleBasePath ? nodepath.relative(dirname, moduleBasePath).replace("\\", "/") : "../modules";
+            if (defaultModules.indexOf(moduleName) !== -1) {
+              moduleBasePath += "/default";
+            }
+            // resolve the path of the module being requested
+            const tryResolvePaths = [
+              `${moduleBasePath}/${moduleName}`, // index.jsx?, index.tsx?, or package.json#main field
+              `${moduleBasePath}/${moduleName}/${moduleName}`, // {moduleName}.jsx?, {moduleName}.tsx?
+            ];
+            let absoluteModulePath = resolveModulePath(state.file.opts.filename, tryResolvePaths);
+            if (!absoluteModulePath) {
+              throw moduleProperty.buildCodeFrameError(
+                `Can't resolve module file at any of ${tryResolvePaths.join(", ")}. Make sure a JS or TS file exists at this path.`
+              )
+            }
+            // insert a _path property with the absolute path to the module file
+            moduleProperty.insertAfter(
+              t.objectProperty(
+                t.identifier('_path'),
+                t.stringLiteral(absoluteModulePath),
+              )
+            )
+            // insert a _component property with a code-split React.lazy component as its value
+            moduleProperty.insertAfter(
+              t.objectProperty(
+                t.identifier('_component'),
+                buildReactLazy(absoluteModulePath),
+              )
+            );
           }
         }
       },
@@ -88,11 +123,11 @@ module.exports = function(babel) {
 };
 
 // find the absolute path of the nearest modules/ folder up the tree, or null
-const findModulePath = memoize(function(dirName) {
+const findModulePath = memoize(function (dirName) {
   function findModulePath(dirName) {
     const path = nodepath;
     const actualDirName = path.resolve(dirName);
-    const {root} = path.parse(actualDirName);
+    const { root } = path.parse(actualDirName);
     // return the nearest .../modules/ path
     const moduleBasePath = path.join(actualDirName, "modules");
     const moduleExists = fs.existsSync(moduleBasePath);
@@ -115,3 +150,13 @@ const findModulePath = memoize(function(dirName) {
   }
   return findModulePath(dirName);
 });
+
+function resolveModulePath(base, paths) {
+  for (const tryResolve of paths) {
+    try {
+      return createRequire(base).resolve(tryResolve);
+    } catch (err) {}
+  }
+  return "";
+
+}

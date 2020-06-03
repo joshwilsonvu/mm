@@ -9,6 +9,7 @@ const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const postcssNormalize = require("postcss-normalize");
 
+const ignoreRegex = /node_modules|\.yarn|@babel(?:\/|\\{1,2})runtime/;
 
 module.exports = webpackConfig;
 function webpackConfig({ mode = "development", paths, analyze }) {
@@ -17,7 +18,7 @@ function webpackConfig({ mode = "development", paths, analyze }) {
 
   return {
     mode: mode,
-    entry: paths.appIndex,
+    entry: [paths.appIndex, require.resolve("webpack-hot-middleware/client")],
     output: {
       path: paths.appBuild,
     },
@@ -67,13 +68,13 @@ function webpackConfig({ mode = "development", paths, analyze }) {
         // Ensure dependencies are not linted.
         {
           test: /\.(js|mjs|jsx|ts|tsx)$/,
-          exclude: /node_modules|\.yarn/,
+          exclude: ignoreRegex,
           enforce: "pre",
           use: [
             {
               options: {
                 configFile: require.resolve("./eslint-config"),
-                cache: true,
+                //cache: true,
                 formatter: require.resolve('react-dev-utils/eslintFormatter'),
                 eslintPath: require.resolve('eslint'),
                 resolvePluginsRelativeTo: __dirname,
@@ -91,7 +92,7 @@ function webpackConfig({ mode = "development", paths, analyze }) {
             // Ensure dependencies are not compiled.
             {
               test: /\.(js|mjs|jsx|ts|tsx)$/,
-              exclude: /node_modules|\.yarn|@babel(?:\/|\\{1,2})runtime/,
+              exclude: ignoreRegex,
               loader: require.resolve("babel-loader"),
               options: {
                 cacheDirectory: true,
@@ -189,7 +190,7 @@ function webpackConfig({ mode = "development", paths, analyze }) {
       // Watcher doesn't work well if you mistype casing in a path so we use
       // a plugin that prints an error when you attempt to do this.
       mode !== 'production' && new CaseSensitivePathsPlugin(),
-      // This is necessary to emit hot updates (currently CSS only):
+      // This is necessary to emit hot updates
       mode !== 'production' && new webpack.HotModuleReplacementPlugin(),
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify(mode)
@@ -220,12 +221,15 @@ function webpackConfig({ mode = "development", paths, analyze }) {
           '!**/?(*.)(spec|test).*',
           '!**/src/setupProxy.*',
           '!**/src/setupTests.*',
+          '!**/.yarn/**',
+          '!**/node_modules/**',
         ],
         silent: true,
         // The formatter is invoked directly in WebpackDevServerUtils during development
       }),
       // If analyze is true, open up a bundle analysis page after the build
-      analyze && new (require("webpack-bundle-analyzer").BundleAnalyzerPlugin)({ analyzerMode: "static" })
+      mode === "production" && analyze &&
+      new (require("webpack-bundle-analyzer").BundleAnalyzerPlugin)({ analyzerMode: "static" })
     ].filter(Boolean),
     stats: false,
     bail: mode === "production",
@@ -242,6 +246,10 @@ function webpackConfig({ mode = "development", paths, analyze }) {
       __dirname: true,
       __filename: true,
     },
+    watchOptions: {
+      aggregateTimeout: 1000,
+      ignored: ignoreRegex
+    }
   }
 }
 

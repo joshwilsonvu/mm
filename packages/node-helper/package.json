@@ -37,7 +37,7 @@
     "express": "^4.17.1",
     "mitt": "^1.2.0",
     "socket.io": "^2.3.0",
-    "typescript": "^3.9.3"
+    "typescript": "^3.9.4"
   },
   "dependencies": {
     "@mm/hooks": "workspace:*",

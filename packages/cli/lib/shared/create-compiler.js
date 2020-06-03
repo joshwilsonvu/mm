@@ -84,7 +84,7 @@ class Handlers {
     console.log(logSymbols.info, 'Compiling...')
   }
   success() {
-    console.log(logSymbols.success, 'Compiled successfully!');
+    console.log(logSymbols.success, 'Compiled successfully!\n');
   }
   warning(messages) {
     console.warn(logSymbols.warning, chalk.bold.yellow('Compiled with warnings.\n'));
@@ -97,5 +97,6 @@ class Handlers {
   error(messages) {
     console.error(logSymbols.error, chalk.bold.red('Failed to compile.\n'));
     console.error(messages.errors[0]);
+    console.log("\n");
   }
 }

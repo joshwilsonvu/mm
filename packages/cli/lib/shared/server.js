@@ -20,8 +20,8 @@ module.exports = async function Server(config, paths, middleware) {
   // Initialize the express app
   const app = express();
   const server = await createHttpServer(config, app);
-  const io = SocketIO(); //**** */
-  // Minimize amount of data sent
+  const io = SocketIO();
+  app.use(morgan("dev"));
   // Only allow whitelisted IP addresses
   if (config.ipWhitelist.length) {
     app.use(IpFilter(config.ipWhitelist, { mode: "allow", log: false }));

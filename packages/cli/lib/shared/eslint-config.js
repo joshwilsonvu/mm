@@ -33,6 +33,7 @@ module.exports = {
     ecmaFeatures: {
       jsx: true,
     },
+    requireConfigFile: false,
   },
 
   settings: {
@@ -43,8 +44,8 @@ module.exports = {
 
   overrides: [
     {
-      files: ['**/*.ts?(x)'],
-      parser: '@typescript-eslint/parser',
+      files: [`./**/*.tsx`],
+      parser: 'asdffghjjkhl',
       parserOptions: {
         ecmaVersion: 2018,
         sourceType: 'module',
@@ -160,7 +161,6 @@ module.exports = {
     'no-obj-calls': 'warn',
     'no-octal': 'warn',
     'no-octal-escape': 'warn',
-    // TODO: Remove this option in the next major release of CRA.
     // https://eslint.org/docs/user-guide/migrating-to-6.0.0#-the-no-redeclare-rule-is-now-more-strict-by-default
     'no-redeclare': ['warn', { builtinGlobals: false }],
     'no-regex-spaces': 'warn',

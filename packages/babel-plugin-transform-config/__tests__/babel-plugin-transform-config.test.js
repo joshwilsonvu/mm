@@ -3,11 +3,15 @@
 const pluginTester = require('babel-plugin-tester').default;
 const plugin = require('..');
 
+// replaces project path with <PROJECT_ROOT> in absolute paths
+const jestSerializerPath = require('jest-serializer-path');
+expect.addSnapshotSerializer(jestSerializerPath);
+
+const filename = require.resolve('./config/dummy');
 pluginTester({
   plugin: plugin,
   tests: {
-    // adds an "_import" field to each module
-    "adds import to modules": {
+    "adds _component, _path to modules": {
       code: `
         export default {
           port: 8080,
@@ -19,45 +23,36 @@ pluginTester({
           ]
         };
       `,
-      output: `
-        export default {
-          port: 8080,
-          modules: [
-            {
-              module: "a-module",
-              _import: () => import("../modules/a-module/a-module"),
-              position: "top_right"
-            }
-          ]
-        };
-      `,
+      snapshot: true,
     },
     // correctly resolves modules in a "modules/default" folder
     "resolves default modules": {
       code: `
-      export default {
-        modules: [
-          {
-            module: "a-default-module"
-          }
-        ]
-      };
-    `,
-    output: `
-      export default {
-        modules: [
-          {
-            module: "a-default-module",
-            _import: () =>
-              import("../modules/default/a-default-module/a-default-module")
-          }
-        ]
-      };
-    `,
+        export default {
+          modules: [
+            {
+              module: "a-default-module"
+            }
+          ]
+        };
+      `,
+      snapshot: true,
+    },
+    "throws for nonexistent modules": {
+      code: `
+        export default {
+          modules: [
+            {
+              module: "a-nonexistent-module"
+            }
+          ]
+        };
+      `,
+      error: SyntaxError,
     }
   },
   babelOptions: {
-    filename: require.resolve("./config/dummy"),
+    filename: filename,
     babelrc: false,
     configFile: false,
     root: __dirname,

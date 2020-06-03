@@ -1,5 +1,5 @@
 import { renderHook } from "@testing-library/react-hooks";
-import { useInterval } from "..";
+import { useInterval } from "../src";
 
 test('useInterval', () => {
   jest.useFakeTimers();

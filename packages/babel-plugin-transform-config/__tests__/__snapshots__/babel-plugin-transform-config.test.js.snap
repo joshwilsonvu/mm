@@ -1,0 +1,65 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`babel-plugin-transform-config adds _component, _path to modules: adds _component, _path to modules 1`] = `
+
+export default {
+  port: 8080,
+  modules: [
+    {
+      module: "a-module",
+      position: "top_right"
+    }
+  ]
+};
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+export default {
+  port: 8080,
+  modules: [
+    {
+      module: "a-module",
+      _component: require("react").lazy(() =>
+        import(
+          "<PROJECT_ROOT>/packages/babel-plugin-transform-config/__tests__/modules/a-module/a-module.ts"
+        )
+      ),
+      _path:
+        "<PROJECT_ROOT>/packages/babel-plugin-transform-config/__tests__/modules/a-module/a-module.ts",
+      position: "top_right"
+    }
+  ]
+};
+
+
+`;
+
+exports[`babel-plugin-transform-config resolves default modules: resolves default modules 1`] = `
+
+export default {
+  modules: [
+    {
+      module: "a-default-module"
+    }
+  ]
+};
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+export default {
+  modules: [
+    {
+      module: "a-default-module",
+      _component: require("react").lazy(() =>
+        import(
+          "<PROJECT_ROOT>/packages/babel-plugin-transform-config/__tests__/modules/default/a-default-module/a-default-module.js"
+        )
+      ),
+      _path:
+        "<PROJECT_ROOT>/packages/babel-plugin-transform-config/__tests__/modules/default/a-default-module/a-default-module.js"
+    }
+  ]
+};
+
+
+`;

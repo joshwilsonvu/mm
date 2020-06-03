@@ -1,6 +1,7 @@
 export * from "./fetch";
 export * from "./interval";
 export * from "./notification";
+export * from "./memo";
 
 /*
  * "./server-notification" allows a server to communicate with the useSocketNotification in "./notification".
