@@ -10,8 +10,9 @@
   "author": "Josh Wilson <joshua.wilson@vanderbilt.edu>",
   "homepage": "https://github.com/joshwilsonvu/mm#readme",
   "license": "MIT",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/types/index.d.ts",
   "directories": {
     "lib": "src",
     "test": "__tests__"
@@ -29,7 +30,7 @@
     "directory": "packages/mm2"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && tsc -p tsconfig.esm.json",
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "bugs": {
@@ -43,8 +44,8 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.13.0",
-    "@mm/hooks": "0.0.6",
-    "@mm/utils": "0.0.1",
+    "@mm/core": "workspace:*",
+    "@mm/hooks": "workspace:*",
     "moment-timezone": "^0.5.31",
     "nunjucks": "^3.2.1",
     "path": "^0.12.7",
@@ -55,12 +56,12 @@
     "weathericons": "^2.1.0"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^5.5.0",
-    "@testing-library/react": "^10.0.4",
-    "@types/node": "^14.0.5",
+    "@testing-library/jest-dom": "^5.9.0",
+    "@testing-library/react": "^10.2.0",
+    "@types/node": "^14.0.11",
     "@types/nunjucks": "^3.1.3",
-    "@types/react": "^16.9.35",
-    "@types/socket.io-client": "^1.4.32",
+    "@types/react": "^16.9.23",
+    "@types/socket.io-client": "^1.4.33",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "typescript": "^3.9.4"

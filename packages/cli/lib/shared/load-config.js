@@ -1,11 +1,11 @@
 'use strict';
 
 const defaults = {
-  address: "0.0.0.0",
+  address: "",
   port: 8080,
   kioskmode: false,
   electronOptions: {},
-  ipWhitelist: ["127.0.0.1", "::ffff:127.0.0.1", "::1"],
+  ipWhitelist: [],
   useHttps: false,
   httpsPrivateKey: "",
   httpsCertificate: "",
@@ -25,7 +25,7 @@ module.exports = function loadConfig(configPath) {
   let config = Object.assign({}, defaults, rawConfig);
   config.port = process.env.MM_PORT || config.port;
   // add `url` for convenience
-  config.url = `${config.useHttps ? "https" : "http"}://${config.address}:${config.port}/`;
+  config.url = `${config.useHttps ? "https" : "http"}://${config.address || "127.0.0.1"}:${config.port}/`;
   checkDeprecatedConfig(config);
   return config;
 }

@@ -38,7 +38,7 @@
     "execa": "^4.0.2"
   },
   "dependencies": {
-    "@babel/core": "^7.10.1",
+    "@babel/core": "^7.10.2",
     "@babel/register": "^7.10.1",
     "@mm/babel-plugin-transform-config": "workspace:*",
     "@mm/babel-plugin-transform-mm2": "workspace:*",
@@ -62,10 +62,10 @@
     "eslint-plugin-react": "^7.20.0",
     "eslint-plugin-react-hooks": "^4.0.4",
     "express": "^4.17.1",
-    "express-ipfilter": "^1.1.1",
+    "express-ipfilter": "^1.1.2",
     "file-loader": "^6.0.0",
-    "fs-extra": "^9.0.0",
-    "helmet": "^3.21.3",
+    "fs-extra": "^9.0.1",
+    "helmet": "^3.22.0",
     "html-webpack-plugin": "^4.2.0",
     "log-symbols": "^3.0.0",
     "morgan": "^1.10.0",

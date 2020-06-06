@@ -92,8 +92,8 @@ module.exports = function (babel) {
             }
             // resolve the path of the module being requested
             const tryResolvePaths = [
-              `${moduleBasePath}/${moduleName}`, // index.jsx?, index.tsx?, or package.json#main field
               `${moduleBasePath}/${moduleName}/${moduleName}`, // {moduleName}.jsx?, {moduleName}.tsx?
+              `${moduleBasePath}/${moduleName}`, // index.jsx?, index.tsx?, or package.json#main field
             ];
             let absoluteModulePath = resolveModulePath(state.file.opts.filename, tryResolvePaths);
             if (!absoluteModulePath) {

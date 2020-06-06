@@ -15,7 +15,7 @@ const paths = {
   git: path.join(cwd, ".git"),
 };
 
-describe("MagicMirror template works with mm packages", () => {
+describe.skip("MagicMirror template works with mm packages", () => {
   beforeAll(async () => {
     jest.setTimeout(5 * 60 * 1000);
 

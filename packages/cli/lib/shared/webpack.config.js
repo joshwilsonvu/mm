@@ -18,7 +18,8 @@ function webpackConfig({ mode = "development", paths, analyze }) {
 
   return {
     mode: mode,
-    entry: [paths.appIndex, require.resolve("webpack-hot-middleware/client")],
+    context: __dirname,
+    entry: [mode !== "production" && "webpack-hot-middleware/client?noInfo=true", paths.appIndex].filter(Boolean),
     output: {
       path: paths.appBuild,
     },
@@ -228,11 +229,12 @@ function webpackConfig({ mode = "development", paths, analyze }) {
         // The formatter is invoked directly in WebpackDevServerUtils during development
       }),
       // If analyze is true, open up a bundle analysis page after the build
-      mode === "production" && analyze &&
+      analyze &&
       new (require("webpack-bundle-analyzer").BundleAnalyzerPlugin)({ analyzerMode: "static" })
     ].filter(Boolean),
     stats: false,
     bail: mode === "production",
+    devtool: "cheap-module-source-map",
     performance: {
       maxEntrypointSize: 1024 * 1024,
       maxAssetSize: 1024 * 1024,

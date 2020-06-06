@@ -8,7 +8,7 @@
 import path from "path";
 import express from "express";
 import type SocketIO from "socket.io";
-import { serverSocketEmitter } from "@mm/hooks/dist/server-notification";
+import { serverSocketEmitter } from "@mm/hooks";
 import type mitt from "mitt";
 
 export default class NodeHelper {
@@ -88,7 +88,7 @@ export default class NodeHelper {
 	off: mitt.Emitter["off"];
 	emit: mitt.Emitter["emit"];
 
-	/* sendSocketNotification(notification, payload)
+	/**
 	 * Send a socket notification to the module.
 	 *
 	 * argument notification string - The identifier of the notificatiopn.
@@ -97,11 +97,11 @@ export default class NodeHelper {
 	get sendSocketNotification() { return this.emit; }
 
 
-	/*
-	 * NodeHelper.create({ ...methods }) is just an alternative to
-	 *     class MyNodeHelper extends NodeHelper {
+	/**
+	 * `NodeHelper.create({ ...methods })` is just an alternative to
+	 *    `class MyNodeHelper extends NodeHelper {
 	 *       ...methods
-	 *     }
+	 *     }`
 	 * and using the ES6 class syntax is recommended.
 	 */
 	static create(moduleDefinition: Record<string, any>) {

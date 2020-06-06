@@ -16,18 +16,18 @@ const { promisify } = require("util");
  * @param {object} paths
  * @param {function} middleware optional middleware to serve application html/js/css etc.
  */
-module.exports = async function Server(config, paths, middleware) {
+module.exports = async function Server(config, paths, ...middlewares) {
   // Initialize the express app
   const app = express();
   const server = await createHttpServer(config, app);
   const io = SocketIO();
-  app.use(morgan("dev"));
+  // app.use(morgan("dev"));
   // Only allow whitelisted IP addresses
   if (config.ipWhitelist.length) {
-    app.use(IpFilter(config.ipWhitelist, { mode: "allow", log: false }));
+    //app.use(IpFilter(config.ipWhitelist, { mode: "allow", log: false }));
   }
   // Add various security measures
-  app.use(helmet());
+  //app.use(helmet());
   // Serve client-side files
   app.use(express.urlencoded({ extended: true }));
   for (const directory of ["modules", "translations"]) {
@@ -67,7 +67,7 @@ module.exports = async function Server(config, paths, middleware) {
   // Use each helper's router, if the helper is currently loaded
   Object.values(nodeHelpers)
     .map(helper => (res, req, next) => {
-      if (helper.isLoaded() && typeof helper.instance.router === "function") {
+      if (helper.instance && typeof helper.instance.router === "function") {
         helper.instance.router(res, req, next);
       } else {
         next();
@@ -76,10 +76,10 @@ module.exports = async function Server(config, paths, middleware) {
     .forEach(router => app.use(router));
 
   // Add the middleware needed to serve html/js/css, defaulting to statically serving the "/build" folder
-  if (!middleware && paths.appBuild) {
-    middleware = express.static(paths.appBuild)
+  if (!middlewares.length && paths.appBuild) {
+    middlewares = [express.static(paths.appBuild)];
   }
-  middleware && app.use(middleware);
+  middlewares.forEach(middleware => app.use(middleware));
 
   app.get("*", (req, res) => {
     res.status(404).send(`
@@ -104,11 +104,12 @@ module.exports = async function Server(config, paths, middleware) {
   return {
     listen() {
       const port = config.port, host = config.address;
-      server.listen({ port, host }, () => console.log(`Listening on ${config.url}`));
+      server.listen(...[port, host, () => console.log(`Listening on ${config.url}`)].filter(Boolean));
       //this.server.once("error", this.stop.bind(this));
 
       process.on("SIGINT", () => {
-        Object.values(nodeHelpers).forEach(helper => helper.unref());
+        // shut down helpers even if they have connections
+        Object.values(nodeHelpers).forEach(helper => helper._unload());
         server.close();
       })
     },

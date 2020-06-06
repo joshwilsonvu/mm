@@ -26,9 +26,9 @@ export default {
       ),
       _path:
         "<PROJECT_ROOT>/packages/babel-plugin-transform-config/__tests__/modules/a-module/a-module.ts",
-      position: "top_right"
-    }
-  ]
+      position: "top_right",
+    },
+  ],
 };
 
 
@@ -56,9 +56,9 @@ export default {
         )
       ),
       _path:
-        "<PROJECT_ROOT>/packages/babel-plugin-transform-config/__tests__/modules/default/a-default-module/a-default-module.js"
-    }
-  ]
+        "<PROJECT_ROOT>/packages/babel-plugin-transform-config/__tests__/modules/default/a-default-module/a-default-module.js",
+    },
+  ],
 };
 
 

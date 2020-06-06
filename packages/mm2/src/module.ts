@@ -1,50 +1,18 @@
-/**
- * This Module class is provided only for backwards compatibility with
- * existing MagicMirror plugins. These plugins will subclass this class,
- * and the resulting instance will be wrapped in a React component.
- */
 import path from 'path';
 import { nunjucks } from './mm2-globals';
+import React, { useState, useRef, useEffect, useLayoutEffect, useCallback } from "react";
+import useConstant from "use-constant";
+import { useNotification, useCurrentConfig, useModifyConfig, useSocketNotification } from "@mm/hooks";
+import type { ComponentProps } from "@mm/core";
 
-// The type of the MM2 data property
-export type Data = {
-  classes: string[],
-  file: string,
-  path: string,
-  header: string,
-  position: string,
-  name: string,
-  identifier: string,
-  config: Module["defaults"],
-}
-
-interface ModuleArray<T> extends Array<T> {
-  withClass(classnames: string | string[]): ModuleArray<T>,
-  exceptWithClass(classnames: string | string[]): ModuleArray<T>,
-  exceptModule(module: T): ModuleArray<T>,
-  enumerate: Array<T>["forEach"] // copy type from Array.forEach
-}
-export type MMGlobal = {
-  getModules(): Array<Module>,
-  sendNotification(notification: string, payload?: any, sender?: Module): void,
-  updateDom(module: Module, speed?: number): void,
-  hideModule(module: Module, speed?: number, callback?: () => void, options?: LockOptions): void,
-  showModule(module: Module, speed?: number, callback?: () => void, options?: LockOptions): void,
-}
-
-type LockOptions = {
-  lockString: string,
-  force: boolean,
-}
-
-type Extras = {
-  translator(str: string): string,
-  MM: MMGlobal,
-}
+type ModuleOverrides = Pick<Module, "init" | "start" | "getScripts" | "getStyles"
+  | "getTranslations" | "getDom" | "getHeader" | "getTemplate" | "getTemplateData" | "notificationReceived"
+  | "socketNotificationReceived" | "suspend" | "resume" | "requiresVersion" | "defaults">
 
 /**
- * This should just be a typed version of the MM2 module file. Everything needed to make it
- * compatible with the React API should go, appropriately, in make-compat.
+ * This Module class is provided only for backwards compatibility with
+ * existing MagicMirror modules. These modules will subclass this class,
+ * and the resulting instance will be wrapped in a React component.
  */
 export class Module {
   /* All methods (and properties below can be overridden. */
@@ -53,31 +21,33 @@ export class Module {
   requiresVersion = '2.0.0';
   /** Module config defaults. */
   defaults: Record<string, any> = {};
-  /** The name of the module. */
-  name: Data["name"];
 	/** Timer reference used for showHide animation callbacks. */
 	showHideTimer?: number;
 	/**
    * Array to store lockStrings. These strings are used to lock
 	 * visibility when hiding and showing module.
    */
-	lockStrings: string[] = [];
-  /**
-   * Data used by the module
-   */
+  lockStrings: string[] = [];
+
+  /** Data used by the module */
   readonly data: Data;
-  // Certain data fields are also available on the instance
-  identifier: Data["identifier"];
   config: Data["config"];
+
+  /** The name of the module. */
+  get name() { return this.data.name }
+  set name(val: Data["name"]) { this.data.name = val }
+
+  /** The unique identifier of the module */
+  get identifier() { return this.data.identifier }
+  /** Whether the module is currently hidden */
   hidden: boolean;
 
-  // only let derived classes be instantiated
-  constructor(data: Data & Extras) {
+  constructor(data: Data, injectedMethods: Inject) {
     this.data = data;
-    this.name = data.name;
-    this.identifier = data.identifier;
     this.hidden = false;
     this.config = { ...this.defaults, ...data.config };
+    // copy injectedMethods onto this, like Object.assign but includes getters
+    assignProperties(this, injectedMethods);
   }
 
   /**
@@ -85,6 +55,12 @@ export class Module {
    * @deprecated
 	 */
   init() {}
+
+  /**
+   * Is called when the module is loaded.
+   * @deprecated
+   */
+  loaded(cb?: () => void) {}
 
   /**
 	 * Is called when the module is started.
@@ -178,11 +154,16 @@ export class Module {
     return {};
   }
 
+  static Sender = Symbol("sender") // sender key for useNotification
+
   /**
    * This method is called when a notification arrives.
 	 * This method is called by the Magic Mirror core.
    */
   notificationReceived(notification: string, payload: any, sender: Module) {
+    if (!sender && typeof payload === "object" && Module.Sender in payload) {
+      sender = payload[Module.Sender];
+    }
     if (sender) {
       console.log(
         `${this.name} received a module notification: ${notification} from sender: ${sender.name}`
@@ -225,8 +206,14 @@ export class Module {
   }
 
   /*********************************************
-	 * The methods below don"t need subclassing. *
+	 * The methods below don't need subclassing.
 	 *********************************************/
+
+  /* Instance methods injected through the constructor */
+  // @ts-expect-error
+  updateDom: Inject["updateDom"]
+  // @ts-expect-error
+  translate: Inject["translate"]
 
   // No-ops, so app doesn't crash if called
   /**
@@ -298,21 +285,12 @@ export class Module {
     throw new Error("not implemented");
   }
 
-  /**
-   * Request the translation for a given key with optional variables and default value.
-   */
-  translate(key: string, variables?: object, defaultValue?: string): string;
-  translate(key: string, defaultValue?: string): string;
-  translate(key: string, variables?: object | string, defaultValue?: string): string {
-    throw new Error("not implemented");
-  }
-
-  static register(name: string, module: Partial<Module>): typeof Module {
+  static register(name: string, module: Partial<ModuleOverrides>) {
     class Subclass extends Module {
       name = name;
     }
     Object.assign(Subclass.prototype, module);
-    return Subclass;
+    return Subclass as typeof Module;
   }
 }
 
@@ -378,4 +356,160 @@ function getSocket(module: Module) {
 
 function pathToUrlPath(p: string) {
   return path.relative(process.cwd(), p).replace("\\", "/");
+}
+
+// The type of the MM2 data property
+export type Data = {
+  classes: string[],
+  file: string,
+  path: string,
+  header: string,
+  position: string,
+  name: string,
+  identifier: string,
+  config: Module["defaults"],
+}
+
+export type Inject = {
+  updateDom(speed?: number): Promise<void>,
+
+  translate(key: string, variables?: object, defaultValue?: string): string,
+  translate(key: string, defaultValue?: string): string,
+}
+
+interface ModuleArray<T> extends Array<T> {
+  withClass(classnames: string | string[]): ModuleArray<T>,
+  exceptWithClass(classnames: string | string[]): ModuleArray<T>,
+  exceptModule(module: T): ModuleArray<T>,
+  enumerate: Array<T>["forEach"] // copy type from Array.forEach
+}
+type MMGlobal = {
+  getModules(): ModuleArray<Module>,
+  sendNotification(notification: string, payload?: any, sender?: Module): void,
+  updateDom(module: Module, speed?: number): void,
+  hideModule(module: Module, speed?: number, callback?: () => void, options?: LockOptions): void,
+  showModule(module: Module, speed?: number, callback?: () => void, options?: LockOptions): void,
+}
+
+type LockOptions = {
+  lockString: string,
+  force: boolean,
+}
+
+/**
+ * This Higher-Order Component takes an MM2 module and produces a React component
+ * that provides compatibility between React MagicMirror modules and MM2 modules.
+ */
+export function makeCompat<T extends Module>(MM2: { new (...args: ConstructorParameters<typeof Module>): T }, name: string) {
+  // Create a React component wrapping the given subclass
+  function Compat(props: ComponentProps) {
+    const { hidden } = props;
+
+    const [dom, setDom] = useState<HTMLElement | null | undefined>(null);
+    const modifyConfig = useModifyConfig();
+
+    const mm2 = useConstant(() => {
+      return new MM2(filterDataFromProps(props), {
+        async updateDom(this: T, speed?: number) {
+          const d = await this.getDom();
+          const h = this.getHeader();
+          if (d && !isElement(d)) {
+            throw new Error(`Return value of getDom() is not an HTML element: ${d}`);
+          } else {
+            setDom(d);
+            modifyConfig(conf => {
+              conf.modules.find(m => m.identifier === props.identifier)!.header = h;
+            })
+          }
+        },
+        translate(key: string, variables?: object | string, defaultValue?: string): string {
+          throw new Error("not implemented");
+        }
+      });
+    });
+
+    // Set data, initialize, and start on mount
+    useEffect(() => {
+      mm2.init();
+      mm2.updateDom();
+    }, [mm2]);
+    useNotification("ALL_MODULES_LOADED", () => mm2.start());
+
+    // Hook up Module#notificationReceived
+    useNotification("*", (notification: string, payload: any) => {
+      let sender = typeof payload === "object" && Module.Sender in payload ? payload[Module.Sender] : undefined;
+      mm2.notificationReceived(notification, payload, sender);
+    });
+    // Hook up Module#socketNotificationReceived
+    useSocketNotification(props.name, "*", (notification: string, payload: any) => {
+      mm2.socketNotificationReceived(notification, payload);
+    });
+
+    // Handle suspend/resume on change of `hidden`
+    useEffect(() => {
+      mm2.hidden = hidden;
+      if (hidden) {
+        mm2.suspend();
+      } else {
+        mm2.resume();
+      }
+    }, [mm2, hidden]);
+
+    // Display the DOM node
+    return React.createElement(Escape, {dom});
+  }
+
+  // Assign correct .name property to make development easier
+  Object.defineProperty(Compat, "name", {
+    value: name,
+    configurable: true
+  });
+
+  return Compat;
+};
+
+// Returns true if it is a DOM element
+function isElement(o: any): o is HTMLElement {
+  return (
+    typeof HTMLElement === "object"
+      ? o instanceof HTMLElement
+      : o && typeof o === "object" && o.nodeType === 1 && typeof o.nodeName === "string"
+  );
+}
+
+// An escape hatch from React. Pass the dom prop to imperatively add HTMLElements.
+export function Escape({ dom, children: _, ...rest }: { dom: HTMLElement | undefined | null | false, [k: string]: any }) {
+  const divRef = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    const div = divRef.current;
+    if (div && dom) {
+      div.appendChild(dom);
+      return () => {
+        div.removeChild(dom);
+      }
+    }
+  }, [dom]);
+  return React.createElement("div", { ...rest, ref: divRef });
+}
+
+function filterDataFromProps({ classes, file, path, header, position, name, identifier, config }: Data) {
+  return {
+    classes,
+    file,
+    path,
+    header,
+    position,
+    name,
+    identifier,
+    config,
+  }
+}
+
+// Like Object.assign but includes getters, setters, and other property descriptors
+function assignProperties(target: object, source: any) {
+  for (const k in source) {
+    if (Object.prototype.hasOwnProperty.call(source, k)) {
+      Object.defineProperty(target, k, Object.getOwnPropertyDescriptor(source, k)!);
+    }
+  }
 }

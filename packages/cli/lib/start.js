@@ -23,12 +23,9 @@ async function start() {
   const devMiddleware = webpackDevMiddleware(compiler, {
     logLevel: "silent",
   });
-  const hotMiddleware = webpackHotMiddleware(compiler, { log: false });
+  const hotMiddleware = webpackHotMiddleware(compiler, {});
 
-  const server = await Server(this.config, this.paths, [(req, res, next) => {
-    console.log("hot");
-    hotMiddleware(req, res, next);
-  }, devMiddleware]);
+  const server = await Server(this.config, this.paths, devMiddleware, hotMiddleware);
   server.listen();
   if (!this.options.browser && !this.options.serveronly) {
     const window = Window(this.config, this.options);
@@ -39,6 +36,8 @@ async function start() {
 
   process.on("SIGINT", () => {
     devMiddleware.close();
+    hotMiddleware.close();
   });
+  process.on("exit", () => console.log("Exiting."));
 }
 

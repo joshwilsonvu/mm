@@ -2,8 +2,7 @@
  * @jest-environment jsdom
  */
 
-const { makeCompat, Module } = require("../src");
-const Escape = require("../src/escape").default;
+const { Module, makeCompat, Escape } = require("../src");
 
 const React = require("react");
 const { render, screen } = require("@testing-library/react");
@@ -24,11 +23,6 @@ test("Module", () => {
     class Subclass2 extends Module {}
     (new Subclass2({}));
   }).not.toThrow();
-});
-
-test("makeCompat", () => {
-  expect(typeof makeCompat).toBe("function");
-  expect(makeCompat.length).toBe(3);
 });
 
 test("Escape", () => {

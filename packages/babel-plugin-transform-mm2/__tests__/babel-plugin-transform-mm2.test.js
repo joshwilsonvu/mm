@@ -15,13 +15,7 @@ pluginTester({
           foo: "bar"
         });
       `,
-      // "Module" is included even if not given and listed first
-      output: `
-        import { Module, optionalImport } from "@mm/mm2";
-        export default Module.register("helloworld", {
-          foo: "bar"
-        });
-      `,
+      snapshot: true,
       babelOptions: {
         filename: require.resolve('./dummy-module/dummy-module'), // basename matches dirname--this is an MM2 module file
         babelrc: false,

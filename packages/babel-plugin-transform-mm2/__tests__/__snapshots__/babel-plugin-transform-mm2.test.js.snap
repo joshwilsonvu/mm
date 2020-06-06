@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`babel-plugin-transform-mm2 transforms MM2 modules: transforms MM2 modules 1`] = `
+
+Module.register("helloworld", {
+  foo: "bar"
+});
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { Module, optionalImport } from "@mm/mm2";
+export default Module.register("helloworld", {
+  foo: "bar",
+});
+
+
+`;

@@ -1,11 +1,12 @@
-import Emitter from "mitt";
-import SocketIO from "socket.io";
+import type SocketIO from "socket.io"
+
 interface Options {
   onConnect?: (socket: SocketIO.Socket) => void,
   onDisconnect?: (socket: SocketIO.Socket) => void,
 }
 
 export function serverSocketEmitter(io: SocketIO.Server, namespace: string = "/", { onConnect, onDisconnect }: Options = {}) {
+  const Emitter = require("mitt");
   if (!namespace.startsWith("/")) {
     namespace = "/" + namespace;
   }

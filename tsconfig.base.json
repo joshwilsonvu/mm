@@ -20,5 +20,7 @@
     "forceConsistentCasingInFileNames": true,  /* Disallow inconsistently-cased references to the same file. */
     "skipLibCheck": true,                      /* Skip type checking of all declaration files (*.d.ts). */
     "importHelpers": true,                     /* import shared helper functions from tslib */
+    "isolatedModules": true,                   /* Make seperate compilation safe */
+    "keyofStringsOnly": true,                  /* Keyof should only give string valued keys */
   }
 }

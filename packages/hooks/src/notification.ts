@@ -1,6 +1,6 @@
 import * as React from 'react';
 import useConstant from 'use-constant';
-import Emitter from 'mitt';
+import mitt from 'mitt';
 import io from 'socket.io-client';
 
 export {
@@ -13,7 +13,7 @@ export {
  * Include this component in the tree to use `useNotification` and `useSendNotification`.
  */
 function NotificationProvider({ children }: React.PropsWithChildren<{}>) {
-  const emitter = useConstant(Emitter);
+  const emitter = useConstant(mitt) as Emitter;
   return React.createElement(Context.Provider,  { value: emitter }, children);
 }
 
@@ -31,19 +31,19 @@ function NotificationProvider({ children }: React.PropsWithChildren<{}>) {
  *     const sendNotification = useSendNotification();
  *     useEffect(() => fetch(something).then(content => sendNotification("FETCHED", content, 'sender')), [something]);
  */
-function useNotification(): mitt.Emitter["emit"];
-function useNotification(event: "*", subscriber: mitt.WildcardHandler): mitt.Emitter["emit"];
-function useNotification(event: string, subscriber: mitt.Handler): mitt.Emitter["emit"];
-function useNotification(event?: string, subscriber?: mitt.Handler | mitt.WildcardHandler): mitt.Emitter["emit"] {
+function useNotification(): Emit;
+function useNotification(event: "*", subscriber: WildcardHandler): Emit;
+function useNotification(event: string, subscriber: Handler): Emit;
+function useNotification(event?: string, subscriber?: Handler | WildcardHandler): Emit {
   const emitter = useContextEmitter();
   useNotificationImpl(emitter, event, subscriber);
   return emitter.emit;
 }
 
-function useSocketNotification(sender: string): mitt.Emitter["emit"];
-function useSocketNotification(sender: string, event: string, subscriber: mitt.Handler): mitt.Emitter["emit"];
-function useSocketNotification(sender: string, event: "*", subscriber: mitt.WildcardHandler): mitt.Emitter["emit"]
-function useSocketNotification(sender: string, event?: string, subscriber?: mitt.Handler | mitt.WildcardHandler) {
+function useSocketNotification(sender: string): Emit;
+function useSocketNotification(sender: string, event: string, subscriber: Handler): Emit;
+function useSocketNotification(sender: string, event: "*", subscriber: WildcardHandler): Emit
+function useSocketNotification(sender: string, event?: string, subscriber?: Handler | WildcardHandler) {
   const emitter = useSocketEmitter(sender);
   useNotificationImpl(emitter, event, subscriber);
   return emitter.emit;
@@ -52,18 +52,25 @@ function useSocketNotification(sender: string, event?: string, subscriber?: mitt
 /********** Private API ***********/
 
 const Context = React.createContext({});
-function useContextEmitter() { return React.useContext(Context) as mitt.Emitter; }
+function useContextEmitter() { return React.useContext(Context) as Emitter; }
 
-function useNotificationImpl(emitter: mitt.Emitter, event?: string, subscriber?: mitt.Handler | mitt.WildcardHandler) {
+function useNotificationImpl(emitter: Emitter, event?: string, subscriber?: Handler | WildcardHandler) {
   if (event === undefined || subscriber === undefined) {
     event = undefined;
     subscriber = undefined;
   }
-  const subscriberRef = React.useRef<mitt.Handler | mitt.WildcardHandler | undefined>();
+  const subscriberRef = React.useRef<Handler | WildcardHandler | undefined>();
   subscriberRef.current = subscriber;
   React.useEffect(() => {
-    function cb(...args: Parameters<mitt.Handler | mitt.WildcardHandler>) {
-      subscriberRef.current?.(...args);
+    function cb(event: any, payload?: any) {
+      const current = subscriberRef.current;
+      if (current) {
+        if (payload) {
+          (current as WildcardHandler)(event, payload);
+        } else {
+          (current as Handler)(event); // event is actually the payload
+        }
+      }
     }
     if (event) {
       const e = event.toLowerCase();
@@ -126,7 +133,7 @@ function createUseRefMap<K, V>(refMap: RefMap<K, V>) {
 const socketMap = createRefMap(
   (namespace: string) => {
     const socket = io(namespace);
-    const emitter = Emitter();
+    const emitter = mitt() as Emitter;
     socket.on("message", emitter.emit);
     return { socket, emitter };
   },
@@ -151,6 +158,16 @@ function useSocketEmitter(namespace: string = "/") {
     },
     on: emitter.on,
     off: emitter.off,
-  }), [emitter, socket]);
+  }), [emitter, socket?.send]);
 };
 
+type Emit = (event: string, payload: any) => void;
+type Emitter = {
+  on(event: "*", handler: WildcardHandler): void;
+  on(event: string, handler: Handler): void
+  off(event: "*", handler: WildcardHandler): void;
+  off(event: string, handler: Handler): void
+  emit: Emit
+}
+type Handler = (payload: any) => void;
+type WildcardHandler = (event: string, payload: any) => void
