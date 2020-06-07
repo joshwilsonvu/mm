@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-const { Module, makeCompat, Escape } = require("../src");
+const { Module, Escape } = require("../src");
 
 const React = require("react");
 const { render, screen } = require("@testing-library/react");
@@ -11,18 +11,8 @@ expect.extend(matchers);
 
 
 test("Module", () => {
-  const Subclass = Module.register("Test", {
-    myMethod: function() {
-      return 5;
-    }
+  const Component = Module.register("Test", {
   });
-  const instance = new Subclass({});
-  expect(instance).toBeInstanceOf(Module);
-  expect(instance.myMethod()).toBe(5);
-  expect(() => {
-    class Subclass2 extends Module {}
-    (new Subclass2({}));
-  }).not.toThrow();
 });
 
 test("Escape", () => {

@@ -25,7 +25,7 @@ async function start() {
   });
   const hotMiddleware = webpackHotMiddleware(compiler, {});
 
-  const server = await Server(this.config, this.paths, devMiddleware, hotMiddleware);
+  const server = await Server(this.config, this.paths, hotMiddleware, devMiddleware);
   server.listen();
   if (!this.options.browser && !this.options.serveronly) {
     const window = Window(this.config, this.options);

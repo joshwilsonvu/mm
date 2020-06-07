@@ -5,16 +5,15 @@ import useConstant from "use-constant";
 import { useNotification, useCurrentConfig, useModifyConfig, useSocketNotification } from "@mm/hooks";
 import type { ComponentProps } from "@mm/core";
 
-type ModuleOverrides = Pick<Module, "init" | "start" | "getScripts" | "getStyles"
-  | "getTranslations" | "getDom" | "getHeader" | "getTemplate" | "getTemplateData" | "notificationReceived"
-  | "socketNotificationReceived" | "suspend" | "resume" | "requiresVersion" | "defaults">
+
+
 
 /**
  * This Module class is provided only for backwards compatibility with
  * existing MagicMirror modules. These modules will subclass this class,
  * and the resulting instance will be wrapped in a React component.
  */
-export class Module {
+export class Module implements ModuleInjectedProperties, ModuleOverrides {
   /* All methods (and properties below can be overridden. */
 
   /** Set the minimum MagicMirror module version for this module. */
@@ -42,12 +41,22 @@ export class Module {
   /** Whether the module is currently hidden */
   hidden: boolean;
 
-  constructor(data: Data, injectedMethods: Inject) {
+  updateDom: ModuleInjectedProperties["updateDom"];
+  translate: ModuleInjectedProperties["translate"];
+  socket: ModuleInjectedProperties["socket"];
+  sendNotification: ModuleInjectedProperties["sendNotification"];
+
+  constructor(data: Data, injectedMethods: ModuleInjectedProperties) {
     this.data = data;
     this.hidden = false;
     this.config = { ...this.defaults, ...data.config };
-    // copy injectedMethods onto this, like Object.assign but includes getters
-    assignProperties(this, injectedMethods);
+
+    // Inject methods into the class. These methods rely on React APIs,
+    // so they can't be defined here
+    this.updateDom = injectedMethods.updateDom;
+    this.translate = injectedMethods.translate;
+    this.socket = injectedMethods.socket;
+    this.sendNotification = injectedMethods.sendNotification;
   }
 
   /**
@@ -209,12 +218,6 @@ export class Module {
 	 * The methods below don't need subclassing.
 	 *********************************************/
 
-  /* Instance methods injected through the constructor */
-  // @ts-expect-error
-  updateDom: Inject["updateDom"]
-  // @ts-expect-error
-  translate: Inject["translate"]
-
   // No-ops, so app doesn't crash if called
   /**
    * @deprecated
@@ -225,19 +228,16 @@ export class Module {
    */
   setConfig() {}
 
-  /**
-   * Returns a socket object. If it doesn't exist, it's created.
-   * It also registers the notification callback.
-   */
-  socket() {
-    return getSocket(this);
-  }
 
   /**
    * Retrieve the path to a module file.
    */
   file(file: string) {
     return path.resolve(this.data.path, file);
+  }
+
+  sendSocketNotification(notification: string, payload: any) {
+    this.socket().sendNotification(notification, payload);
   }
 
   /**
@@ -285,48 +285,16 @@ export class Module {
     throw new Error("not implemented");
   }
 
-  static register(name: string, module: Partial<ModuleOverrides>) {
-    class Subclass extends Module {
+  static register(name: string, module: Partial<ModuleOverrides>): React.ComponentType<ComponentProps> {
+    const Subclass = class extends Module {
       name = name;
     }
-    Object.assign(Subclass.prototype, module);
-    return Subclass as typeof Module;
+    assignProperties(Subclass.prototype, module);
+    return makeCompat(Subclass, name);
   }
 }
 
-function MMSocket(moduleName: string) {
-  const socket = new WebSocket("/" + moduleName);
-  socket.onopen = event => {
-    socket.onmessage = event => {
 
-    }
-
-  }
-
-  // Warning: this is not a public Socket.io API!!! Look for a better way to catch all events
-  let onevent = (socket as any).onevent;
-  if (typeof onevent === "function") {
-    (socket as any).onevent = (packet: { data: any[] }, ...rest: unknown[]) => {
-      onevent.apply(socket, [packet, ...rest]); // original call
-      packet.data = ["*", ...packet.data];
-      onevent.apply(socket, [packet, ...rest]); // additional call to catch-all
-    };
-  };
-
-  return {
-    sendNotification(notification: string, payload: any = {}, sender?: string) {
-      socket.send(JSON.stringify([
-        "notification",
-        notification,
-        payload,
-        sender
-      ]));
-    },
-    close() {
-      socket.close();
-    }
-  };
-}
 
 const nunjucksMap = new WeakMap<Module, nunjucks.Environment>();
 function getNunjucksEnvironment(module: Module) {
@@ -342,16 +310,6 @@ function getNunjucksEnvironment(module: Module) {
     nunjucksMap.set(module, env);
   }
   return env;
-};
-
-const socketMap = new WeakMap<Module, ReturnType<typeof MMSocket>>();
-function getSocket(module: Module) {
-  let socket = socketMap.get(module);
-  if (!socket) {
-    socket = MMSocket(module.name);
-    socketMap.set(module, socket);
-  }
-  return socket;
 };
 
 function pathToUrlPath(p: string) {
@@ -370,12 +328,45 @@ export type Data = {
   config: Module["defaults"],
 }
 
-export type Inject = {
-  updateDom(speed?: number): Promise<void>,
-
-  translate(key: string, variables?: object, defaultValue?: string): string,
-  translate(key: string, defaultValue?: string): string,
+/**
+ * These are all of the properties that MM2 modules can override on the Module class.
+ */
+interface ModuleOverrides {
+  init(): void;
+  start(): void;
+  getScripts(): string[];
+  getStyles(): string[];
+  getTranslations(): Record<string, string> | false | null | undefined;
+  getDom(): Promise<HTMLElement> | HTMLElement | null | undefined;
+  getHeader(): string;
+  getTemplate(): string;
+  getTemplateData(): {};
+  notificationReceived(notification: string, payload: any, sender: Module): void;
+  socketNotificationReceived(notification: string, payload: any): void;
+  suspend(): void;
+  resume(): void;
+  requiresVersion: string;
+  defaults: Record<string, any>;
 }
+
+/**
+ * All of the properties not directly defined in the Module class, but injected
+ */
+interface ModuleInjectedProperties {
+  updateDom: (speed?: number) => Promise<void>;
+  translate(key: string, variables?: object, defaultValue?: string): string;
+  translate(key: string, defaultValue?: string): string;
+  /**
+   * Returns a socket object. If it doesn't exist, it's created.
+   * It also registers the notification callback.
+   */
+  socket: () => {
+    sendNotification(notification: string, payload: any, sender?: string): void,
+    close(): void,
+  }
+  sendNotification: (notification: string, payload: any) => void;
+}
+
 
 interface ModuleArray<T> extends Array<T> {
   withClass(classnames: string | string[]): ModuleArray<T>,
@@ -404,12 +395,40 @@ export function makeCompat<T extends Module>(MM2: { new (...args: ConstructorPar
   // Create a React component wrapping the given subclass
   function Compat(props: ComponentProps) {
     const { hidden } = props;
+    let mm2: T;
 
     const [dom, setDom] = useState<HTMLElement | null | undefined>(null);
     const modifyConfig = useModifyConfig();
 
-    const mm2 = useConstant(() => {
-      return new MM2(filterDataFromProps(props), {
+    // Set data, initialize, and start on mount
+    useEffect(() => {
+      mm2.init();
+      mm2.updateDom();
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    useNotification("ALL_MODULES_LOADED", () => mm2.start());
+
+    // Hook up Module#notificationReceived
+    const sendNotification = useNotification("*", (notification: string, payload: any) => {
+      let sender = typeof payload === "object" && Module.Sender in payload ? payload[Module.Sender] : undefined;
+      mm2.notificationReceived(notification, payload, sender);
+    });
+    // Hook up Module#socketNotificationReceived
+    const sendSocketNotification = useSocketNotification(props.name, "*", (notification: string, payload: any) => {
+      mm2.socketNotificationReceived(notification, payload);
+    });
+
+    // Handle suspend/resume on change of `hidden`
+    useEffect(() => {
+      mm2.hidden = hidden;
+      if (hidden) {
+        mm2.suspend();
+      } else {
+        mm2.resume();
+      }
+    }, [hidden]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    mm2 = useConstant(() => {
+      const inject: ModuleInjectedProperties = {
         async updateDom(this: T, speed?: number) {
           const d = await this.getDom();
           const h = this.getHeader();
@@ -424,46 +443,33 @@ export function makeCompat<T extends Module>(MM2: { new (...args: ConstructorPar
         },
         translate(key: string, variables?: object | string, defaultValue?: string): string {
           throw new Error("not implemented");
+        },
+        socket() {
+          return {
+            sendNotification: sendSocketNotification,
+            close() {}
+          }
+        },
+        sendNotification(notification: string, payload: any) {
+          let sender = this;
+          if (typeof payload === "object") {
+            payload[Module.Sender] = sender;
+          }
+          sendNotification(notification, payload);
         }
-      });
-    });
-
-    // Set data, initialize, and start on mount
-    useEffect(() => {
-      mm2.init();
-      mm2.updateDom();
-    }, [mm2]);
-    useNotification("ALL_MODULES_LOADED", () => mm2.start());
-
-    // Hook up Module#notificationReceived
-    useNotification("*", (notification: string, payload: any) => {
-      let sender = typeof payload === "object" && Module.Sender in payload ? payload[Module.Sender] : undefined;
-      mm2.notificationReceived(notification, payload, sender);
-    });
-    // Hook up Module#socketNotificationReceived
-    useSocketNotification(props.name, "*", (notification: string, payload: any) => {
-      mm2.socketNotificationReceived(notification, payload);
-    });
-
-    // Handle suspend/resume on change of `hidden`
-    useEffect(() => {
-      mm2.hidden = hidden;
-      if (hidden) {
-        mm2.suspend();
-      } else {
-        mm2.resume();
       }
-    }, [mm2, hidden]);
-
+      return new MM2(filterDataFromProps(props), inject);
+    });
     // Display the DOM node
     return React.createElement(Escape, {dom});
   }
 
   // Assign correct .name property to make development easier
-  Object.defineProperty(Compat, "name", {
-    value: name,
-    configurable: true
-  });
+  // Object.defineProperty(Compat, "name", {
+  //   value: name,
+  //   configurable: true
+  // });
+  Compat.displayName = name;
 
   return Compat;
 };
