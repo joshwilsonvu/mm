@@ -1,0 +1,67 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`shows help message on '$ mm build -h' 1`] = `
+"[log] mm build
+
+Create an optimized build
+
+Options:
+  --cwd        run mm in this directory                                 [string]
+  --config     the path to the MagicMirror config file                  [string]
+  --log-level  the minimum log level to be shown
+                     [choices: \\"fatal\\", \\"error\\", \\"warn\\", \\"log\\", \\"info\\", \\"debug\\"]
+  --help       Show help                                               [boolean]
+  --version    Show version number                                     [boolean]
+  --analyze    after the build, show the contents of the bundle in a web page"
+`;
+
+exports[`shows help message on '$ mm serve -h' 1`] = `
+"[log] mm serve
+
+Run MagicMirror from a build
+
+Options:
+  --cwd        run mm in this directory                                 [string]
+  --config     the path to the MagicMirror config file                  [string]
+  --log-level  the minimum log level to be shown
+                     [choices: \\"fatal\\", \\"error\\", \\"warn\\", \\"log\\", \\"info\\", \\"debug\\"]
+  --help       Show help                                               [boolean]
+  --version    Show version number                                     [boolean]
+  --build      if MagicMirror hasn't been built, run a build before serving
+  --browser    open a web browser"
+`;
+
+exports[`shows help message on '$ mm start -h' 1`] = `
+"[log] mm start
+
+Start serving MagicMirror in development mode
+
+Options:
+  --cwd         run mm in this directory                                [string]
+  --config      the path to the MagicMirror config file                 [string]
+  --log-level   the minimum log level to be shown
+                     [choices: \\"fatal\\", \\"error\\", \\"warn\\", \\"log\\", \\"info\\", \\"debug\\"]
+  --help        Show help                                              [boolean]
+  --version     Show version number                                    [boolean]
+  --browser     open a web browser instead of an electron window
+  --serveronly  don't open an electron window or a web browser"
+`;
+
+exports[`shows help message on '$ mm' 1`] = `
+"[log] mm [command]
+
+Commands:
+  mm start  Start serving MagicMirror in development mode
+  mm build  Create an optimized build
+  mm serve  Run MagicMirror from a build
+
+Options:
+  --cwd        run mm in this directory                                 [string]
+  --config     the path to the MagicMirror config file                  [string]
+  --log-level  the minimum log level to be shown
+                     [choices: \\"fatal\\", \\"error\\", \\"warn\\", \\"log\\", \\"info\\", \\"debug\\"]
+  --help       Show help                                               [boolean]
+  --version    Show version number                                     [boolean]
+
+Run mm <command> --help for more informaton about each command."
+`;

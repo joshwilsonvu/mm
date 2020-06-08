@@ -2,7 +2,7 @@ import path from 'path';
 import { nunjucks } from './mm2-globals';
 import React, { useState, useRef, useEffect, useLayoutEffect, useCallback } from "react";
 import useConstant from "use-constant";
-import { useNotification, useCurrentConfig, useModifyConfig, useSocketNotification } from "@mm/hooks";
+import { useNotification, useModifyConfig, useSocketNotification } from "@mm/hooks";
 import type { ComponentProps } from "@mm/core";
 
 
@@ -286,9 +286,7 @@ export class Module implements ModuleInjectedProperties, ModuleOverrides {
   }
 
   static register(name: string, module: Partial<ModuleOverrides>): React.ComponentType<ComponentProps> {
-    const Subclass = class extends Module {
-      name = name;
-    }
+    const Subclass = class extends Module {}
     assignProperties(Subclass.prototype, module);
     return makeCompat(Subclass, name);
   }

@@ -132,7 +132,10 @@ function createUseRefMap<K, V>(refMap: RefMap<K, V>) {
 // create socket and emitter and wire them together
 const socketMap = createRefMap(
   (namespace: string) => {
-    const socket = io(namespace);
+    if (namespace.startsWith("/")) {
+      namespace = namespace.substr(1);
+    }
+    const socket = io(`${window.location.href}${namespace}`, { transports: ["websocket"]});
     const emitter = mitt() as Emitter;
     socket.on("message", emitter.emit);
     return { socket, emitter };

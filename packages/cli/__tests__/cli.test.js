@@ -6,22 +6,14 @@ const cliPath = require.resolve("..");
  * since it is responsible for building, serving, and reloading MagicMirror. Therefore,
  * tests in e2e.test.js may uncover problems here that these tests don't find.
  */
-test("shows help message on '$ mm'", async () => {
-  const result = await execa(cliPath, [], { all: true });
-  expect(result.all).toMatchInlineSnapshot(`
-    "mm [command]
+async function testOutput(...args) {
+  const result = await execa(cliPath, args);
+  expect(result.stdout).toMatchSnapshot();
+}
+test("shows help message on '$ mm'", () => testOutput());
 
-    Commands:
-      mm start  Start serving MagicMirror in development mode
-      mm build  Create an optimized build
-      mm serve  Run MagicMirror from a build
+test("shows help message on '$ mm start -h'", () => testOutput("start", "--help"));
 
-    Options:
-      --cwd      run mm in this directory                                   [string]
-      --config   the path to the MagicMirror config file                    [string]
-      --help     Show help                                                 [boolean]
-      --version  Show version number                                       [boolean]
+test("shows help message on '$ mm build -h'", () => testOutput("build", "--help"));
 
-    Run mm <command> --help for more informaton about each command."
-  `);
-});
+test("shows help message on '$ mm serve -h'", () => testOutput("serve", "--help"));

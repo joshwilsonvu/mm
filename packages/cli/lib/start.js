@@ -37,6 +37,7 @@ async function start() {
   process.on("SIGINT", () => {
     devMiddleware.close();
     hotMiddleware.close();
+    setTimeout(() => process.exit(0), 1000);
   });
   process.on("exit", () => console.log("Exiting."));
 }

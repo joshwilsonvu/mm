@@ -3004,6 +3004,7 @@ __metadata:
     case-sensitive-paths-webpack-plugin: ^2.3.0
     chalk: ^3.0.0
     confusing-browser-globals: ^1.0.9
+    consola: ^2.12.2
     css-loader: ^3.5.2
     electron: ^9.0.0
     eslint: ^6.8.0
@@ -5799,6 +5800,13 @@ __metadata:
   version: 1.0.9
   resolution: "confusing-browser-globals@npm:1.0.9"
   checksum: 319e6d15384745d3ff4a5ca0357b687e0d36a1ab29a03084e192ea12802532de0fa7319169b09e971aba6a291f8a5ca333105e0fb239ed3f6c891f13eea2bea6
+  languageName: node
+  linkType: hard
+
+"consola@npm:^2.12.2":
+  version: 2.12.2
+  resolution: "consola@npm:2.12.2"
+  checksum: 752a65dfd524caedbcfc91487b73de3ed814c7a31388e0214a0c513465022ff00eddfdb3550cb0796bfdcc160f312a533c66259a2222e722f0bd913fbc6c2599
   languageName: node
   linkType: hard
 

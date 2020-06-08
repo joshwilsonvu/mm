@@ -16,8 +16,11 @@ import nunjucks from "nunjucks";
 // @ts-ignore
 import SunCalc from "suncalc";
 
+const Log = console;
+
 export {
     moment,
     nunjucks,
     SunCalc,
+    Log,
 }

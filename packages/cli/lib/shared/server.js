@@ -20,7 +20,7 @@ module.exports = async function Server(config, paths, ...middlewares) {
   // Initialize the express app
   const app = express();
   const server = await createHttpServer(config, app);
-  const io = SocketIO();
+  const io = SocketIO(server);
   // app.use(morgan("dev"));
   // Only allow whitelisted IP addresses
   if (config.ipWhitelist.length) {
@@ -44,8 +44,10 @@ module.exports = async function Server(config, paths, ...middlewares) {
   app.get("/config", (req, res) => res.send(config));
 
   const nodeHelpers = collectNodeHelpers(paths);
-  io.on("connect", socket => {
-    let helperName = socket.nsp;
+  io.of((nsp, query, next) => {
+    next(null, true); // this lets us connect with dynamic namespaces
+  }).on("connect", socket => {
+    let helperName = socket.nsp.name;
     if (helperName.startsWith("/")) {
       helperName = helperName.substr(1);
     }
@@ -76,8 +78,12 @@ module.exports = async function Server(config, paths, ...middlewares) {
     .forEach(router => app.use(router));
 
   // Add the middleware needed to serve html/js/css, defaulting to statically serving the "/build" folder
-  if (!middlewares.length && paths.appBuild) {
-    middlewares = [express.static(paths.appBuild)];
+  if (!middlewares.length) {
+    if (paths.appBuild) {
+      middlewares = [express.static(paths.appBuild)];
+    } else {
+      console.warn()
+    }
   }
   middlewares.forEach(middleware => app.use(middleware));
 
@@ -126,7 +132,7 @@ module.exports = async function Server(config, paths, ...middlewares) {
  */
 function getHelperFor(modulePath, paths) {
   const moduleName = path.basename(modulePath);
-  const requirePath = path.relative(paths.cwd, path.resolve(modulePath, "node_helper")).replace("\\", "/");
+  const requirePath = path.resolve(modulePath, "node_helper").replace(/^[A-Z]:\\/, "/").replace("\\", "/");
   let nodeHelperPath;
   try {
     nodeHelperPath = paths.resolve(requirePath); // adds appropriate file extension and ensures file exists
@@ -154,18 +160,14 @@ function getHelperFor(modulePath, paths) {
     _load(io) {
       if (!this.instance) {
         this.instance = new (require(nodeHelperPath))(io);
-      } else {
-        throw new Error("already loaded");
+        this.instance.start();
       }
-      this.instance.start();
     },
     _unload() {
       if (this.instance) {
         this.instance.stop();
         this.instance = null;
         delete require.cache[nodeHelperPath];
-      } else {
-        throw new Error("not loaded");
       }
     },
     reload(io) {
@@ -200,6 +202,7 @@ function collectNodeHelpers(paths) {
   for (const modulePath of moduleDirs) {
     const helper = getHelperFor(modulePath, paths);
     if (helper) {
+      console.log('loaded helper for', modulePath);
       nodeHelpers[helper.name] = helper;
     }
   }
@@ -217,7 +220,7 @@ async function createHttpServer(config, app) {
     } else {
       // if useHttps is set but not httpsPrivateKey and httpsCertificate, generate them on the fly
       const pem = require("pem");
-      console.log("Generating HTTPS certificate...");
+      console.log("Generating one-time HTTPS certificate...");
       const { certificate, serviceKey } = await promisify(pem.createCertificate.bind(pem))({ selfSigned: true, days: 365 });
       options = { key: serviceKey, cert: certificate };
     }

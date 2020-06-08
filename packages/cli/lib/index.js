@@ -3,10 +3,10 @@
 const yargs = require("yargs");
 const fs = require("fs-extra");
 const path = require("path");
-const chalk = require("chalk");
-const logSymbols = require("log-symbols");
 const resolve = require("resolve");
 const loadConfig = require("./shared/load-config");
+const consola = require("consola");
+consola.wrapConsole(); // redirect `console.*` to consola
 
 
 if (!process.env.NODE_ENV) {
@@ -56,6 +56,7 @@ commands
   .scriptName("mm")
   .option("cwd", { type: "string", describe: "run mm in this directory" })
   .option("config", { type: "string", describe: "the path to the MagicMirror config file" })
+  .option("log-level", { describe: "the minimum log level to be shown", choices: ["fatal", "error", "warn", "log", "info", "debug"] })
   .help()
   .showHelpOnFail(false)
   .version(require("../package.json").version)
@@ -96,24 +97,6 @@ class CLI {
     const { register } = require("./shared/babel-config");
     register(this.paths);
     this.config = loadConfig(this.paths.appConfig);
-
-    const pe = new (require("pretty-error"))();
-    pe.appendStyle({
-      // this is a selector to the element that says 'Error'
-      'pretty-error > header > title > kind': {
-        display: 'none'
-      },
-      // the 'colon' after 'Error':
-      'pretty-error > header > colon': {
-        display: 'none'
-      },
-    });
-    pe.alias(this.paths.cwd, path.basename(this.paths.cwd));
-    const skip = /internal[/\\]|\.pnp\.js/;
-    pe.skip((traceLine) => {
-      return traceLine.path && skip.test(traceLine.path);
-    });
-    this.formatError = pe.render.bind(pe);
   }
 
   run() {

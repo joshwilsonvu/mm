@@ -52,6 +52,7 @@
     "case-sensitive-paths-webpack-plugin": "^2.3.0",
     "chalk": "^3.0.0",
     "confusing-browser-globals": "^1.0.9",
+    "consola": "^2.12.2",
     "css-loader": "^3.5.2",
     "electron": "^9.0.0",
     "eslint": "^6.8.0",
