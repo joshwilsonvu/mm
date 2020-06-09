@@ -3003,6 +3003,7 @@ __metadata:
     browserslist: ^4.12.0
     case-sensitive-paths-webpack-plugin: ^2.3.0
     chalk: ^3.0.0
+    clipanion: ^2.4.0
     confusing-browser-globals: ^1.0.9
     consola: ^2.12.2
     css-loader: ^3.5.2
@@ -3017,11 +3018,11 @@ __metadata:
     execa: ^4.0.2
     express: ^4.17.1
     express-ipfilter: ^1.1.2
+    fast-memoize: ^2.5.2
     file-loader: ^6.0.0
     fs-extra: ^9.0.1
     helmet: ^3.22.0
     html-webpack-plugin: ^4.2.0
-    log-symbols: ^3.0.0
     morgan: ^1.10.0
     pem: ^1.14.4
     pnp-webpack-plugin: ^1.6.4
@@ -5589,6 +5590,13 @@ __metadata:
   version: 2.2.0
   resolution: "cli-width@npm:2.2.0"
   checksum: 0b3c1d53b2771dcca960d57979076d8d9a2065bda154a78029fcc9151d18f83d679c15c82d00c24f1365b744449225e9a931397848451887721f129d8e51aaa2
+  languageName: node
+  linkType: hard
+
+"clipanion@npm:^2.4.0":
+  version: 2.4.0
+  resolution: "clipanion@npm:2.4.0"
+  checksum: 43030bb880562a0bd3246299c1c613b6522fc651f2112d7509178b81e7ebb489a0b9c1ca06c239737fdee00c83a230561f7e58a2defa6039d2cb16b6f7edb847
   languageName: node
   linkType: hard
 
@@ -10328,15 +10336,6 @@ fsevents@^1.2.7:
   version: 4.17.15
   resolution: "lodash@npm:4.17.15"
   checksum: aec3fbb7570aa67bda500b8299b1b1821d60646bede87f76a74dfcc7666ab3445267d734ec71424d70809d52ad67a1356fab5ab694a3faa1908d68e9d48f00f5
-  languageName: node
-  linkType: hard
-
-"log-symbols@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "log-symbols@npm:3.0.0"
-  dependencies:
-    chalk: ^2.4.2
-  checksum: bfa7cceaea16d7e378b4f6a16e22c5c78bc4250350a84d653766927bdf27e5b94015f616e193bc275e80d13f882867ddf224a3c6c152e24289ed5e58d84d306e
   languageName: node
   linkType: hard
 

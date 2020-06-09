@@ -1,44 +1,74 @@
 'use strict';
 
-const fs = require("fs");
-const createCompiler = require("./shared/create-compiler");
-const webpackDevMiddleware = require("webpack-dev-middleware");
-const webpackHotMiddleware = require("webpack-hot-middleware");
-const openBrowser = require("react-dev-utils/openBrowser");
+const { Command } = require("clipanion")
 
-const Server = require("./shared/server");
-const Window = require("./shared/window");
+const details = `\`mm start\` compiles your files on the fly and updates \
+the app instantly as you update your code or config.
 
-module.exports = start;
-async function start() {
-  const webpackConfig = require("./shared/webpack.config")({
-    mode: "development",
-    paths: this.paths,
-  });
-  const compiler = createCompiler({
-    config: webpackConfig,
-    useTypeScript: fs.existsSync(this.paths.appTsConfig),
-  });
+Use it to quickly configure your mirror or develop your module before optimizing performance \
+with \`mm build\`.`;
 
-  const devMiddleware = webpackDevMiddleware(compiler, {
-    logLevel: "silent",
-  });
-  const hotMiddleware = webpackHotMiddleware(compiler, {});
+class StartCommand extends Command {
+  static usage = Command.Usage({
+    description: "Start the app and instantly see changes to your source files.",
+    details: details,
+    examples: [
+      ["Start with live updates", "yarn mm start"],
+      ["Start in a browser instead of Electron", "yarn mm start --browser"],
+      ["Start to be viewed on another device with `mm view`", "yarn mm start --no-view"],
+    ]
+  })
 
-  const server = await Server(this.config, this.paths, hotMiddleware, devMiddleware);
-  server.listen();
-  if (!this.options.browser && !this.options.serveronly) {
-    const window = Window(this.config, this.options);
-    await window.open();
-  } else if (this.options.browser) {
-    openBrowser(this.config.url);
+  // options
+  noView = false;
+  browser = false;
+
+  async execute() {
+    const fs = require("fs");
+    const createCompiler = require("./shared/create-compiler");
+    const webpackDevMiddleware = require("webpack-dev-middleware");
+    const webpackHotMiddleware = require("webpack-hot-middleware");
+    const openBrowser = require("react-dev-utils/openBrowser");
+
+    const createServer = require("./shared/create-server");
+    const createWindow = require("./shared/create-window");
+
+    const paths = this.context.paths();
+    const config = this.context.config();
+
+    const webpackConfig = require("./shared/webpack.config")({
+      mode: "development",
+      paths: paths,
+    });
+    const compiler = createCompiler({
+      config: webpackConfig,
+      useTypeScript: fs.existsSync(paths.appTsConfig),
+    });
+
+    const devMiddleware = webpackDevMiddleware(compiler, { logLevel: "silent" });
+    const hotMiddleware = webpackHotMiddleware(compiler, { log: false });
+
+    const server = await createServer(config, paths, hotMiddleware, devMiddleware);
+    console.success("Listening on", config.url);
+    console.info("Press Ctrl+C to stop.");
+    server.listen();
+
+    if (!this.browser && !this.noView) {
+      const window = createWindow(config, { dev: true });
+      await window.open();
+    } else if (this.browser) {
+      openBrowser(config.url);
+    }
+    process.on("SIGINT", () => {
+      devMiddleware.close();
+      hotMiddleware.close();
+      setTimeout(() => process.exit(0), 1000);
+    });
   }
-
-  process.on("SIGINT", () => {
-    devMiddleware.close();
-    hotMiddleware.close();
-    setTimeout(() => process.exit(0), 1000);
-  });
-  process.on("exit", () => console.log("Exiting."));
 }
 
+StartCommand.addPath("start");
+StartCommand.addOption("noView", Command.Boolean("--no-view"));
+StartCommand.addOption("browser", Command.Boolean("--browser"));
+
+module.exports = StartCommand;

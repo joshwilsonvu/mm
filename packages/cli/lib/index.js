@@ -1,155 +1,92 @@
 #!/usr/bin/env node
 
-const yargs = require("yargs");
-const fs = require("fs-extra");
+const { Cli, Command } = require("clipanion");
 const path = require("path");
 const resolve = require("resolve");
 const loadConfig = require("./shared/load-config");
+const memoize = require("fast-memoize");
 const consola = require("consola");
 consola.wrapConsole(); // redirect `console.*` to consola
+if (process.env.NODE_ENV === "test") {
+  consola.setReporters(new consola.BasicReporter());
+}
+if (process.env.MM_LOG_LEVEL) {
+  consola.level = process.env.MM_LOG_LEVEL;
+}
 
 
 if (!process.env.NODE_ENV) {
   process.env.NODE_ENV = 'development';
 }
 
-const commands = [
-  {
-    command: "start",
-    describe: "Start serving MagicMirror in development mode",
-    builder: y => y.options({
-      browser: {
-        describe: "open a web browser instead of an electron window",
-        conflicts: "serveronly",
-      },
-      serveronly: {
-        describe: "don't open an electron window or a web browser",
-        conflicts: "browser",
-      }
-    })
-  },
-  {
-    command: "build",
-    describe: "Create an optimized build",
-    builder: y => y.options({
-      analyze: {
-        describe: "after the build, show the contents of the bundle in a web page"
-      }
-    })
-  },
-  {
-    command: "serve",
-    describe: "Run MagicMirror from a build",
-    builder: y => y.options({
-      build: {
-        describe: "if MagicMirror hasn't been built, run a build before serving",
-      },
-      browser: {
-        describe: "open a web browser"
-      },
-    })
-  }
-]
+const extensions = ['.mjs', '.js', '.ts', '.tsx', '.json', '.jsx'];
 
-commands
-  .reduce((yargs, command) => yargs.command(command), yargs)
-  .scriptName("mm")
-  .option("cwd", { type: "string", describe: "run mm in this directory" })
-  .option("config", { type: "string", describe: "the path to the MagicMirror config file" })
-  .option("log-level", { describe: "the minimum log level to be shown", choices: ["fatal", "error", "warn", "log", "info", "debug"] })
-  .help()
-  .showHelpOnFail(false)
-  .version(require("../package.json").version)
-  .epilogue("Run $0 <command> --help for more informaton about each command.")
 
-class CLI {
-  constructor(...argv) {
-    const options = yargs.parse(argv);
-    if (!options || !options._.length) {
-      return;
-    }
-    // handle cwd option
-    if (fs.existsSync(options.cwd)) {
-      process.chdir(options.cwd);
-    }
-    this.options = options;
-
-    const cwd = process.cwd(), extensions = ['.mjs', '.js', '.ts', '.tsx', '.json', '.jsx'];
-    const resolveExtensions = path => resolve.sync(path, {
+const cwd = process.cwd();
+// Try to resolve an extensioned or extensionless, relative or absolute, posix or windows path
+const resolveExtensions = p => {
+  const relative = "./" + path.relative(cwd, path.resolve(cwd, p)).replace("\\", "/");
+  try {
+    return resolve.sync(relative, {
       extensions: extensions,
       basedir: cwd,
     });
-    this.paths = {
-      cwd: cwd,
-      appModules: path.resolve("modules"),
-      appModulesDefault: path.resolve("modules", "default"),
-      appBuild: path.resolve("build"),
-      appConfig: resolveExtensions("./" + path.posix.relative(cwd, (options.config || process.env.MM_CONFIG_FILE || "config/config").replace("\\", "/"))),
-      appIndex: resolveExtensions("./src/index"),
-      appIndexHtml: path.resolve("index.html"),
-      appPackageJson: path.resolve("package.json"),
-      appTsConfig: path.resolve("tsconfig.json"),
-      appNodeModules: path.resolve("node_modules"), // be careful to only use this in Webpack options, so Yarn PnP works
-      extensions: extensions,
-      resolve: resolveExtensions,
-    };
-    // transpile server-side user files, including MagicMirror config
-    const { register } = require("./shared/babel-config");
-    register(this.paths);
-    this.config = loadConfig(this.paths.appConfig);
-  }
-
-  run() {
-    // run the command
-    const command = this.options && this.options._[0];
-    if (command && commands.map(c => c.command).includes(command)) {
-      // given a valid command, require the matching file in this directory and call the exported function as a method
-      const method = require(`./${command}`);
-      return method.apply(this);
+  } catch (e) {
+    if (e.code === "MODULE_NOT_FOUND") {
+      return "";
     } else {
-      yargs.showHelp(console.log);
-      return;
+      throw e;
     }
   }
-
-//   formatError(err) {
-//     return pe.render(err);
-//     let { name = "", fileName = "", loc, codeFrame = "", highlightedCodeFrame = "", message = "", stack = "" } = err;
-//     if (this.paths.cwd) {
-//       // omit device-specific portion of paths
-//       const basename = path.basename(this.paths.cwd);
-//       fileName = fileName && fileName.replace(this.paths.cwd, basename);
-//       stack = stack && stack.replace(this.paths.cwd, basename).replace(message, "");
-//       message = message && message.replace(this.paths.cwd, basename);
-//     }
-//     stack = stack && stack.split("\n").slice(1, 10).map(line => line.match(/node_modules|\(internal[/\\]|\.yarn[/\\]/) ? chalk.gray(line) : line).join("\n");
-//     message = message && message.replace(/error: /i, "");
-
-//     let parts = [];
-//     if (fileName && loc) {
-//       parts.push(chalk.bold.red(`${name || "Error"} at ${fileName}:${loc.line}:${loc.column}: `));
-//     } else {
-//       parts.push(chalk.bold.red(`${name || "Error"}: `));
-//     }
-//     parts.push(chalk.bold.red(`${message}\n\n`));
-
-//     if (highlightedCodeFrame && chalk.supportsColor) {
-//       parts.push(highlightedCodeFrame);
-//     } else if (codeFrame) {
-//       parts.push(codeFrame);
-//     } else if (stack) {
-//       parts.push(stack);
-//     }
-//     parts.push(`\n`)
-//     return parts.join("");
-//   }
 }
 
-(async function main() {
-  let instance = new CLI(...process.argv.slice(2));
-  try {
-    await instance.run();
-  } catch (err) {
-    console.log(instance.formatError(err));
+const paths = memoize(() => {
+  const paths = {
+    cwd: cwd,
+    appModules: path.resolve("modules"),
+    appModulesDefault: path.resolve("modules", "default"),
+    appBuild: path.resolve("build"),
+    appConfig: resolveExtensions(process.env.MM_CONFIG_FILE || "config/config"),
+    appIndex: resolveExtensions("src/index"),
+    appIndexHtml: path.resolve("index.html"),
+    appPackageJson: path.resolve("package.json"),
+    appTsConfig: path.resolve("tsconfig.json"),
+    appNodeModules: path.resolve("node_modules"), // be careful to only use this in Webpack options, so Yarn PnP works
+    extensions: extensions,
+    resolve: resolveExtensions,
   }
-})();
+  if (!paths.appIndex) {
+    console.fatal(`Couldn't find an entry file at '${path.resolve("src", `index.[${paths.extensions.join("|")}]`)}. `);
+  }
+  if (!paths.appConfig) {
+    console.warn(`Couldn't find a config file at '${path.resolve(process.env.MM_CONFIG_FILE || path.join("config", "config"))}', using defaults.\n`
+      + `Please create '${path.resolve("config", "config.js")}' or set MM_CONFIG_FILE to an existing config file.`);
+  }
+  // transpile server-side user files: MagicMirror config and module node helpers
+  const { register } = require("./shared/babel-config");
+  register(paths);
+  return paths;
+});
+
+const config = memoize((overrides) => loadConfig(paths().appConfig, overrides));
+const context = { paths, config };
+
+const cli = new Cli({
+  binaryLabel: "MagicMirror CLI",
+  binaryName: "mm",
+  binaryVersion: require("../package.json").version,
+})
+
+// Support the following commands
+cli.register(require("./start"));
+cli.register(require("./build"));
+cli.register(require("./serve"));
+cli.register(require("./view"));
+Command.Entries.Help.addPath(); // run help by default
+cli.register(Command.Entries.Help);
+cli.register(Command.Entries.Version);
+
+cli.runExit(process.argv.slice(2), {
+  ...Cli.defaultContext,
+  ...context,
+});

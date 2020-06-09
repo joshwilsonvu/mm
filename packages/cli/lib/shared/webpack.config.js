@@ -16,6 +16,8 @@ function webpackConfig({ mode = "development", paths, analyze }) {
   // Check if TypeScript is setup
   const useTypeScript = fs.existsSync(paths.appTsConfig);
 
+  if (!paths.appIndex) return null;
+
   return {
     mode: mode,
     context: __dirname,

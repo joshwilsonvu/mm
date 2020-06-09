@@ -5,12 +5,10 @@ const chalk = require("chalk");
 const forkTsCheckerWebpackPlugin = require("react-dev-utils/ForkTsCheckerWebpackPlugin");
 const formatWebpackMessages = require('react-dev-utils/formatWebpackMessages');
 const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
-const logSymbols = require("log-symbols");
 
 module.exports = createCompiler;
 function createCompiler({ config, useTypeScript }) {
   let compiler = webpack(config);
-  let handlers = new Handlers();
 
   // "invalid" event fires when you have changed a file, and webpack is
   // recompiling a bundle. If you refresh, it'll wait instead of serving the old one.
@@ -79,24 +77,29 @@ function createCompiler({ config, useTypeScript }) {
   return compiler;
 }
 
-class Handlers {
+const handlers = {
   invalid() {
-    console.log(logSymbols.info, 'Compiling...')
-  }
+    console.info('Compiling...')
+  },
   success() {
-    console.log(logSymbols.success, 'Compiled successfully!\n');
-  }
+    console.success('Compiled successfully!\n');
+  },
   warning(messages) {
-    console.warn(logSymbols.warning, chalk.bold.yellow('Compiled with warnings.\n'));
-    console.warn(messages.warnings.join('\n\n'));
+    console.warn(
+      chalk.bold.yellow('Compiled with warnings.\n\n'),
+      messages.warnings.join('\n\n'), "\n"
+    );
 
     // Teach some ESLint tricks.
-    console.log(`\nSearch for the ${chalk.underline(chalk.yellow('keywords'))} to learn more about each warning.`);
-    console.log(`To ignore, add ${chalk.cyan('// eslint-disable-next-line')} to the line before.\n`);
-  }
+    console.log(
+      `Search for the ${chalk.underline(chalk.yellow('keywords'))} to learn more about each warning.`,
+      `\nTo ignore, add ${chalk.cyan('// eslint-disable-next-line')} to the line before.\n`
+    );
+  },
   error(messages) {
-    console.error(logSymbols.error, chalk.bold.red('Failed to compile.\n'));
-    console.error(messages.errors[0]);
-    console.log("\n");
+    console.error(
+      chalk.bold.red('Failed to compile.\n\n'),
+      messages.errors[0], "\n"
+    );
   }
 }

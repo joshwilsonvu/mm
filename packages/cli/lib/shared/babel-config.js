@@ -12,19 +12,19 @@ exports.config = (paths, mode) => ({
   ],
   plugins: [],
   overrides: [
-    {
+    paths.appModules && {
       include: paths.appModules,
       plugins: [
         require.resolve("@mm/babel-plugin-transform-mm2")
       ]
     },
-    {
+    paths.appConfig && {
       include: paths.appConfig,
       plugins: [
         require.resolve("@mm/babel-plugin-transform-config")
       ]
     }
-  ],
+  ].filter(Boolean),
   sourceMaps: true,
   inputSourceMap: true,
 });
@@ -37,7 +37,7 @@ let registered = false;
  * files, but it's acceptable even in "production" mode because so few files will be transpiled.
  */
 exports.register = (paths, mode = "development") => {
-  if (!registered) {
+  if (!registered && paths.appModules && paths.appConfig) {
     const config = exports.config(paths, mode);
     // Convert import/export to require/module.exports, required for node but not for webpack
     config.plugins.push(require.resolve("babel-plugin-transform-es2015-modules-commonjs"));

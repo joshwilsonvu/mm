@@ -1,7 +1,3 @@
-/*
- * This file is a bare-bones shell for the client to run
- */
-
 // This is just the path to the electron binary--spawn another process with it
 const electronBin = require("electron");
 const execa = require("execa");
@@ -12,10 +8,10 @@ const execa = require("execa");
  * @param {function} cleanup a function to run before quitting
  * @param {Object} options parsed command line options
  */
-module.exports = function Window(config, options) {
+module.exports = function createWindow(config, {dev = false} = {}) {
   const electronScript = require.resolve("./window-impl");
   const configStr = JSON.stringify(config);
-  const optionsStr = JSON.stringify(options);
+  const optionsStr = JSON.stringify({dev});
 
   return {
     open() {

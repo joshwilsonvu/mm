@@ -1,54 +1,94 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`shows help message on '$ mm build -h' 1`] = `
-"[log] mm build
+"Prepare all source files, stylesheets, and asset files to be served with \`mm serve\`.
 
-Create an optimized build
+Usage:
 
-Options:
-  --cwd        run mm in this directory                                 [string]
-  --config     the path to the MagicMirror config file                  [string]
-  --log-level  the minimum log level to be shown
-                     [choices: \\"fatal\\", \\"error\\", \\"warn\\", \\"log\\", \\"info\\", \\"debug\\"]
-  --help       Show help                                               [boolean]
-  --version    Show version number                                     [boolean]
-  --analyze    after the build, show the contents of the bundle in a web page"
+$ mm build [--analyze]
+
+Details:
+
+\`mm build\` will compile all of your code, stylesheets, etc. into static files 
+that browsers can understand. The files will be placed into the ./build folder.
+
+Running \`mm serve\` will serve these static files and run Node helpers as needed 
+based on the config.
+
+\`mm build\` can take a long time, but it performs optimizations that make the 
+application load and run faster.
+
+Examples:
+
+build files for \`mm serve\`
+  $ yarn mm build
+
+show information about the compiled files after building
+  $ yarn mm build --analyze"
 `;
 
 exports[`shows help message on '$ mm serve -h' 1`] = `
-"[log] mm serve
+"Serve prebuilt files and run Node helpers.
 
-Run MagicMirror from a build
+Usage:
 
-Options:
-  --cwd        run mm in this directory                                 [string]
-  --config     the path to the MagicMirror config file                  [string]
-  --log-level  the minimum log level to be shown
-                     [choices: \\"fatal\\", \\"error\\", \\"warn\\", \\"log\\", \\"info\\", \\"debug\\"]
-  --help       Show help                                               [boolean]
-  --version    Show version number                                     [boolean]
-  --build      if MagicMirror hasn't been built, run a build before serving
-  --browser    open a web browser"
+$ mm serve [--build] [--view] [--browser]
+
+Details:
+
+\`mm serve\` will serve files previously built with \`mm build\` and run Node 
+helpers as needed based on the config.
+
+Unlike \`mm start\`, \`mm serve\` doesn't automatically update on file changes.
+
+\`mm view\` can connect to \`mm serve\` on another device.
+
+(Compare \`mm serve\` to \`npm run serveronly\` in MM2.)
+
+Examples:
+
+serve from a build for another device
+  $ yarn mm serve
+
+run \`mm build\` before serving if necessary
+  $ yarn mm serve --build
+
+serve and view in Electron on the same device
+  $ yarn mm serve --view
+
+serve and view in a browser on the same device
+  $ yarn mm serve --browser"
 `;
 
 exports[`shows help message on '$ mm start -h' 1`] = `
-"[log] mm start
+"Start the app and instantly see changes to your source files.
 
-Start serving MagicMirror in development mode
+Usage:
 
-Options:
-  --cwd         run mm in this directory                                [string]
-  --config      the path to the MagicMirror config file                 [string]
-  --log-level   the minimum log level to be shown
-                     [choices: \\"fatal\\", \\"error\\", \\"warn\\", \\"log\\", \\"info\\", \\"debug\\"]
-  --help        Show help                                              [boolean]
-  --version     Show version number                                    [boolean]
-  --browser     open a web browser instead of an electron window
-  --serveronly  don't open an electron window or a web browser"
+$ mm start [--no-view] [--browser]
+
+Details:
+
+\`mm start\` compiles your files on the fly and updates the app instantly as you 
+update your code or config.
+
+Use it to quickly configure your mirror or develop your module before optimizing 
+performance with \`mm build\`.
+
+Examples:
+
+Start with live updates
+  $ yarn mm start
+
+Start in a browser instead of Electron
+  $ yarn mm start --browser
+
+Start to be viewed on another device with \`mm view\`
+  $ yarn mm start --no-view"
 `;
 
 exports[`shows help message on '$ mm' 1`] = `
-"[log] mm [command]
+"mm [command]
 
 Commands:
   mm start  Start serving MagicMirror in development mode
@@ -63,5 +103,5 @@ Options:
   --help       Show help                                               [boolean]
   --version    Show version number                                     [boolean]
 
-Run mm <command> --help for more informaton about each command."
+Run mm [command] --help for more informaton about each command."
 `;

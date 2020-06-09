@@ -16,12 +16,15 @@ const { promisify } = require("util");
  * @param {object} paths
  * @param {function} middleware optional middleware to serve application html/js/css etc.
  */
-module.exports = async function Server(config, paths, ...middlewares) {
+module.exports = async function createServer(config, paths, ...middlewares) {
   // Initialize the express app
   const app = express();
   const server = await createHttpServer(config, app);
   const io = SocketIO(server);
-  // app.use(morgan("dev"));
+  // Log error requests
+  app.use(morgan(":method :url :status :res[content-length] - :total-time ms", {
+    skip(_, res) { return res.statusCode < 400 }
+  }));
   // Only allow whitelisted IP addresses
   if (config.ipWhitelist.length) {
     //app.use(IpFilter(config.ipWhitelist, { mode: "allow", log: false }));
@@ -45,7 +48,7 @@ module.exports = async function Server(config, paths, ...middlewares) {
 
   const nodeHelpers = collectNodeHelpers(paths);
   io.of((nsp, query, next) => {
-    next(null, true); // this lets us connect with dynamic namespaces
+    return next(null, true); // this lets us connect with dynamic namespaces
   }).on("connect", socket => {
     let helperName = socket.nsp.name;
     if (helperName.startsWith("/")) {
@@ -72,7 +75,7 @@ module.exports = async function Server(config, paths, ...middlewares) {
       if (helper.instance && typeof helper.instance.router === "function") {
         helper.instance.router(res, req, next);
       } else {
-        next();
+        return next();
       }
     })
     .forEach(router => app.use(router));
@@ -100,18 +103,23 @@ module.exports = async function Server(config, paths, ...middlewares) {
   // Error handler, for when a device not on the ipWhitelist tries to access
   app.use(function (err, req, res, next) {
     if (err instanceof IpDeniedError) {
-      console.log(err.message);
-      res.status(403).send("This device is not allowed to access your mirror. <br> Please check your config.js to change this.");
+      console.warn(err.message);
+      res.status(403).send(`
+      <html><head>
+        <style>body { background: #000; color: #FFF; width: 100%; text-align: center } main { display: inline-block; }</style>
+      </head><body><main>
+        <h1>This device (is not allowed to access .</h4>
+        <p>Check the output of your terminal for more information.</p>
+      </main></body></html>`);
     } else {
-      next(err);
+      return next(err);
     }
   });
 
   return {
     listen() {
       const port = config.port, host = config.address;
-      server.listen(...[port, host, () => console.log(`Listening on ${config.url}`)].filter(Boolean));
-      //this.server.once("error", this.stop.bind(this));
+      server.listen(...[port, host].filter(Boolean));
 
       process.on("SIGINT", () => {
         // shut down helpers even if they have connections
@@ -202,7 +210,7 @@ function collectNodeHelpers(paths) {
   for (const modulePath of moduleDirs) {
     const helper = getHelperFor(modulePath, paths);
     if (helper) {
-      console.log('loaded helper for', modulePath);
+      console.debug('loaded helper for', modulePath);
       nodeHelpers[helper.name] = helper;
     }
   }
@@ -213,6 +221,7 @@ async function createHttpServer(config, app) {
   if (config.useHttps) {
     let options;
     if (config.httpsPrivateKey && config.httpsCertificate) {
+      console.debug("Using HTTPS certificate from config");
       options = {
         key: fs.readFileSync(config.httpsPrivateKey),
         cert: fs.readFileSync(config.httpsCertificate)
@@ -220,7 +229,7 @@ async function createHttpServer(config, app) {
     } else {
       // if useHttps is set but not httpsPrivateKey and httpsCertificate, generate them on the fly
       const pem = require("pem");
-      console.log("Generating one-time HTTPS certificate...");
+      console.log("Generating one-time HTTPS certificate");
       const { certificate, serviceKey } = await promisify(pem.createCertificate.bind(pem))({ selfSigned: true, days: 365 });
       options = { key: serviceKey, cert: certificate };
     }

@@ -1,7 +1,7 @@
 'use strict';
 
 const defaults = {
-  address: "",
+  address: "127.0.0.1",
   port: 8080,
   kioskmode: false,
   electronOptions: {},
@@ -17,15 +17,24 @@ const defaults = {
 };
 
 // Load and normalize the config file
-module.exports = function loadConfig(configPath) {
-  let rawConfig = require(configPath);
-  if (rawConfig.default) {
-    rawConfig = rawConfig.default; // export default
+module.exports = function loadConfig(configPath, overrides = {}) {
+  let rawConfig = {};
+  if (configPath) {
+    rawConfig = require(configPath);
+    if (rawConfig.default) {
+      rawConfig = rawConfig.default; // export default
+    }
   }
   let config = Object.assign({}, defaults, rawConfig);
-  config.port = process.env.MM_PORT || config.port;
+  for (let key of Object.keys(overrides)) {
+    if (overrides[key] !== undefined) {
+      config[key] = overrides[key];
+    }
+  }
   // add `url` for convenience
-  config.url = `${config.useHttps ? "https" : "http"}://${config.address || "127.0.0.1"}:${config.port}/`;
+  if (!config.url) {
+    config.url = `${config.useHttps ? "https" : "http"}://${config.address || "127.0.0.1"}:${config.port}/`;
+  }
   checkDeprecatedConfig(config);
   return config;
 }
