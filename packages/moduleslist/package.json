@@ -1,7 +1,7 @@
 {
   "name": "@mm/moduleslist",
   "version": "0.0.1",
-  "main": "lib/index.js",
+  "main": "lib/index.json",
   "types": "lib/index.d.ts",
   "author": "Josh Wilson",
   "license": "MIT",
@@ -21,15 +21,15 @@
     "url": "git+https://github.com/joshwilsonvu/mm.git"
   },
   "scripts": {
+    "build": "node build.js",
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "bugs": {
     "url": "https://github.com/joshwilsonvu/mm/issues"
   },
   "devDependencies": {
-    "is-github-url": "^1.2.2"
-  },
-  "dependencies": {
+    "fs-extra": "^9.0.1",
+    "is-github-url": "^1.2.2",
     "yaml": "^1.10.0"
   }
 }
