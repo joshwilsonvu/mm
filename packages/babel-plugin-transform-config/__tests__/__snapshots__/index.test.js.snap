@@ -21,12 +21,48 @@ export default {
       module: "a-module",
       _component: require("react").lazy(() =>
         import(
-          "<PROJECT_ROOT>/packages/babel-plugin-transform-config/__tests__/modules/a-module/a-module.ts"
+          /* webpackChunkName: "a-module" */
+
+          /* webpackPreload: true */
+          "<PROJECT_ROOT>/packages/babel-plugin-transform-config/__tests__/modules/a-module/a-module.js"
         )
       ),
       _path:
-        "<PROJECT_ROOT>/packages/babel-plugin-transform-config/__tests__/modules/a-module/a-module.ts",
+        "<PROJECT_ROOT>/packages/babel-plugin-transform-config/__tests__/modules/a-module/a-module.js",
       position: "top_right",
+    },
+  ],
+};
+
+
+`;
+
+exports[`babel-plugin-transform-config doesn't search if option \`modulesPath\` is specified: doesn't search if option \`modulesPath\` is specified 1`] = `
+
+export default {
+  modules: [
+    {
+      module: "the-module"
+    }
+  ]
+};
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+export default {
+  modules: [
+    {
+      module: "the-module",
+      _component: require("react").lazy(() =>
+        import(
+          /* webpackChunkName: "the-module" */
+
+          /* webpackPreload: true */
+          "<PROJECT_ROOT>/packages/babel-plugin-transform-config/__tests__/custom-modules/the-module/index.js"
+        )
+      ),
+      _path:
+        "<PROJECT_ROOT>/packages/babel-plugin-transform-config/__tests__/custom-modules/the-module/index.js",
     },
   ],
 };
@@ -52,6 +88,9 @@ export default {
       module: "a-default-module",
       _component: require("react").lazy(() =>
         import(
+          /* webpackChunkName: "a-default-module" */
+
+          /* webpackPreload: true */
           "<PROJECT_ROOT>/packages/babel-plugin-transform-config/__tests__/modules/default/a-default-module/a-default-module.js"
         )
       ),

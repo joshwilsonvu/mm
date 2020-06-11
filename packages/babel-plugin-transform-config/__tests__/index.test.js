@@ -1,5 +1,4 @@
 
-
 const pluginTester = require('babel-plugin-tester').default;
 const plugin = require('..');
 
@@ -7,7 +6,6 @@ const plugin = require('..');
 const jestSerializerPath = require('jest-serializer-path');
 expect.addSnapshotSerializer(jestSerializerPath);
 
-const filename = require.resolve('./config/dummy');
 pluginTester({
   plugin: plugin,
   tests: {
@@ -49,10 +47,25 @@ pluginTester({
         };
       `,
       error: SyntaxError,
+    },
+    "doesn't search if option `modulesPath` is specified": {
+      code: `
+        export default {
+          modules: [
+            {
+              module: "the-module"
+            }
+          ]
+        };
+      `,
+      snapshot: true,
+      pluginOptions: {
+        modulesPath: "../../custom-modules",
+      }
     }
   },
   babelOptions: {
-    filename: filename,
+    filename: require.resolve('./config/dummy'),
     babelrc: false,
     configFile: false,
     root: __dirname,
