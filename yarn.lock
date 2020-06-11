@@ -2971,9 +2971,15 @@ __metadata:
   dependencies:
     "@babel/core": ^7.10.2
     "@babel/plugin-syntax-dynamic-import": ^7.8.3
+    babel-plugin-macros: ^2.8.0
     babel-plugin-tester: ^9.2.0
+    fast-memoize: ^2.5.2
     jest-serializer-path: ^0.1.15
-    memoize-one: ^5.1.1
+  peerDependencies:
+    babel-plugin-macros: "*"
+  peerDependenciesMeta:
+    babel-plugin-macros:
+      optional: true
   languageName: unknown
   linkType: soft
 
@@ -3036,6 +3042,7 @@ __metadata:
     resolve-url-loader: ^3.1.1
     sass-loader: ^8.0.2
     socket.io: ^2.3.0
+    strip-ansi: ^6.0.0
     style-loader: ^1.2.1
     ts-pnp: ^1.2.0
     typescript: ^3.9.3
@@ -3049,57 +3056,23 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@mm/components@workspace:packages/components":
-  version: 0.0.0-use.local
-  resolution: "@mm/components@workspace:packages/components"
-  dependencies:
-    "@testing-library/dom": ^7.10.0
-    "@types/node": ^14.0.11
-    "@types/react": ^16.9.23
-    axios: ^0.19.2
-    execa: ^4.0.2
-    fs-extra: ^9.0.1
-    mitt: ^1.2.0
-    react: ^16.13.1
-    react-test-renderer: ^16.13.1
-    strip-ansi: ^6.0.0
-    tslib: ^2.0.0
-    typescript: ^3.9.4
-    use-constant: ^1.0.0
-  peerDependencies:
-    react: ">=16.9.23"
-  languageName: unknown
-  linkType: soft
-
 "@mm/core@workspace:*, @mm/core@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@mm/core@workspace:packages/core"
   dependencies:
-    "@types/react": ^16.9.35
-    nanoid: ^3.1.9
-    tslib: ^2.0.0
-    typescript: ^3.9.4
-  peerDependencies:
-    "@types/react": ">=16.9.35"
-  languageName: unknown
-  linkType: soft
-
-"@mm/hooks@workspace:*, @mm/hooks@workspace:packages/hooks":
-  version: 0.0.0-use.local
-  resolution: "@mm/hooks@workspace:packages/hooks"
-  dependencies:
-    "@mm/core": "workspace:*"
-    "@testing-library/dom": ^7.10.0
+    "@testing-library/dom": ^7.11.0
     "@testing-library/react-hooks": ^3.3.0
-    "@types/react": ^16.9.23
+    "@types/node": ^14.0.13
+    "@types/react": ^16.9.35
     "@types/react-query": ^1.1.2
     "@types/socket.io": ^2.1.8
     "@types/socket.io-client": ^1.4.33
     fast-memoize: ^2.5.2
     immer: ^6.0.9
     mitt: ^1.2.0
+    nanoid: ^3.1.9
     react: ^16.13.1
-    react-query: ^1.5.3
+    react-query: ^1.5.7
     react-test-renderer: ^16.13.1
     socket.io: ^2.3.0
     socket.io-client: ^2.3.0
@@ -3107,9 +3080,8 @@ __metadata:
     typescript: ^3.9.4
     use-constant: ^1.0.0
   peerDependencies:
-    "@types/react": ">=16.9.23"
-    "@types/socket.io": ^2.1.8
-    react: ^16.12.0
+    "@types/react": ">=16.9.35"
+    "@types/react-query": ^1.1.2
   languageName: unknown
   linkType: soft
 
@@ -3119,7 +3091,6 @@ __metadata:
   dependencies:
     "@fortawesome/fontawesome-free": ^5.13.0
     "@mm/core": "workspace:*"
-    "@mm/hooks": "workspace:*"
     "@testing-library/jest-dom": ^5.9.0
     "@testing-library/react": ^10.2.0
     "@types/node": ^14.0.11
@@ -3146,6 +3117,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@mm/moduleslist@workspace:packages/moduleslist"
   dependencies:
+    fs-extra: ^9.0.1
     is-github-url: ^1.2.2
     yaml: ^1.10.0
   languageName: unknown
@@ -3155,7 +3127,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@mm/node-helper@workspace:packages/node-helper"
   dependencies:
-    "@mm/hooks": "workspace:*"
+    "@mm/core": "workspace:*"
     "@types/express": ^4.17.6
     "@types/node": ^14.0.11
     "@types/socket.io": ^2.1.8
@@ -3227,7 +3199,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/dom@npm:^7.10.0, @testing-library/dom@npm:^7.9.0":
+"@testing-library/dom@npm:^7.11.0":
+  version: 7.11.0
+  resolution: "@testing-library/dom@npm:7.11.0"
+  dependencies:
+    "@babel/runtime": ^7.10.2
+    aria-query: ^4.0.2
+    dom-accessibility-api: ^0.4.5
+    pretty-format: ^25.5.0
+  checksum: 6ef52d780fdd1daa70ad4a2b3c648b4e26217dda2a0adb68f068c28836d3133e42f88ad393cb67f3f6411cff0fb308a47585892ab4ed82870e1ff83b10cea172
+  languageName: node
+  linkType: hard
+
+"@testing-library/dom@npm:^7.9.0":
   version: 7.10.0
   resolution: "@testing-library/dom@npm:7.10.0"
   dependencies:
@@ -3498,6 +3482,13 @@ __metadata:
   version: 14.0.11
   resolution: "@types/node@npm:14.0.11"
   checksum: 96b1a437ff7d1bbd20d8cfc54b94c865e934906db13d20ac9e3d2d86509433a4433abe7fd4e091f894633d5728c5c7e25b5ef1e641e4c165bfb66de38da9a609
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^14.0.13":
+  version: 14.0.13
+  resolution: "@types/node@npm:14.0.13"
+  checksum: 2f2be6f7f1a916b0f4d58949bd934a8e41c0dcb15c493c17c3eaf78da3065c09650030f0dfe2e8c11880d597ee001d7cd925129218037fdb4432e80f7d895673
   languageName: node
   linkType: hard
 
@@ -4624,7 +4615,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-macros@npm:2.8.0":
+"babel-plugin-macros@npm:2.8.0, babel-plugin-macros@npm:^2.8.0":
   version: 2.8.0
   resolution: "babel-plugin-macros@npm:2.8.0"
   dependencies:
@@ -6564,6 +6555,13 @@ __metadata:
   version: 0.4.4
   resolution: "dom-accessibility-api@npm:0.4.4"
   checksum: 476d96a5fdd717e7d760bd5ebbecd1b2cee165171a2c85ea66166ccf46e88807e01ae86b50266e1afedbda233c8394447680e96c3847f769e148e762625e63a3
+  languageName: node
+  linkType: hard
+
+"dom-accessibility-api@npm:^0.4.5":
+  version: 0.4.5
+  resolution: "dom-accessibility-api@npm:0.4.5"
+  checksum: c4058ec0556b6910420513003ec7db5c9cebf7ac996b3d01682abc99de6874a4ce11fa817498c3a7f1a8cd72bfcc20f1af8975b810248f8be6bc58c966d0299d
   languageName: node
   linkType: hard
 
@@ -10471,13 +10469,6 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"memoize-one@npm:^5.1.1":
-  version: 5.1.1
-  resolution: "memoize-one@npm:5.1.1"
-  checksum: e7c4a9cceca71334bf09c38818c375a280dc6e8ec03a92701c16199763269ce756b7b0b370f4b464c071045349fb7b3e4a3cc7460a3f46a277f394d8634a6eb5
-  languageName: node
-  linkType: hard
-
 "memory-fs@npm:^0.4.1":
   version: 0.4.1
   resolution: "memory-fs@npm:0.4.1"
@@ -12799,15 +12790,15 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"react-query@npm:^1.5.3":
-  version: 1.5.3
-  resolution: "react-query@npm:1.5.3"
+"react-query@npm:^1.5.7":
+  version: 1.5.7
+  resolution: "react-query@npm:1.5.7"
   dependencies:
     "@scarf/scarf": ^1.0.0
     ts-toolbelt: ^6.4.2
   peerDependencies:
     react: ^16.6.3
-  checksum: 9e57daa943fe785504c5e406bdbd6f0d9bee66604431fe7f7277b61d6d3f5d7ef369c4d101e75b6d609c65703fc45e042ef07b5525901a93fac65cbe9d3c025f
+  checksum: 0f26b300c7f0e08a88e4b20e27fa1e70ab5ddb2648915d36c995691519781b7c114fbfd1b9bc136c74f02ec7cc8d4daaa2986796f16baabcdd014bdbb46be122
   languageName: node
   linkType: hard
 

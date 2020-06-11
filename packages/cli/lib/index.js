@@ -86,7 +86,9 @@ Command.Entries.Help.addPath(); // run help by default
 cli.register(Command.Entries.Help);
 cli.register(Command.Entries.Version);
 
-cli.runExit(process.argv.slice(2), {
+cli.run(process.argv.slice(2), {
   ...Cli.defaultContext,
   ...context,
+}).then(code => {
+  process.exit(code);
 });

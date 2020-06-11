@@ -40,7 +40,12 @@ class ViewCommand extends Command {
     console.info("Viewing", url);
     const window = createWindow(config);
     window.open();
-    process.on("exit", () => console.log("Exiting."));
+    return new Promise(resolve => {
+      process.on("SIGINT", () => {
+        resolve && resolve();
+        setTimeout(() => process.exit(0), 1000).unref();
+      });
+    });
   }
 }
 

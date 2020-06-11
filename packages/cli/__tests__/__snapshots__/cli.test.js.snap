@@ -88,20 +88,24 @@ Start to be viewed on another device with \`mm view\`
 `;
 
 exports[`shows help message on '$ mm' 1`] = `
-"mm [command]
+"MagicMirror CLI - 0.2.0
 
-Commands:
-  mm start  Start serving MagicMirror in development mode
-  mm build  Create an optimized build
-  mm serve  Run MagicMirror from a build
+  $ mm <command>
 
-Options:
-  --cwd        run mm in this directory                                 [string]
-  --config     the path to the MagicMirror config file                  [string]
-  --log-level  the minimum log level to be shown
-                     [choices: \\"fatal\\", \\"error\\", \\"warn\\", \\"log\\", \\"info\\", \\"debug\\"]
-  --help       Show help                                               [boolean]
-  --version    Show version number                                     [boolean]
+Where <command> is one of:
 
-Run mm [command] --help for more informaton about each command."
+  mm build [--analyze]
+    Prepare all source files, stylesheets, and asset files to be served with \`mm serve\`.
+
+  mm serve [--build] [--view] [--browser]
+    Serve prebuilt files and run Node helpers.
+
+  mm start [--no-view] [--browser]
+    Start the app and instantly see changes to your source files.
+
+  mm view [--address,-a #0] [--port,-p #0] [--url,-u #0]
+    Connect to \`mm serve\` and display the application.
+
+You can also print more details about any of these commands by calling them 
+after adding the \`-h,--help\` flag right after the command name."
 `;

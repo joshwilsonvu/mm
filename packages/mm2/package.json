@@ -45,7 +45,6 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.13.0",
     "@mm/core": "workspace:*",
-    "@mm/hooks": "workspace:*",
     "moment-timezone": "^0.5.31",
     "nunjucks": "^3.2.1",
     "path": "^0.12.7",

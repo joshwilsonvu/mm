@@ -1,6 +1,6 @@
 import * as React from 'react';
 import produce from 'immer';
-import { InternalConfig as Config } from "@mm/core";
+import { InternalConfig as Config } from "../types";
 
 export {
   ConfigProvider,

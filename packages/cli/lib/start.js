@@ -53,16 +53,22 @@ class StartCommand extends Command {
     console.info("Press Ctrl+C to stop.");
     server.listen();
 
-    if (!this.browser && !this.noView) {
-      const window = createWindow(config, { dev: true });
-      await window.open();
+    if (this.noView) {
+      // don't open anything
     } else if (this.browser) {
       openBrowser(config.url);
+    } else {
+      const window = createWindow(config, { dev: true });
+      await window.open();
     }
-    process.on("SIGINT", () => {
-      devMiddleware.close();
-      hotMiddleware.close();
-      setTimeout(() => process.exit(0), 1000);
+
+    return new Promise(resolve => {
+      process.once("SIGINT", () => {
+        devMiddleware.close();
+        hotMiddleware.close();
+        setTimeout(() => process.exit(0), 1000).unref();
+        resolve && resolve();
+      });
     });
   }
 }

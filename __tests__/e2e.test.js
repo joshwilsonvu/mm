@@ -13,13 +13,14 @@ const paths = {
   entry: path.join(cwd, "src", "index.js"),
   buildHtml: path.join(cwd, "build", "index.html"),
   git: path.join(cwd, ".git"),
+  packageJson: path.join(cwd, "package.json"),
 };
 
 describe.skip("MagicMirror template works with mm packages", () => {
   beforeAll(async () => {
     jest.setTimeout(5 * 60 * 1000);
 
-    if (!(await fs.pathExists(paths.git))) {
+    if (!(await fs.pathExists(paths.git)) || (process.env.CI && process.env.CI !== "false")) {
       // if there isn't a copy of MagicMirror, clone the latest commit
       await fs.emptyDir(paths.cwd);
       await execa("git", ["clone", MAGICMIRROR_URL, paths.cwd, "--depth=1"], { cwd: __dirname });
@@ -32,7 +33,16 @@ describe.skip("MagicMirror template works with mm packages", () => {
     const { stdout: yarnVersion } = await execa("yarn", ["--version"], { cwd: paths.cwd });
     expect(yarnVersion.startsWith("2.")).toBe(true);
 
-    // use local @mm packages from this monorepo
+    // use local @mm packages from this monorepo, after removing any @mm/ resolutions from the cloned repo
+    const packageJson = await fs.readJson(paths.packageJson);
+    if (packageJson.resolutions) {
+      for (let resolution of Object.keys(packageJson.resolutions)) {
+        if (resolution.startsWith("@mm/")) {
+          delete packageJson.resolutions[resolution];
+        }
+      }
+    }
+    await fs.writeJson(paths.packageJson, packageJson);
     await execa("yarn", ["link", process.cwd() /* mm, not MagicMirror */, "--all", "--relative"], { cwd: paths.cwd });
     await execa("yarn", ["install"], { cwd: paths.cwd });
   });
@@ -56,7 +66,7 @@ describe.skip("MagicMirror template works with mm packages", () => {
     jest.setTimeout(60 * 1000);
 
     expect(await fs.pathExists(paths.entry)).toBe(true);
-    const subprocess = execa("yarn", ["start", "--serveronly"], {
+    const subprocess = execa("yarn", ["start", "--no-view"], {
       cwd: paths.cwd
     });
 

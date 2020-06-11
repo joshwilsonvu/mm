@@ -13,7 +13,7 @@ function createCompiler({ config, useTypeScript }) {
   // "invalid" event fires when you have changed a file, and webpack is
   // recompiling a bundle. If you refresh, it'll wait instead of serving the old one.
   // "invalid" is short for "bundle invalidated", it doesn't imply any errors.
-  compiler.hooks.watchRun.tap('invalid', () => {
+  compiler.hooks.watchRun.tap('buildStart', () => {
     handlers.invalid();
   });
 

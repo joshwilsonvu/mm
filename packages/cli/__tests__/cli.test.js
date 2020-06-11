@@ -1,4 +1,5 @@
 const execa = require("execa");
+const stripAnsi = require("strip-ansi");
 const cliPath = require.resolve("..");
 
 /*
@@ -8,7 +9,7 @@ const cliPath = require.resolve("..");
  */
 async function testOutput(...args) {
   const result = await execa(cliPath, args);
-  expect(result.stdout).toMatchSnapshot();
+  expect(stripAnsi(result.stdout)).toMatchSnapshot();
 }
 test("shows help message on '$ mm'", () => testOutput());
 

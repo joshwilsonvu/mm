@@ -2,10 +2,7 @@ import path from 'path';
 import { nunjucks } from './mm2-globals';
 import React, { useState, useRef, useEffect, useLayoutEffect, useCallback } from "react";
 import useConstant from "use-constant";
-import { useNotification, useModifyConfig, useSocketNotification } from "@mm/hooks";
-import type { ComponentProps } from "@mm/core";
-
-
+import { useNotification, useModifyConfig, useSocketNotification, ComponentProps } from "@mm/core";
 
 
 /**

@@ -8,7 +8,7 @@
 import path from "path";
 import express from "express";
 import type SocketIO from "socket.io";
-import { serverSocketEmitter } from "@mm/hooks";
+import { serverSocketEmitter } from "@mm/core";
 import type mitt from "mitt";
 
 export default class NodeHelper {
@@ -104,11 +104,9 @@ export default class NodeHelper {
 	 *     }`
 	 * and using the ES6 class syntax is recommended.
 	 */
-	static create(moduleDefinition: Record<string, any>) {
+	static create(moduleDefinition: Partial<NodeHelper> & Record<string, any>) {
 		class Subclass extends NodeHelper {}
 		Object.assign(Subclass.prototype, moduleDefinition);
 		return Subclass as typeof NodeHelper;
 	}
 };
-
-

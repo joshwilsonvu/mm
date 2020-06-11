@@ -6,7 +6,7 @@ exports.config = (paths, mode) => ({
   root: paths.cwd,
   babelrc: false,
   configFile: false,
-  compact: mode === "production",
+  compact: false,
   presets: [
     require.resolve("babel-preset-react-app")
   ],
@@ -25,6 +25,7 @@ exports.config = (paths, mode) => ({
       ]
     }
   ].filter(Boolean),
+  comments: true,
   sourceMaps: true,
   inputSourceMap: true,
 });

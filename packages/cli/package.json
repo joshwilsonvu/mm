@@ -35,7 +35,8 @@
     "url": "https://github.com/joshwilsonvu/mm/issues"
   },
   "devDependencies": {
-    "execa": "^4.0.2"
+    "execa": "^4.0.2",
+    "strip-ansi": "^6.0.0"
   },
   "dependencies": {
     "@babel/core": "^7.10.2",

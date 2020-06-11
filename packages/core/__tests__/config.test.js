@@ -4,8 +4,7 @@
 
 import React from "react";
 import { renderHook, act } from "@testing-library/react-hooks";
-import { ConfigProvider, useCurrentConfig, useSetConfig, useModifyConfig } from '../src';
-import { initializeConfig } from "@mm/core";
+import { ConfigProvider, useCurrentConfig, useSetConfig, useModifyConfig, initializeConfig } from '../src';
 
 const initialConfig = { port: 8080, timeFormat: 12 };
 let currentConfig;

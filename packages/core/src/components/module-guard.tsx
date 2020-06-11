@@ -42,7 +42,15 @@ export class ModuleGuard extends React.Component<Props, State> {
         return null; // don't display error'ed module in production
       }
     } else {
-      return <>{this.props.children}</>;
+      return (
+        // Suspense lets each module load independently, so one module with
+        // many dependencies doesn't affect another module's loading time
+        <React.Suspense fallback={
+          <div>Loading...</div>
+        }>
+          {this.props.children}
+        </React.Suspense>
+      );
     }
   }
 }

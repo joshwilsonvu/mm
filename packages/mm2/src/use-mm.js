@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useSendNotification } from '@mm/hooks';
+import { useSendNotification } from '../dist/hooks';
 
 // Expose a backwards-compatible hook version of the global MM variable
 // export const useMM = ({ includeDeprecated }) => {

@@ -55,6 +55,12 @@ class ServeCommand extends Command {
       const window = Window(config, { dev: true });
       await window.open();
     }
+    return new Promise(resolve => {
+      process.once("SIGINT", () => {
+        setTimeout(() => process.exit(0), 1000).unref();
+        resolve && resolve();
+      });
+    });
   }
 }
 
