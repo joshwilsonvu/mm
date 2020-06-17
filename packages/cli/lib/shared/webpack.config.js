@@ -1,12 +1,12 @@
-'use strict';
+"use strict";
 
 const fs = require("fs");
 const webpack = require("webpack");
 const PnpWebpackPlugin = require("pnp-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const ForkTsCheckerWebpackPlugin = require('react-dev-utils/ForkTsCheckerWebpackPlugin');
-const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
-const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
+const ForkTsCheckerWebpackPlugin = require("react-dev-utils/ForkTsCheckerWebpackPlugin");
+const ModuleNotFoundPlugin = require("react-dev-utils/ModuleNotFoundPlugin");
+const CaseSensitivePathsPlugin = require("case-sensitive-paths-webpack-plugin");
 const postcssNormalize = require("postcss-normalize");
 
 const ignoreRegex = /node_modules|\.yarn|@babel(?:\/|\\{1,2})runtime/;
@@ -21,7 +21,10 @@ function webpackConfig({ mode = "development", paths, analyze }) {
   return {
     mode: mode,
     context: __dirname,
-    entry: [mode !== "production" && "webpack-hot-middleware/client?noInfo=true", paths.appIndex].filter(Boolean),
+    entry: [
+      mode !== "production" && "webpack-hot-middleware/client?noInfo=true",
+      paths.appIndex,
+    ].filter(Boolean),
     output: {
       path: paths.appBuild,
     },
@@ -34,8 +37,8 @@ function webpackConfig({ mode = "development", paths, analyze }) {
       plugins: [
         // Adds support for installing with Plug'n'Play, leading to faster installs and adding
         // guards against forgotten dependencies and such.
-        PnpWebpackPlugin
-      ]
+        PnpWebpackPlugin,
+      ],
     },
     resolveLoader: {
       plugins: [
@@ -50,14 +53,14 @@ function webpackConfig({ mode = "development", paths, analyze }) {
       // https://twitter.com/wSokra/status/969633336732905474
       // https://medium.com/webpack/webpack-4-code-splitting-chunk-graph-and-the-splitchunks-optimization-be739a861366
       splitChunks: {
-        chunks: 'all',
+        chunks: "all",
         name: false,
       },
       // Keep the runtime chunk separated to enable long term caching
       // https://twitter.com/wSokra/status/969679223278505985
       // https://github.com/facebook/create-react-app/issues/5358
       runtimeChunk: {
-        name: entrypoint => `runtime-${entrypoint.name}`,
+        name: (entrypoint) => `runtime-${entrypoint.name}`,
       },
     },
     module: {
@@ -78,13 +81,13 @@ function webpackConfig({ mode = "development", paths, analyze }) {
               options: {
                 configFile: require.resolve("./eslint-config"),
                 //cache: true,
-                formatter: require.resolve('react-dev-utils/eslintFormatter'),
-                eslintPath: require.resolve('eslint'),
+                formatter: require.resolve("react-dev-utils/eslintFormatter"),
+                eslintPath: require.resolve("eslint"),
                 resolvePluginsRelativeTo: __dirname,
               },
-              loader: require.resolve('eslint-loader'),
+              loader: require.resolve("eslint-loader"),
             },
-          ]
+          ],
         },
         {
           // "oneOf" will traverse all following loaders until on will
@@ -100,8 +103,8 @@ function webpackConfig({ mode = "development", paths, analyze }) {
               options: {
                 cacheDirectory: true,
                 cacheCompression: false,
-                ...require("./babel-config").config(paths, mode)
-              }
+                ...require("./babel-config").config(paths, mode),
+              },
             },
             // "postcss" loader applies autoprefixer to our CSS.
             // "css" loader resolves paths in CSS and adds assets as dependencies.
@@ -141,7 +144,7 @@ function webpackConfig({ mode = "development", paths, analyze }) {
                 {
                   importLoaders: 3,
                 },
-                require.resolve('sass-loader')
+                require.resolve("sass-loader")
               ),
               // Don't consider CSS imports dead code even if the
               // containing package claims to have no side effects.
@@ -158,7 +161,7 @@ function webpackConfig({ mode = "development", paths, analyze }) {
                   importLoaders: 3,
                   modules: true,
                 },
-                require.resolve('sass-loader')
+                require.resolve("sass-loader")
               ),
             },
             // "file" loader makes sure those assets get served by WebpackDevServer.
@@ -167,19 +170,19 @@ function webpackConfig({ mode = "development", paths, analyze }) {
             // This loader doesn't use a "test" so it will catch all modules
             // that fall through the other loaders.
             {
-              loader: require.resolve('file-loader'),
+              loader: require.resolve("file-loader"),
               // Exclude `js` files to keep "css" loader working as it injects
               // its runtime that would otherwise be processed through "file" loader.
               // Also exclude `html` and `json` extensions so they get processed
               // by webpacks internal loaders.
               exclude: [/\.(js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/],
               options: {
-                name: 'static/media/[name].[hash:8].[ext]',
+                name: "static/media/[name].[hash:8].[ext]",
               },
             },
-          ]
-        }
-      ]
+          ],
+        },
+      ],
     },
     plugins: [
       // Generates an `index.html` file with the <script> injected.
@@ -192,11 +195,11 @@ function webpackConfig({ mode = "development", paths, analyze }) {
       new ModuleNotFoundPlugin(paths.cwd),
       // Watcher doesn't work well if you mistype casing in a path so we use
       // a plugin that prints an error when you attempt to do this.
-      mode !== 'production' && new CaseSensitivePathsPlugin(),
+      mode !== "production" && new CaseSensitivePathsPlugin(),
       // This is necessary to emit hot updates
-      mode !== 'production' && new webpack.HotModuleReplacementPlugin(),
+      mode !== "production" && new webpack.HotModuleReplacementPlugin(),
       new webpack.DefinePlugin({
-        'process.env.NODE_ENV': JSON.stringify(mode)
+        "process.env.NODE_ENV": JSON.stringify(mode),
       }),
       // Moment.js is an extremely popular library that bundles large locale files
       // by default due to how webpack interprets its code. This is a practical
@@ -206,33 +209,35 @@ function webpackConfig({ mode = "development", paths, analyze }) {
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
       // TypeScript type checking
       useTypeScript &&
-      new ForkTsCheckerWebpackPlugin({
-        typescript: require.resolve("typescript"),
-        async: mode !== 'production',
-        useTypescriptIncrementalApi: true,
-        //checkSyntacticErrors: true,
-        resolveModuleNameModule: process.versions.pnp
-          ? require.resolve("./pnpTs.js")
-          : undefined,
-        resolveTypeReferenceDirectiveModule: process.versions.pnp
-          ? require.resolve("./pnpTs.js")
-          : undefined,
-        tsconfig: paths.appTsConfig,
-        reportFiles: [
-          '**',
-          '!**/__tests__/**',
-          '!**/?(*.)(spec|test).*',
-          '!**/src/setupProxy.*',
-          '!**/src/setupTests.*',
-          '!**/.yarn/**',
-          '!**/node_modules/**',
-        ],
-        silent: true,
-        // The formatter is invoked directly in WebpackDevServerUtils during development
-      }),
+        new ForkTsCheckerWebpackPlugin({
+          typescript: require.resolve("typescript"),
+          async: mode !== "production",
+          useTypescriptIncrementalApi: true,
+          //checkSyntacticErrors: true,
+          resolveModuleNameModule: process.versions.pnp
+            ? require.resolve("./pnpTs.js")
+            : undefined,
+          resolveTypeReferenceDirectiveModule: process.versions.pnp
+            ? require.resolve("./pnpTs.js")
+            : undefined,
+          tsconfig: paths.appTsConfig,
+          reportFiles: [
+            "**",
+            "!**/__tests__/**",
+            "!**/?(*.)(spec|test).*",
+            "!**/src/setupProxy.*",
+            "!**/src/setupTests.*",
+            "!**/.yarn/**",
+            "!**/node_modules/**",
+          ],
+          silent: true,
+          // The formatter is invoked directly in WebpackDevServerUtils during development
+        }),
       // If analyze is true, open up a bundle analysis page after the build
       analyze &&
-      new (require("webpack-bundle-analyzer").BundleAnalyzerPlugin)({ analyzerMode: "static" })
+        new (require("webpack-bundle-analyzer").BundleAnalyzerPlugin)({
+          analyzerMode: "static",
+        }),
     ].filter(Boolean),
     stats: false,
     bail: mode === "production",
@@ -243,7 +248,7 @@ function webpackConfig({ mode = "development", paths, analyze }) {
       hints: mode === "production" ? "warning" : false,
     },
     infrastructureLogging: {
-      level: 'none'
+      level: "none",
     },
     node: {
       // Include Node.js __dirname/__filename even for browser files
@@ -252,33 +257,33 @@ function webpackConfig({ mode = "development", paths, analyze }) {
     },
     watchOptions: {
       aggregateTimeout: 1000,
-      ignored: ignoreRegex
-    }
-  }
+      ignored: ignoreRegex,
+    },
+  };
 }
 
 // common function to get style loaders
 function getStyleLoaders(cssOptions, preProcessor) {
   const loaders = [
-    require.resolve('style-loader'),
+    require.resolve("style-loader"),
     {
-      loader: require.resolve('css-loader'),
+      loader: require.resolve("css-loader"),
       options: cssOptions,
     },
     {
       // Options for PostCSS as we reference these options twice
       // Adds vendor prefixing based on your specified browser support in
       // package.json
-      loader: require.resolve('postcss-loader'),
+      loader: require.resolve("postcss-loader"),
       options: {
         // Necessary for external CSS imports to work
         // https://github.com/facebook/create-react-app/issues/2677
-        ident: 'postcss',
+        ident: "postcss",
         plugins: () => [
-          require('postcss-flexbugs-fixes'),
-          require('postcss-preset-env')({
+          require("postcss-flexbugs-fixes"),
+          require("postcss-preset-env")({
             autoprefixer: {
-              flexbox: 'no-2009',
+              flexbox: "no-2009",
             },
             stage: 3,
           }),
@@ -293,7 +298,7 @@ function getStyleLoaders(cssOptions, preProcessor) {
   if (preProcessor) {
     loaders.push(
       {
-        loader: require.resolve('resolve-url-loader'),
+        loader: require.resolve("resolve-url-loader"),
       },
       {
         loader: preProcessor,
@@ -304,4 +309,4 @@ function getStyleLoaders(cssOptions, preProcessor) {
     );
   }
   return loaders;
-};
+}

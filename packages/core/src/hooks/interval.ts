@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 /**
  * setInterval, but as a React hook. Run a function periodically.
@@ -33,7 +33,10 @@ export function useInterval(callback: () => any, delayMs: number | null) {
  * @param callback
  * @param delayMs
  */
-export function usePreciseInterval(callback: () => any, delayMs: number | null) {
+export function usePreciseInterval(
+  callback: () => any,
+  delayMs: number | null
+) {
   const savedCallback = useRef<typeof callback>();
 
   // Remember the latest callback
@@ -49,7 +52,7 @@ export function usePreciseInterval(callback: () => any, delayMs: number | null) 
       let clear = setPreciseInterval(tick, delayMs);
       return clear;
     }
-  }, [delayMs])
+  }, [delayMs]);
 }
 
 // setInterval(), but uses dates so that the interval doesn't drift over time
@@ -60,7 +63,7 @@ function setPreciseInterval(callback: () => any, delayMs: number) {
   function advance() {
     callback();
     target = target + delayMs;
-    id = setTimeout(advance, target - Date.now())
+    id = setTimeout(advance, target - Date.now());
   }
   id = setTimeout(advance, delayMs);
   return () => clearTimeout(id);

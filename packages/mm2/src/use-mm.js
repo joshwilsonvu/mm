@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-import { useSendNotification } from '../dist/hooks';
+import { useMemo } from "react";
+import { useSendNotification } from "../dist/hooks";
 
 // Expose a backwards-compatible hook version of the global MM variable
 // export const useMM = ({ includeDeprecated }) => {
@@ -65,12 +65,12 @@ const selectionMethods = {
    */
   modulesByClass(className, include) {
     let searchClasses = className;
-    if (typeof className === 'string') {
-      searchClasses = className.split(' ');
+    if (typeof className === "string") {
+      searchClasses = className.split(" ");
     }
 
-    let newModules = this.filter(function(module) {
-      let classes = module.data.classes.toLowerCase().split(' ');
+    let newModules = this.filter(function (module) {
+      let classes = module.data.classes.toLowerCase().split(" ");
 
       for (let searchClass of searchClasses) {
         if (classes.indexOf(searchClass.toLowerCase()) !== -1) {
@@ -93,7 +93,7 @@ const selectionMethods = {
    * return array - Filtered collection of modules.
    */
   exceptModule(module) {
-    let newModules = this.filter(function(mod) {
+    let newModules = this.filter(function (mod) {
       return mod.identifier !== module.identifier;
     });
 

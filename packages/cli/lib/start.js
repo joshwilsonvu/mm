@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-const { Command } = require("clipanion")
+const { Command } = require("clipanion");
 
 const details = `\`mm start\` compiles your files on the fly and updates \
 the app instantly as you update your code or config.
@@ -10,14 +10,18 @@ with \`mm build\`.`;
 
 class StartCommand extends Command {
   static usage = Command.Usage({
-    description: "Start the app and instantly see changes to your source files.",
+    description:
+      "Start the app and instantly see changes to your source files.",
     details: details,
     examples: [
       ["Start with live updates", "yarn mm start"],
       ["Start in a browser instead of Electron", "yarn mm start --browser"],
-      ["Start to be viewed on another device with `mm view`", "yarn mm start --no-view"],
-    ]
-  })
+      [
+        "Start to be viewed on another device with `mm view`",
+        "yarn mm start --no-view",
+      ],
+    ],
+  });
 
   // options
   noView = false;
@@ -46,9 +50,16 @@ class StartCommand extends Command {
     });
 
     const hotMiddleware = webpackHotMiddleware(compiler, { log: false });
-    const devMiddleware = webpackDevMiddleware(compiler, { logLevel: "silent" });
+    const devMiddleware = webpackDevMiddleware(compiler, {
+      logLevel: "silent",
+    });
 
-    const server = await createServer(config, paths, hotMiddleware, devMiddleware);
+    const server = await createServer(
+      config,
+      paths,
+      hotMiddleware,
+      devMiddleware
+    );
     console.success("Listening on", config.url);
     console.info("Press Ctrl+C to stop.");
     server.listen();
@@ -62,7 +73,7 @@ class StartCommand extends Command {
       await window.open();
     }
 
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       process.once("SIGINT", () => {
         devMiddleware.close();
         hotMiddleware.close();

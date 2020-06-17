@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 const fs = require("fs-extra");
 const path = require("path");
@@ -6,11 +6,12 @@ const express = require("express");
 const SocketIO = require("socket.io");
 const { IpFilter, IpDeniedError } = require("express-ipfilter");
 const morgan = require("morgan");
-morgan.token('status-text', function (req, res) { return res.statusMessage });
+morgan.token("status-text", function (req, res) {
+  return res.statusMessage;
+});
 const helmet = require("helmet");
 const chalk = require("chalk");
 const { promisify } = require("util");
-
 
 /**
  * Runs a express/socket.io server that serves MagicMirror files and runs node helpers.
@@ -24,10 +25,21 @@ module.exports = async function createServer(config, paths, ...middlewares) {
   const server = await createHttpServer(config, app);
   const io = SocketIO(server);
   // Log error requests
-  app.use(morgan(`A :method request to ${chalk.underline(":url")} from ${chalk.underline(":remote-addr")} `
-  + `failed with status ${chalk.bold.red(":status :status-text")}. ${chalk.dim("(:res[content-length] bytes, :total-time ms)")}`, {
-    skip(req, res) { return res.statusCode < 400 }
-  }));
+  app.use(
+    morgan(
+      `A :method request to ${chalk.underline(":url")} from ${chalk.underline(
+        ":remote-addr"
+      )} ` +
+        `failed with status ${chalk.bold.red(
+          ":status :status-text"
+        )}. ${chalk.dim("(:res[content-length] bytes, :total-time ms)")}`,
+      {
+        skip(req, res) {
+          return res.statusCode < 400;
+        },
+      }
+    )
+  );
   // Only allow listed IP addresses
   if (config.ipAllowlist.length) {
     //app.use(IpFilter(config.ipAllowlist, { mode: "allow", log: false }));
@@ -44,15 +56,20 @@ module.exports = async function createServer(config, paths, ...middlewares) {
   }
 
   // Use top-level package version
-  const version = (fs.existsSync(paths.appPackageJson) && fs.readJsonSync(paths.appPackageJson).version) || "0.0.0";
+  const version =
+    (fs.existsSync(paths.appPackageJson) &&
+      fs.readJsonSync(paths.appPackageJson).version) ||
+    "0.0.0";
   app.get("/version", (req, res) => res.json(version));
   // Config goes stale if client dynamically changes config
-  app.get("/config", (req, res) => res.type('application/json').send(JSON.stringify(config, undefined, 2)));
+  app.get("/config", (req, res) =>
+    res.type("application/json").send(JSON.stringify(config, undefined, 2))
+  );
 
   const nodeHelpers = collectNodeHelpers(paths);
   io.of((nsp, query, next) => {
     return next(null, true); // this lets us connect with dynamic namespaces
-  }).on("connect", socket => {
+  }).on("connect", (socket) => {
     let helperName = socket.nsp.name;
     if (helperName.startsWith("/")) {
       helperName = helperName.substr(1);
@@ -69,29 +86,29 @@ module.exports = async function createServer(config, paths, ...middlewares) {
       if (helper) {
         helper.unref();
       }
-    })
+    });
   });
 
   // Use each helper's router, if the helper is currently loaded
   Object.values(nodeHelpers)
-    .map(helper => (res, req, next) => {
+    .map((helper) => (res, req, next) => {
       if (helper.instance && typeof helper.instance.router === "function") {
         helper.instance.router(res, req, next);
       } else {
         return next();
       }
     })
-    .forEach(router => app.use(router));
+    .forEach((router) => app.use(router));
 
   // Add the middleware needed to serve html/js/css, defaulting to statically serving the "/build" folder
   if (!middlewares.length) {
     if (paths.appBuild) {
       middlewares = [express.static(paths.appBuild)];
     } else {
-      console.warn()
+      console.warn();
     }
   }
-  middlewares.forEach(middleware => app.use(middleware));
+  middlewares.forEach((middleware) => app.use(middleware));
 
   // 404 for all paths not already handled
   app.get("*", (req, res) => {
@@ -102,7 +119,7 @@ module.exports = async function createServer(config, paths, ...middlewares) {
       <h1>Something is wrong.</h4>
       <p>Check the output of your terminal for more information.</p>
     </main></body></html>`);
-  })
+  });
 
   // Error handler, for when a device not on the ipAllowlist tries to access
   app.use(function (err, req, res, next) {
@@ -122,21 +139,22 @@ module.exports = async function createServer(config, paths, ...middlewares) {
 
   return {
     listen() {
-      const port = config.port, host = config.address;
+      const port = config.port,
+        host = config.address;
       server.listen(...[port, host].filter(Boolean));
 
       process.on("SIGINT", () => {
         // shut down helpers even if they have connections
-        Object.values(nodeHelpers).forEach(helper => helper._unload());
+        Object.values(nodeHelpers).forEach((helper) => helper._unload());
         server.close();
-      })
+      });
     },
     reload() {
-      Object.values(nodeHelpers).forEach(helper => helper.reload());
+      Object.values(nodeHelpers).forEach((helper) => helper.reload());
     },
     port: config.port,
-  }
-}
+  };
+};
 
 /**
  * Returns an object representing the node helper for a given path
@@ -144,7 +162,10 @@ module.exports = async function createServer(config, paths, ...middlewares) {
  */
 function getHelperFor(modulePath, paths) {
   const moduleName = path.basename(modulePath);
-  const requirePath = path.resolve(modulePath, "node_helper").replace(/^[A-Z]:\\/, "/").replace("\\", "/");
+  const requirePath = path
+    .resolve(modulePath, "node_helper")
+    .replace(/^[A-Z]:\\/, "/")
+    .replace("\\", "/");
   let nodeHelperPath;
   try {
     nodeHelperPath = paths.resolve(requirePath); // adds appropriate file extension and ensures file exists
@@ -191,30 +212,31 @@ function getHelperFor(modulePath, paths) {
     },
     isLoaded() {
       return Boolean(this.instance);
-    }
+    },
   };
 }
 
 // returns array of absolute paths to child directories within parentDir
 function readChildDirs(parentDir) {
-  return fs.existsSync(parentDir) ?
-    fs.readdirSync(parentDir, { withFileTypes: true })
-      .filter(dirent => dirent.isDirectory())
-      .map(dirent => path.resolve(parentDir, dirent.name))
-    : []
+  return fs.existsSync(parentDir)
+    ? fs
+        .readdirSync(parentDir, { withFileTypes: true })
+        .filter((dirent) => dirent.isDirectory())
+        .map((dirent) => path.resolve(parentDir, dirent.name))
+    : [];
 }
 
 // returns object of { [helper]: HelperWrapper }
 function collectNodeHelpers(paths) {
   // Collect all modules dirs except default/, and all modules within default/
   const moduleDirs = readChildDirs(paths.appModules)
-    .filter(dir => dir !== paths.appModulesDefault)
+    .filter((dir) => dir !== paths.appModulesDefault)
     .concat(readChildDirs(paths.appModulesDefault));
   const nodeHelpers = {};
   for (const modulePath of moduleDirs) {
     const helper = getHelperFor(modulePath, paths);
     if (helper) {
-      console.debug('loaded helper for', modulePath);
+      console.debug("loaded helper for", modulePath);
       nodeHelpers[helper.name] = helper;
     }
   }
@@ -228,20 +250,22 @@ async function createHttpServer(config, app) {
       console.debug("Using HTTPS certificate from config");
       options = {
         key: fs.readFileSync(config.httpsPrivateKey),
-        cert: fs.readFileSync(config.httpsCertificate)
+        cert: fs.readFileSync(config.httpsCertificate),
       };
     } else {
       // if useHttps is set but not httpsPrivateKey and httpsCertificate, generate them on the fly
       const pem = require("pem");
       console.log("Generating one-time HTTPS certificate");
-      const { certificate, serviceKey } = await promisify(pem.createCertificate.bind(pem))({ selfSigned: true, days: 365 });
+      const { certificate, serviceKey } = await promisify(
+        pem.createCertificate.bind(pem)
+      )({ selfSigned: true, days: 365 });
       options = { key: serviceKey, cert: certificate };
     }
     // redirect http:// to https://
     app.set("trust proxy", true);
     app.use("/", (req, res, next) => {
       if (!req.secure) {
-        return res.redirect(`https://${req.get("Host")}/`)
+        return res.redirect(`https://${req.get("Host")}/`);
       }
       next();
     });

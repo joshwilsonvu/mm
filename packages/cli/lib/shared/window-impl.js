@@ -1,11 +1,11 @@
-
 const electron = require("electron");
 // Modules to control application life and create native browser window
-const {app, BrowserWindow, Menu, MenuItem} = electron;
+const { app, BrowserWindow, Menu, MenuItem } = electron;
 
 app.on("ready", () => {
   // get config and command line options from main process
-  const config = JSON.parse(process.argv[2]), options = JSON.parse(process.argv[3]);
+  const config = JSON.parse(process.argv[2]),
+    options = JSON.parse(process.argv[3]);
 
   // Create the browser window.
   let window = new BrowserWindow({
@@ -15,7 +15,9 @@ app.on("ready", () => {
     y: 0,
     darkTheme: true,
     backgroundColor: "#000",
-    ...(!options.dev ? { fullscreen: true, autoHideMenuBar: true, titleBarStyle: "hidden" } : {}),
+    ...(!options.dev
+      ? { fullscreen: true, autoHideMenuBar: true, titleBarStyle: "hidden" }
+      : {}),
     ...config.electronOptions, // override from config
     webPreferences: {
       nodeIntegration: false,
@@ -39,15 +41,17 @@ app.on("ready", () => {
   });
 
   const menu = new Menu();
-  menu.append(new MenuItem({
-    label: "Quit",
-    accelerator: "CmdOrCtrl+Q",
-    click: () => app.quit()
-  }));
+  menu.append(
+    new MenuItem({
+      label: "Quit",
+      accelerator: "CmdOrCtrl+Q",
+      click: () => app.quit(),
+    })
+  );
 
   // The next part is here to prevent a major exception when there
   // is no internet connection. This could probable be solved better.
-  process.on("uncaughtException", err => {
+  process.on("uncaughtException", (err) => {
     console.error("Whoops! There was an uncaught exception...", err);
     app.quit();
     // console.log("MagicMirror will not quit, but it might be a good idea to check why this happened. Maybe no internet connection?");

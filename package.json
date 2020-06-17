@@ -11,9 +11,8 @@
     "test": "jest",
     "test:changed": "jest --onlyChanged",
     "test:fast": "jest --testPathIgnorePatterns e2e",
-    "lint": "eslint packages",
+    "lint": "prettier --check . && eslint packages",
     "changeset": "changeset",
-    "precommit": "yarn version check && yarn && yarn build && yarn lint && yarn test",
     "version:all": "yarn version apply --all",
     "publish": "yarn workspaces foreach --exclude mm --verbose npm publish --tolerate-republish"
   },
@@ -51,9 +50,10 @@
     "eslint-plugin-react-hooks": "^4.0.4",
     "execa": "^4.0.2",
     "fs-extra": "^9.0.1",
-    "husky": "^4.2.3",
+    "husky": ">=4",
     "jest": "^26.0.1",
     "jest-watch-suspend": "^1.1.2",
+    "lint-staged": ">=10",
     "prettier": "^2.0.5",
     "strip-ansi": "^6.0.0",
     "ts-jest": "^26.1.0",
@@ -61,7 +61,11 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn precommit"
+      "pre-commit": "lint-staged"
     }
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": "eslint --cache --fix",
+    "*.{js,jsx,ts,tsx,css,md,json,yaml}": "prettier --write"
   }
 }

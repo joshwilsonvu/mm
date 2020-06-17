@@ -13,8 +13,11 @@ async function testOutput(...args) {
 }
 test("shows help message on '$ mm'", () => testOutput());
 
-test("shows help message on '$ mm start -h'", () => testOutput("start", "--help"));
+test("shows help message on '$ mm start -h'", () =>
+  testOutput("start", "--help"));
 
-test("shows help message on '$ mm build -h'", () => testOutput("build", "--help"));
+test("shows help message on '$ mm build -h'", () =>
+  testOutput("build", "--help"));
 
-test("shows help message on '$ mm serve -h'", () => testOutput("serve", "--help"));
+test("shows help message on '$ mm serve -h'", () =>
+  testOutput("serve", "--help"));

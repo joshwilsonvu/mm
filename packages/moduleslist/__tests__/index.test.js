@@ -4,15 +4,17 @@ const nonEmptyString = new RegExp("^.+$", "s");
 
 expect.extend({
   toBeAGithubUrl(received) {
-    return isGithubUrl(received) ? {
-      pass: true,
-      message: () => `expected ${received} not to be a GitHub URL`
-    } : {
-      pass: false,
-      message: () => `expected ${received} to be a GitHub URL`
-    }
-  }
-})
+    return isGithubUrl(received)
+      ? {
+          pass: true,
+          message: () => `expected ${received} not to be a GitHub URL`,
+        }
+      : {
+          pass: false,
+          message: () => `expected ${received} to be a GitHub URL`,
+        };
+  },
+});
 
 // Ensures the data is well formed and each entry has all required properties.
 test("moduleslist is well-formed", async () => {

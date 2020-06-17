@@ -4,36 +4,50 @@ import { nanoid } from "nanoid";
 /**
  * A module may appear in any of these positions on screen.
  */
-export type ModulePosition = 'none' | 'top_bar' | 'top_left' | 'top_center' | 'top_right'
-  | 'upper_third' | 'middle_center' | 'lower_third' | 'bottom_left' | 'bottom_center'
-  | 'bottom_right' | 'bottom_bar' | 'fullscreen_above' | 'fullscreen_below';
+export type ModulePosition =
+  | "none"
+  | "top_bar"
+  | "top_left"
+  | "top_center"
+  | "top_right"
+  | "upper_third"
+  | "middle_center"
+  | "lower_third"
+  | "bottom_left"
+  | "bottom_center"
+  | "bottom_right"
+  | "bottom_bar"
+  | "fullscreen_above"
+  | "fullscreen_below";
 
 /**
  * Config file options for each module. While only `module` is strictly required,
  * some modules may also require `position` and/or `config`.
  */
 export type ModuleConfig = {
-  module: string,
-  position?: ModulePosition,
-  classes?: string[],
-  header?: string,
-  config?: Record<string, any>,
-  disabled?: boolean,
+  module: string;
+  position?: ModulePosition;
+  classes?: string[];
+  header?: string;
+  config?: Record<string, any>;
+  disabled?: boolean;
   // Note: the rest of these properties are automatically added but won't be typechecked
-  _component?: React.ComponentType<ComponentProps>,
-  _path?: string, // the absolute path to the module file
-}
+  _component?: React.ComponentType<ComponentProps>;
+  _path?: string; // the absolute path to the module file
+};
 
 /**
  * The config hooks and other parts of MagicMirror expect these extra properties
  * to be added to the properties that come from the config file.
  */
-export type InternalModuleConfig = Required<Omit<ModuleConfig, "_path" | "module">> & {
-  name: string,
-  hidden: boolean,
-  identifier: string,
-  file: string, // the module filename
-  path: string, // the directory containing the module file
+export type InternalModuleConfig = Required<
+  Omit<ModuleConfig, "_path" | "module">
+> & {
+  name: string;
+  hidden: boolean;
+  identifier: string;
+  file: string; // the module filename
+  path: string; // the directory containing the module file
 };
 
 /**
@@ -42,61 +56,66 @@ export type InternalModuleConfig = Required<Omit<ModuleConfig, "_path" | "module
  */
 export type ComponentProps = Omit<InternalModuleConfig, "_component">;
 
-
 /**
  * Options for MagicMirror.
  */
 export type Config = {
-  port?: number,
-  address?: string,
+  port?: number;
+  address?: string;
   /**
    * @deprecated use ipAllowlist
    */
-  ipWhitelist?: string[],
-  ipAllowlist?: string[],
-  zoom?: number,
-  language?: string,
-  timeFormat?: 12 | 24,
-  units?: "metric" | "imperial",
+  ipWhitelist?: string[];
+  ipAllowlist?: string[];
+  zoom?: number;
+  language?: string;
+  timeFormat?: 12 | 24;
+  units?: "metric" | "imperial";
   /**
    * if useHttps is true but either of httpsPrivateKey or httpCertificate are not given, they will be generated
    */
-  useHttps?: boolean,
-  httpsPrivateKey?: string,
-  httpsCertificate?: string,
+  useHttps?: boolean;
+  httpsPrivateKey?: string;
+  httpsCertificate?: string;
   /**
    * the list of modules to be displayed on the mirror
    */
-  modules?: ModuleConfig[],
-  electronOptions?: BrowserWindowConstructorOptions,
-}
+  modules?: ModuleConfig[];
+  electronOptions?: BrowserWindowConstructorOptions;
+};
 
 /**
  * The client only uses a few properties from Config, the rest are server options
  */
-export type InternalConfig = Required<Pick<Config, "language" | "timeFormat" | "units">> & {
-  modules: InternalModuleConfig[],
-}
+export type InternalConfig = Required<
+  Pick<Config, "language" | "timeFormat" | "units">
+> & {
+  modules: InternalModuleConfig[];
+};
 
 export function initializeConfig(c: Config): InternalConfig {
   return {
-    language: c.language || 'en',
+    language: c.language || "en",
     timeFormat: c.timeFormat || 24,
-    units: c.units || 'metric',
+    units: c.units || "metric",
     modules: (c.modules || []).map(initializeModule),
-  }
+  };
 }
 
 function initializeModule(mod: ModuleConfig): InternalModuleConfig {
   if (!mod._path || !mod._component) {
-    throw new Error(`Babel loader not working for module ${mod.module}: ${JSON.stringify(mod)}.`);
+    throw new Error(
+      `Babel loader not working for module ${mod.module}: ${JSON.stringify(
+        mod
+      )}.`
+    );
   }
   const [, path = ".", file] = mod._path.match(/(.*[\\/])?([^/\\]+)$/) || [];
   return {
     name: mod.module,
-    position: mod.position || 'none',
+    position: mod.position || "none",
     classes: mod.classes || [],
-    header: mod.header || '',
+    header: mod.header || "",
     config: mod.config || {},
     disabled: mod.disabled || false,
     // Note: the rest of these properties are automatically added but won't be typechecked
@@ -105,7 +124,7 @@ function initializeModule(mod: ModuleConfig): InternalModuleConfig {
     identifier: `m${nanoid(10)}`,
     file,
     path,
-  }
+  };
 }
 
 /**
@@ -116,153 +135,153 @@ interface BrowserWindowConstructorOptions {
   /**
    * Window's width in pixels. Default is `800`.
    */
-  width?: number,
+  width?: number;
   /**
    * Window's height in pixels. Default is `600`.
    */
-  height?: number,
+  height?: number;
   /**
    * (**required** if y is used) Window's left offset from screen. Default is to
    * center the window.
    */
-  x?: number,
+  x?: number;
   /**
    * (**required** if x is used) Window's top offset from screen. Default is to
    * center the window.
    */
-  y?: number,
+  y?: number;
   /**
    * The `width` and `height` would be used as web page's size, which means the
    * actual window's size will include window frame's size and be slightly larger.
    * Default is `false`.
    */
-  useContentSize?: boolean,
+  useContentSize?: boolean;
   /**
    * Show window in the center of the screen.
    */
-  center?: boolean,
+  center?: boolean;
   /**
    * Window's minimum width. Default is `0`.
    */
-  minWidth?: number,
+  minWidth?: number;
   /**
    * Window's minimum height. Default is `0`.
    */
-  minHeight?: number,
+  minHeight?: number;
   /**
    * Window's maximum width. Default is no limit.
    */
-  maxWidth?: number,
+  maxWidth?: number;
   /**
    * Window's maximum height. Default is no limit.
    */
-  maxHeight?: number,
+  maxHeight?: number;
   /**
    * Whether window is resizable. Default is `true`.
    */
-  resizable?: boolean,
+  resizable?: boolean;
   /**
    * Whether the window can be focused. Default is `true`. On Windows setting
    * `focusable: false` also implies setting `skipTaskbar: true`. On Linux setting
    * `focusable: false` makes the window stop interacting with wm, so the window will
    * always stay on top in all workspaces.
    */
-  focusable?: boolean,
+  focusable?: boolean;
   /**
    * Whether the window should always stay on top of other windows. Default is
    * `false`.
    */
-  alwaysOnTop?: boolean,
+  alwaysOnTop?: boolean;
   /**
    * Whether the window should show in fullscreen. When explicitly set to `false` the
    * fullscreen button will be hidden or disabled on macOS. Default is `false`.
    */
-  fullscreen?: boolean,
+  fullscreen?: boolean;
   /**
    * Whether the window can be put into fullscreen mode. On macOS, also whether the
    * maximize/zoom button should toggle full screen mode or maximize window. Default
    * is `true`.
    */
-  fullscreenable?: boolean,
+  fullscreenable?: boolean;
   /**
    * Whether to show the window in taskbar. Default is `false`.
    */
-  skipTaskbar?: boolean,
+  skipTaskbar?: boolean;
   /**
    * Whether the window is in kiosk mode. Default is `false`.
    */
-  kiosk?: boolean,
+  kiosk?: boolean;
   /**
    * Default window title. Default is `"Electron"`. If the HTML tag `<title>` is
    * defined in the HTML file loaded by `loadURL()`, this property will be ignored.
    */
-  title?: string,
+  title?: string;
   /**
    * The window icon. On Windows it is recommended to use `ICO` icons to get best
    * visual effects, you can also leave it undefined so the executable's icon will be
    * used.
    */
-  icon?: string,
+  icon?: string;
   /**
    * Whether window should be shown when created. Default is `true`.
    */
-  show?: boolean,
+  show?: boolean;
   /**
    * Whether the renderer should be active when `show` is `false` and it has just
    * been created.  In order for `document.visibilityState` to work correctly on
    * first load with `show: false` you should set this to `false`.  Setting this to
    * `false` will cause the `ready-to-show` event to not fire.  Default is `true`.
    */
-  paintWhenInitiallyHidden?: boolean,
+  paintWhenInitiallyHidden?: boolean;
   /**
    * Specify `false` to create a Frameless Window. Default is `true`.
    */
-  frame?: boolean,
+  frame?: boolean;
   /**
    * Whether the web view accepts a single mouse-down event that simultaneously
    * activates the window. Default is `false`.
    */
-  acceptFirstMouse?: boolean,
+  acceptFirstMouse?: boolean;
   /**
    * Whether to hide cursor when typing. Default is `false`.
    */
-  disableAutoHideCursor?: boolean,
+  disableAutoHideCursor?: boolean;
   /**
    * Auto hide the menu bar unless the `Alt` key is pressed. Default is `false`.
    */
-  autoHideMenuBar?: boolean,
+  autoHideMenuBar?: boolean;
   /**
    * Window's background color as a hexadecimal value, like `#66CD00` or `#FFF` or
    * `#80FFFFFF` (alpha in #AARRGGBB format is supported if `transparent` is set to
    * `true`). Default is `#FFF` (white).
    */
-  backgroundColor?: string,
+  backgroundColor?: string;
   /**
    * Whether window should have a shadow. Default is `true`.
    */
-  hasShadow?: boolean,
+  hasShadow?: boolean;
   /**
    * Forces using dark theme for the window, only works on some GTK desktop
    * environments. Default is `false`.
    */
-  darkTheme?: boolean,
+  darkTheme?: boolean;
   /**
    * Makes the window transparent. Default is `false`. On Windows, does not work
    * unless the window is frameless.
    */
-  transparent?: boolean,
+  transparent?: boolean;
   /**
    * The type of window, default is normal window. See more about this below.
    */
-  type?: string,
+  type?: string;
   /**
    * The style of window title bar. Default is `default`. Possible values are:
    */
-  titleBarStyle?: ('default' | 'hidden' | 'hiddenInset' | 'customButtonsOnHover'),
+  titleBarStyle?: "default" | "hidden" | "hiddenInset" | "customButtonsOnHover";
   /**
    * Settings of web page's features.
    */
-  webPreferences?: WebPreferences,
+  webPreferences?: WebPreferences;
 }
 
 /**
@@ -273,22 +292,22 @@ interface WebPreferences {
    * Whether to enable DevTools. If it is set to `false`, can not use
    * `BrowserWindow.webContents.openDevTools()` to open DevTools. Default is `true`.
    */
-  devTools?: boolean,
+  devTools?: boolean;
   /**
    * Whether node integration is enabled. Default is `false`.
    */
-  nodeIntegration?: boolean,
+  nodeIntegration?: boolean;
   /**
    * Whether node integration is enabled in web workers. Default is `false`. More
    * about this can be found in Multithreading.
    */
-  nodeIntegrationInWorker?: boolean,
+  nodeIntegrationInWorker?: boolean;
   /**
    * Experimental option for enabling Node.js support in sub-frames such as iframes
    * and child windows. All your preloads will load for every iframe, you can use
    * `process.isMainFrame` to determine if you are in the main frame or not.
    */
-  nodeIntegrationInSubFrames?: boolean,
+  nodeIntegrationInSubFrames?: boolean;
   /**
    * Specifies a script that will be loaded before other scripts run in the page.
    * This script will always have access to node APIs no matter whether node
@@ -296,95 +315,95 @@ interface WebPreferences {
    * the script. When node integration is turned off, the preload script can
    * reintroduce Node global symbols back to the global scope. See example here.
    */
-  preload?: string,
+  preload?: string;
   /**
    * If set, this will sandbox the renderer associated with the window, making it
    * compatible with the Chromium OS-level sandbox and disabling the Node.js engine.
    * This is not the same as the `nodeIntegration` option and the APIs available to
    * the preload script are more limited. Read more about the option here.
    */
-  sandbox?: boolean,
+  sandbox?: boolean;
   /**
    * Whether to enable the `remote` module. Default is `true`.
    */
-  enableRemoteModule?: boolean,
+  enableRemoteModule?: boolean;
   /**
    * The default zoom factor of the page, `3.0` represents `300%`. Default is `1.0`.
    */
-  zoomFactor?: number,
+  zoomFactor?: number;
   /**
    * Enables JavaScript support. Default is `true`.
    */
-  javascript?: boolean,
+  javascript?: boolean;
   /**
    * When `false`, it will disable the same-origin policy (usually using testing
    * websites by people), and set `allowRunningInsecureContent` to `true` if this
    * options has not been set by user. Default is `true`.
    */
-  webSecurity?: boolean,
+  webSecurity?: boolean;
   /**
    * Allow an https page to run JavaScript, CSS or plugins from http URLs. Default is
    * `false`.
    */
-  allowRunningInsecureContent?: boolean,
+  allowRunningInsecureContent?: boolean;
   /**
    * Enables image support. Default is `true`.
    */
-  images?: boolean,
+  images?: boolean;
   /**
    * Make TextArea elements resizable. Default is `true`.
    */
-  textAreasAreResizable?: boolean,
+  textAreasAreResizable?: boolean;
   /**
    * Enables WebGL support. Default is `true`.
    */
-  webgl?: boolean,
+  webgl?: boolean;
   /**
    * Whether plugins should be enabled. Default is `false`.
    */
-  plugins?: boolean,
+  plugins?: boolean;
   /**
    * Enables Chromium's experimental features. Default is `false`.
    */
-  experimentalFeatures?: boolean,
+  experimentalFeatures?: boolean;
   /**
    * A list of feature strings separated by `,`, like `CSSVariables,KeyboardEventKey`
    * to enable. The full list of supported feature strings can be found in the
    * RuntimeEnabledFeatures.json5 file.
    */
-  enableBlinkFeatures?: string,
+  enableBlinkFeatures?: string;
   /**
    * A list of feature strings separated by `,`, like `CSSVariables,KeyboardEventKey`
    * to disable. The full list of supported feature strings can be found in the
    * RuntimeEnabledFeatures.json5 file.
    */
-  disableBlinkFeatures?: string,
+  disableBlinkFeatures?: string;
   /**
    * Defaults to `16`.
    */
-  defaultFontSize?: number,
+  defaultFontSize?: number;
   /**
    * Defaults to `13`.
    */
-  defaultMonospaceFontSize?: number,
+  defaultMonospaceFontSize?: number;
   /**
    * Defaults to `0`.
    */
-  minimumFontSize?: number,
+  minimumFontSize?: number;
   /**
    * Defaults to `ISO-8859-1`.
    */
-  defaultEncoding?: string,
+  defaultEncoding?: string;
   /**
    * Whether to throttle animations and timers when the page becomes background. This
    * also affects the Page Visibility API. Defaults to `true`.
    */
-  backgroundThrottling?: boolean,
+  backgroundThrottling?: boolean;
   /**
    * Whether to enable offscreen rendering for the browser window. Defaults to
    * `false`. See the offscreen rendering tutorial for more details.
    */
-  offscreen?: boolean,
+  offscreen?: boolean;
   /**
    * Whether to run Electron APIs and the specified `preload` script in a separate
    * JavaScript context. Defaults to `false`. The context that the `preload` script
@@ -399,13 +418,13 @@ interface WebPreferences {
    * tools by selecting the 'Electron Isolated Context' entry in the combo box at the
    * top of the Console tab.
    */
-  contextIsolation?: boolean,
+  contextIsolation?: boolean;
   /**
    * Whether to use native `window.open()`. Defaults to `false`. Child windows will
    * always have node integration disabled unless `nodeIntegrationInSubFrames` is
    * true. **Note:** This option is currently experimental.
    */
-  nativeWindowOpen?: boolean,
+  nativeWindowOpen?: boolean;
   /**
    * Whether to enable the `<webview>` tag. Defaults to `false`. **Note:** The
    * `preload` script configured for the `<webview>` will have node integration
@@ -414,52 +433,55 @@ interface WebPreferences {
    * can use the `will-attach-webview` event on webContents to strip away the
    * `preload` script and to validate or alter the `<webview>`'s initial settings.
    */
-  webviewTag?: boolean,
+  webviewTag?: boolean;
   /**
    * A list of strings that will be appended to `process.argv` in the renderer
    * process of this app.  Useful for passing small bits of data down to renderer
    * process preload scripts.
    */
-  additionalArguments?: string[],
+  additionalArguments?: string[];
   /**
    * Whether to enable browser style consecutive dialog protection. Default is
    * `false`.
    */
-  safeDialogs?: boolean,
+  safeDialogs?: boolean;
   /**
    * The message to display when consecutive dialog protection is triggered. If not
    * defined the default message would be used, note that currently the default
    * message is in English and not localized.
    */
-  safeDialogsMessage?: string,
+  safeDialogsMessage?: string;
   /**
    * Whether to disable dialogs completely. Overrides `safeDialogs`. Default is
    * `false`.
    */
-  disableDialogs?: boolean,
+  disableDialogs?: boolean;
   /**
    * Whether dragging and dropping a file or link onto the page causes a navigation.
    * Default is `false`.
    */
-  navigateOnDragDrop?: boolean,
+  navigateOnDragDrop?: boolean;
   /**
    * Autoplay policy to apply to content in the window, can be
    * `no-user-gesture-required`, `user-gesture-required`,
    * `document-user-activation-required`. Defaults to `no-user-gesture-required`.
    */
-  autoplayPolicy?: ('no-user-gesture-required' | 'user-gesture-required' | 'document-user-activation-required'),
+  autoplayPolicy?:
+    | "no-user-gesture-required"
+    | "user-gesture-required"
+    | "document-user-activation-required";
   /**
    * Whether to prevent the window from resizing when entering HTML Fullscreen.
    * Default is `false`.
    */
-  disableHtmlFullscreenWindowResize?: boolean,
+  disableHtmlFullscreenWindowResize?: boolean;
   /**
    * An alternative title string provided only to accessibility tools such as screen
    * readers. This string is not directly visible to users.
    */
-  accessibleTitle?: string,
+  accessibleTitle?: string;
   /**
    * Whether to enable the builtin spellchecker. Default is `true`.
    */
-  spellcheck?: boolean,
+  spellcheck?: boolean;
 }

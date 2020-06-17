@@ -40,8 +40,6 @@ module.exports = function (babel) {
       ObjectExpression(path, state) {
         transformConfig(babel.types, path, state, state.opts);
       },
-    }
+    },
   };
 };
-
-

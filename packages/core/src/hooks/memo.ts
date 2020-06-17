@@ -9,7 +9,11 @@ import memoize from "fast-memoize";
  * @param mapFunc the mapping function. Like useMemo(), if it captures variables they should be in deps
  * @param deps an array of captured values in mapFunc, not including the array, or an empty array for a pure function
  */
-export function useMemoArray<T, U>(array: T[], mapFunc: (value: T) => U, deps: React.DependencyList): U[] {
+export function useMemoArray<T, U>(
+  array: T[],
+  mapFunc: (value: T) => U,
+  deps: React.DependencyList
+): U[] {
   const ref = useRef<typeof mapFunc>(mapFunc);
   ref.current = mapFunc; // keep ref always up-to-date
   const func = useMemo(() => {
@@ -20,4 +24,3 @@ export function useMemoArray<T, U>(array: T[], mapFunc: (value: T) => U, deps: R
   }, deps); // eslint-disable-line
   return useMemo(() => array.map(func), [array, func]); // because func is memoized, this is much cheaper than raw .map()
 }
-

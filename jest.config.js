@@ -5,17 +5,15 @@ module.exports = {
   bail: false,
   testMatch: ["<rootDir>/**/*.test.js"],
   watchPathIgnorePatterns: ["__fixtures__", "MagicMirror"],
-  watchPlugins: [
-    "jest-watch-suspend",
-  ],
-  "moduleNameMapper": {
+  watchPlugins: ["jest-watch-suspend"],
+  moduleNameMapper: {
     "\\.css$": "<rootDir>/__tests__/css-stub.js",
   },
-  "preset": "ts-jest/presets/js-with-babel",
-  "globals": {
+  preset: "ts-jest/presets/js-with-babel",
+  globals: {
     "ts-jest": {
-      "tsConfig": path.resolve(__dirname, "tsconfig.base.json"),
-      "packageJson": path.resolve(__dirname, "package.json"),
-    }
-  }
+      tsConfig: path.resolve(__dirname, "tsconfig.base.json"),
+      packageJson: path.resolve(__dirname, "package.json"),
+    },
+  },
 };

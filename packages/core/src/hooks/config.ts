@@ -1,24 +1,32 @@
-import * as React from 'react';
-import produce from 'immer';
+import * as React from "react";
+import produce from "immer";
 import { InternalConfig as Config } from "../types";
 
-export {
-  ConfigProvider,
-  useCurrentConfig,
-  useModifyConfig,
-  useSetConfig,
-};
+export { ConfigProvider, useCurrentConfig, useModifyConfig, useSetConfig };
 
-type ConfigContextProps = { config?: Config, setConfig?: React.Dispatch<React.SetStateAction<Config>> };
-type ConfigContextArray = [ ConfigContextProps["config"]?, ConfigContextProps["setConfig"]? ];
+type ConfigContextProps = {
+  config?: Config;
+  setConfig?: React.Dispatch<React.SetStateAction<Config>>;
+};
+type ConfigContextArray = [
+  ConfigContextProps["config"]?,
+  ConfigContextProps["setConfig"]?
+];
 const Context = React.createContext<ConfigContextArray>([]);
 
 /**
  * Include this component in the tree to use `useCurrentConfig`, `useModifyConfig`, and `useSetConfig`.
  */
-function ConfigProvider({ config, setConfig, children }: React.PropsWithChildren<ConfigContextProps>) {
+function ConfigProvider({
+  config,
+  setConfig,
+  children,
+}: React.PropsWithChildren<ConfigContextProps>) {
   // memoize value to minimize rerenders
-  const memo = React.useMemo(() => ([config, setConfig] as ConfigContextArray), [config, setConfig]);
+  const memo = React.useMemo(() => [config, setConfig] as ConfigContextArray, [
+    config,
+    setConfig,
+  ]);
   return React.createElement(Context.Provider, { value: memo }, children);
 }
 
@@ -37,7 +45,7 @@ function useCurrentConfig() {
  * Any modules using changed portions of the config will be rerendered.
  */
 function useSetConfig() {
-  const [, setConfig ] = React.useContext(Context);
+  const [, setConfig] = React.useContext(Context);
   return setConfig;
 }
 
@@ -49,9 +57,11 @@ function useSetConfig() {
  */
 function useModifyConfig() {
   const setConfig = useSetConfig();
-  const setConfigImmer = React.useCallback((modify: (conf: Config) => void) => {
-    setConfig && setConfig(produce(modify));
-  }, [setConfig]);
+  const setConfigImmer = React.useCallback(
+    (modify: (conf: Config) => void) => {
+      setConfig && setConfig(produce(modify));
+    },
+    [setConfig]
+  );
   return setConfigImmer;
 }
-

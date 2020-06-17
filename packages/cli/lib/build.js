@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 const { Command } = require("clipanion");
 
@@ -13,19 +13,23 @@ load and run faster.`;
 
 class BuildCommand extends Command {
   static usage = Command.Usage({
-    description: "Prepare all source files, stylesheets, and asset files to be served with `mm serve`.",
+    description:
+      "Prepare all source files, stylesheets, and asset files to be served with `mm serve`.",
     details: details,
     examples: [
       ["build files for `mm serve`", "yarn mm build"],
-      ["show information about the compiled files after building", "yarn mm build --analyze"],
-    ]
+      [
+        "show information about the compiled files after building",
+        "yarn mm build --analyze",
+      ],
+    ],
   });
 
   analyze = false;
 
   async execute() {
     // Force production mode
-    process.env.NODE_ENV = 'production';
+    process.env.NODE_ENV = "production";
 
     const fs = require("fs-extra");
     const { promisify } = require("util");
@@ -54,7 +58,7 @@ class BuildCommand extends Command {
       // build errors will be logged here
     } catch (err) {
       // log webpack errors, not build errors
-      console.error(chalk.red('Failed to compile.'));
+      console.error(chalk.red("Failed to compile."));
       printBuildError(err);
       return 1;
     }
@@ -65,4 +69,3 @@ BuildCommand.addPath("build");
 BuildCommand.addOption("analyze", Command.Boolean("--analyze"));
 
 module.exports = BuildCommand;
-

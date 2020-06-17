@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 const { Command } = require("clipanion");
 
@@ -21,9 +21,12 @@ class ServeCommand extends Command {
       ["serve for another device", "yarn mm serve"],
       ["always run `mm build` before serving", "yarn mm serve --rebuild"],
       ["serve and view in Electron on the same device", "yarn mm serve --view"],
-      ["serve and view in a browser on the same device", "yarn mm serve --browser"]
-    ]
-  })
+      [
+        "serve and view in a browser on the same device",
+        "yarn mm serve --browser",
+      ],
+    ],
+  });
 
   // options
   rebuild = false;
@@ -32,7 +35,7 @@ class ServeCommand extends Command {
 
   async execute() {
     // Force production mode
-    process.env.NODE_ENV = 'production';
+    process.env.NODE_ENV = "production";
 
     const createServer = require("./shared/create-server");
     const fs = require("fs");
@@ -41,7 +44,10 @@ class ServeCommand extends Command {
     const paths = this.context.paths();
     const config = this.context.config();
 
-    if (!fs.existsSync(paths.appBuild) || fs.readdirSync(paths.appBuild).length === 0) {
+    if (
+      !fs.existsSync(paths.appBuild) ||
+      fs.readdirSync(paths.appBuild).length === 0
+    ) {
       console.info(`No files found in ${paths.appBuild}. Building...`);
       await this.cli.run(["build"]);
     } else if (this.rebuild) {
@@ -60,7 +66,7 @@ class ServeCommand extends Command {
       const window = Window(config, { dev: true });
       await window.open();
     }
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       process.once("SIGINT", () => {
         setTimeout(() => process.exit(0), 1000).unref();
         resolve && resolve();

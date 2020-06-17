@@ -1,9 +1,19 @@
-import path from 'path';
-import { nunjucks } from './mm2-globals';
-import React, { useState, useRef, useEffect, useLayoutEffect, useCallback } from "react";
+import path from "path";
+import { nunjucks } from "./mm2-globals";
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useLayoutEffect,
+  useCallback,
+} from "react";
 import useConstant from "use-constant";
-import { useNotification, useModifyConfig, useSocketNotification, ComponentProps } from "@mm/core";
-
+import {
+  useNotification,
+  useModifyConfig,
+  useSocketNotification,
+  ComponentProps,
+} from "@mm/core";
 
 /**
  * This Module class is provided only for backwards compatibility with
@@ -14,14 +24,14 @@ export class Module implements ModuleInjectedProperties, ModuleOverrides {
   /* All methods (and properties below can be overridden. */
 
   /** Set the minimum MagicMirror module version for this module. */
-  requiresVersion = '2.0.0';
+  requiresVersion = "2.0.0";
   /** Module config defaults. */
   defaults: Record<string, any> = {};
-	/** Timer reference used for showHide animation callbacks. */
-	showHideTimer?: number;
-	/**
+  /** Timer reference used for showHide animation callbacks. */
+  showHideTimer?: number;
+  /**
    * Array to store lockStrings. These strings are used to lock
-	 * visibility when hiding and showing module.
+   * visibility when hiding and showing module.
    */
   lockStrings: string[] = [];
 
@@ -30,11 +40,17 @@ export class Module implements ModuleInjectedProperties, ModuleOverrides {
   config: Data["config"];
 
   /** The name of the module. */
-  get name() { return this.data.name }
-  set name(val: Data["name"]) { this.data.name = val }
+  get name() {
+    return this.data.name;
+  }
+  set name(val: Data["name"]) {
+    this.data.name = val;
+  }
 
   /** The unique identifier of the module */
-  get identifier() { return this.data.identifier }
+  get identifier() {
+    return this.data.identifier;
+  }
   /** Whether the module is currently hidden */
   hidden: boolean;
 
@@ -57,9 +73,9 @@ export class Module implements ModuleInjectedProperties, ModuleOverrides {
   }
 
   /**
-	 * Is called when the module is instantiated.
+   * Is called when the module is instantiated.
    * @deprecated
-	 */
+   */
   init() {}
 
   /**
@@ -69,8 +85,8 @@ export class Module implements ModuleInjectedProperties, ModuleOverrides {
   loaded(cb?: () => void) {}
 
   /**
-	 * Is called when the module is started.
-	 */
+   * Is called when the module is started.
+   */
   start() {
     console.info(`Starting module: ${this.name}`);
   }
@@ -98,11 +114,11 @@ export class Module implements ModuleInjectedProperties, ModuleOverrides {
 
   /**
    * This method generates the dom which needs to be displayed. This method is called by the Magic Mirror core.
-	 * This method can to be subclassed if the module wants to display info on the mirror.
-	 * Alternatively, the getTemplate method could be subclassed.
+   * This method can to be subclassed if the module wants to display info on the mirror.
+   * Alternatively, the getTemplate method could be subclassed.
    */
   getDom(): Promise<HTMLElement> | HTMLElement | null | undefined {
-    let div = document.createElement('div');
+    let div = document.createElement("div");
     let template = this.getTemplate();
     let templateData = this.getTemplateData();
 
@@ -135,8 +151,8 @@ export class Module implements ModuleInjectedProperties, ModuleOverrides {
 
   /**
    * This method generates the header string which needs to be displayed if a user has a header configured for this module.
-	 * This method is called by the Magic Mirror core, but only if the user has configured a default header for the module.
-	 * This method needs to be subclassed if the module wants to display modified headers on the mirror.
+   * This method is called by the Magic Mirror core, but only if the user has configured a default header for the module.
+   * This method needs to be subclassed if the module wants to display modified headers on the mirror.
    */
   getHeader() {
     return this.data.header;
@@ -144,9 +160,9 @@ export class Module implements ModuleInjectedProperties, ModuleOverrides {
 
   /**
    * This method returns the template for the module which is used by the default getDom implementation.
-	 * This method needs to be subclassed if the module wants to use a template.
-	 * It can either return a template sting, or a template filename.
-	 * If the string ends with '.html' it's considered a file from within the module's folder.
+   * This method needs to be subclassed if the module wants to use a template.
+   * It can either return a template sting, or a template filename.
+   * If the string ends with '.html' it's considered a file from within the module's folder.
    */
   getTemplate() {
     return `<div class="normal">${this.name}</div><div class="small dimmed">${this.identifier}</div>`;
@@ -154,17 +170,17 @@ export class Module implements ModuleInjectedProperties, ModuleOverrides {
 
   /**
    * This method returns the data to be used in the template.
-	 * This method needs to be subclassed if the module wants to use a custom data.
+   * This method needs to be subclassed if the module wants to use a custom data.
    */
   getTemplateData() {
     return {};
   }
 
-  static Sender = Symbol("sender") // sender key for useNotification
+  static Sender = Symbol("sender"); // sender key for useNotification
 
   /**
    * This method is called when a notification arrives.
-	 * This method is called by the Magic Mirror core.
+   * This method is called by the Magic Mirror core.
    */
   notificationReceived(notification: string, payload: any, sender: Module) {
     if (!sender && typeof payload === "object" && Module.Sender in payload) {
@@ -182,9 +198,9 @@ export class Module implements ModuleInjectedProperties, ModuleOverrides {
   }
 
   /**
-	 * Returns the nunjucks environment for the current module.
-	 */
-	nunjucksEnvironment() {
+   * Returns the nunjucks environment for the current module.
+   */
+  nunjucksEnvironment() {
     return getNunjucksEnvironment(this);
   }
 
@@ -212,8 +228,8 @@ export class Module implements ModuleInjectedProperties, ModuleOverrides {
   }
 
   /*********************************************
-	 * The methods below don't need subclassing.
-	 *********************************************/
+   * The methods below don't need subclassing.
+   *********************************************/
 
   // No-ops, so app doesn't crash if called
   /**
@@ -224,7 +240,6 @@ export class Module implements ModuleInjectedProperties, ModuleOverrides {
    * @deprecated
    */
   setConfig() {}
-
 
   /**
    * Retrieve the path to a module file.
@@ -241,33 +256,39 @@ export class Module implements ModuleInjectedProperties, ModuleOverrides {
    * Load all required stylesheets and call cb when done.
    */
   loadStyles(cb: () => void) {
-    Promise.all(this.getStyles().map(pathToUrlPath).map(dep => {
-      return new Promise((resolve, reject) => {
-        const link = document.createElement("link");
-        link.addEventListener("load", resolve);
-        link.addEventListener("error", reject);
-        link.rel = "stylesheet";
-        link.type = "text/css";
-        link.href = path.resolve(dep);
-        document.head.appendChild(link);
-      })
-    })).then(cb);
+    Promise.all(
+      this.getStyles()
+        .map(pathToUrlPath)
+        .map((dep) => {
+          return new Promise((resolve, reject) => {
+            const link = document.createElement("link");
+            link.addEventListener("load", resolve);
+            link.addEventListener("error", reject);
+            link.rel = "stylesheet";
+            link.type = "text/css";
+            link.href = path.resolve(dep);
+            document.head.appendChild(link);
+          });
+        })
+    ).then(cb);
   }
 
   /**
    * Load all required stylesheets and call cb when done.
    */
   loadScripts(cb: () => void) {
-    return Promise.all(this.getScripts().map(dep => {
-      return new Promise((resolve, reject) => {
-        const script = document.createElement("script");
-        script.addEventListener("load", resolve);
-        script.addEventListener("error", reject);
-        script.async = true;
-        script.src = dep;
-        document.head.appendChild(script);
+    return Promise.all(
+      this.getScripts().map((dep) => {
+        return new Promise((resolve, reject) => {
+          const script = document.createElement("script");
+          script.addEventListener("load", resolve);
+          script.addEventListener("error", reject);
+          script.async = true;
+          script.src = dep;
+          document.head.appendChild(script);
+        });
       })
-    })).then(cb);
+    ).then(cb);
   }
 
   /**
@@ -282,30 +303,32 @@ export class Module implements ModuleInjectedProperties, ModuleOverrides {
     throw new Error("not implemented");
   }
 
-  static register(name: string, module: Partial<ModuleOverrides>): React.ComponentType<ComponentProps> {
-    const Subclass = class extends Module {}
+  static register(
+    name: string,
+    module: Partial<ModuleOverrides>
+  ): React.ComponentType<ComponentProps> {
+    const Subclass = class extends Module {};
     assignProperties(Subclass.prototype, module);
     return makeCompat(Subclass, name);
   }
 }
-
-
 
 const nunjucksMap = new WeakMap<Module, nunjucks.Environment>();
 function getNunjucksEnvironment(module: Module) {
   let env = nunjucksMap.get(module);
   if (!env) {
     env = new nunjucks.Environment(
-      new nunjucks.WebLoader(module.file(''), { async: true }), {
+      new nunjucks.WebLoader(module.file(""), { async: true }),
+      {
         trimBlocks: true,
         lstripBlocks: true,
       }
     );
-    env.addFilter('translate', (str: string) => module.translate(str));
+    env.addFilter("translate", (str: string) => module.translate(str));
     nunjucksMap.set(module, env);
   }
   return env;
-};
+}
 
 function pathToUrlPath(p: string) {
   return path.relative(process.cwd(), p).replace("\\", "/");
@@ -313,15 +336,15 @@ function pathToUrlPath(p: string) {
 
 // The type of the MM2 data property
 export type Data = {
-  classes: string[],
-  file: string,
-  path: string,
-  header: string,
-  position: string,
-  name: string,
-  identifier: string,
-  config: Module["defaults"],
-}
+  classes: string[];
+  file: string;
+  path: string;
+  header: string;
+  position: string;
+  name: string;
+  identifier: string;
+  config: Module["defaults"];
+};
 
 /**
  * These are all of the properties that MM2 modules can override on the Module class.
@@ -336,7 +359,11 @@ interface ModuleOverrides {
   getHeader(): string;
   getTemplate(): string;
   getTemplateData(): {};
-  notificationReceived(notification: string, payload: any, sender: Module): void;
+  notificationReceived(
+    notification: string,
+    payload: any,
+    sender: Module
+  ): void;
   socketNotificationReceived(notification: string, payload: any): void;
   suspend(): void;
   resume(): void;
@@ -356,37 +383,49 @@ interface ModuleInjectedProperties {
    * It also registers the notification callback.
    */
   socket: () => {
-    sendNotification(notification: string, payload: any, sender?: string): void,
-    close(): void,
-  }
+    sendNotification(notification: string, payload: any, sender?: string): void;
+    close(): void;
+  };
   sendNotification: (notification: string, payload: any) => void;
 }
 
-
 interface ModuleArray<T> extends Array<T> {
-  withClass(classnames: string | string[]): ModuleArray<T>,
-  exceptWithClass(classnames: string | string[]): ModuleArray<T>,
-  exceptModule(module: T): ModuleArray<T>,
-  enumerate: Array<T>["forEach"] // copy type from Array.forEach
+  withClass(classnames: string | string[]): ModuleArray<T>;
+  exceptWithClass(classnames: string | string[]): ModuleArray<T>;
+  exceptModule(module: T): ModuleArray<T>;
+  enumerate: Array<T>["forEach"]; // copy type from Array.forEach
 }
 type MMGlobal = {
-  getModules(): ModuleArray<Module>,
-  sendNotification(notification: string, payload?: any, sender?: Module): void,
-  updateDom(module: Module, speed?: number): void,
-  hideModule(module: Module, speed?: number, callback?: () => void, options?: LockOptions): void,
-  showModule(module: Module, speed?: number, callback?: () => void, options?: LockOptions): void,
-}
+  getModules(): ModuleArray<Module>;
+  sendNotification(notification: string, payload?: any, sender?: Module): void;
+  updateDom(module: Module, speed?: number): void;
+  hideModule(
+    module: Module,
+    speed?: number,
+    callback?: () => void,
+    options?: LockOptions
+  ): void;
+  showModule(
+    module: Module,
+    speed?: number,
+    callback?: () => void,
+    options?: LockOptions
+  ): void;
+};
 
 type LockOptions = {
-  lockString: string,
-  force: boolean,
-}
+  lockString: string;
+  force: boolean;
+};
 
 /**
  * This Higher-Order Component takes an MM2 module and produces a React component
  * that provides compatibility between React MagicMirror modules and MM2 modules.
  */
-export function makeCompat<T extends Module>(MM2: { new (...args: ConstructorParameters<typeof Module>): T }, name: string) {
+export function makeCompat<T extends Module>(
+  MM2: { new (...args: ConstructorParameters<typeof Module>): T },
+  name: string
+) {
   // Create a React component wrapping the given subclass
   function Compat(props: ComponentProps) {
     const { hidden } = props;
@@ -403,14 +442,24 @@ export function makeCompat<T extends Module>(MM2: { new (...args: ConstructorPar
     useNotification("ALL_MODULES_LOADED", () => mm2.start());
 
     // Hook up Module#notificationReceived
-    const sendNotification = useNotification("*", (notification: string, payload: any) => {
-      let sender = typeof payload === "object" && Module.Sender in payload ? payload[Module.Sender] : undefined;
-      mm2.notificationReceived(notification, payload, sender);
-    });
+    const sendNotification = useNotification(
+      "*",
+      (notification: string, payload: any) => {
+        let sender =
+          typeof payload === "object" && Module.Sender in payload
+            ? payload[Module.Sender]
+            : undefined;
+        mm2.notificationReceived(notification, payload, sender);
+      }
+    );
     // Hook up Module#socketNotificationReceived
-    const sendSocketNotification = useSocketNotification(props.name, "*", (notification: string, payload: any) => {
-      mm2.socketNotificationReceived(notification, payload);
-    });
+    const sendSocketNotification = useSocketNotification(
+      props.name,
+      "*",
+      (notification: string, payload: any) => {
+        mm2.socketNotificationReceived(notification, payload);
+      }
+    );
 
     // Handle suspend/resume on change of `hidden`
     useEffect(() => {
@@ -428,22 +477,30 @@ export function makeCompat<T extends Module>(MM2: { new (...args: ConstructorPar
           const d = await this.getDom();
           const h = this.getHeader();
           if (d && !isElement(d)) {
-            throw new Error(`Return value of getDom() is not an HTML element: ${d}`);
+            throw new Error(
+              `Return value of getDom() is not an HTML element: ${d}`
+            );
           } else {
             setDom(d);
-            modifyConfig(conf => {
-              conf.modules.find(m => m.identifier === props.identifier)!.header = h;
-            })
+            modifyConfig((conf) => {
+              conf.modules.find(
+                (m) => m.identifier === props.identifier
+              )!.header = h;
+            });
           }
         },
-        translate(key: string, variables?: object | string, defaultValue?: string): string {
+        translate(
+          key: string,
+          variables?: object | string,
+          defaultValue?: string
+        ): string {
           throw new Error("not implemented");
         },
         socket() {
           return {
             sendNotification: sendSocketNotification,
-            close() {}
-          }
+            close() {},
+          };
         },
         sendNotification(notification: string, payload: any) {
           let sender = this;
@@ -451,12 +508,12 @@ export function makeCompat<T extends Module>(MM2: { new (...args: ConstructorPar
             payload[Module.Sender] = sender;
           }
           sendNotification(notification, payload);
-        }
-      }
+        },
+      };
       return new MM2(filterDataFromProps(props), inject);
     });
     // Display the DOM node
-    return React.createElement(Escape, {dom});
+    return React.createElement(Escape, { dom });
   }
 
   // Assign correct .name property to make development easier
@@ -467,19 +524,27 @@ export function makeCompat<T extends Module>(MM2: { new (...args: ConstructorPar
   Compat.displayName = name;
 
   return Compat;
-};
+}
 
 // Returns true if it is a DOM element
 function isElement(o: any): o is HTMLElement {
-  return (
-    typeof HTMLElement === "object"
-      ? o instanceof HTMLElement
-      : o && typeof o === "object" && o.nodeType === 1 && typeof o.nodeName === "string"
-  );
+  return typeof HTMLElement === "object"
+    ? o instanceof HTMLElement
+    : o &&
+        typeof o === "object" &&
+        o.nodeType === 1 &&
+        typeof o.nodeName === "string";
 }
 
 // An escape hatch from React. Pass the dom prop to imperatively add HTMLElements.
-export function Escape({ dom, children: _, ...rest }: { dom: HTMLElement | undefined | null | false, [k: string]: any }) {
+export function Escape({
+  dom,
+  children: _,
+  ...rest
+}: {
+  dom: HTMLElement | undefined | null | false;
+  [k: string]: any;
+}) {
   const divRef = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => {
     const div = divRef.current;
@@ -487,13 +552,22 @@ export function Escape({ dom, children: _, ...rest }: { dom: HTMLElement | undef
       div.appendChild(dom);
       return () => {
         div.removeChild(dom);
-      }
+      };
     }
   }, [dom]);
   return React.createElement("div", { ...rest, ref: divRef });
 }
 
-function filterDataFromProps({ classes, file, path, header, position, name, identifier, config }: Data) {
+function filterDataFromProps({
+  classes,
+  file,
+  path,
+  header,
+  position,
+  name,
+  identifier,
+  config,
+}: Data) {
   return {
     classes,
     file,
@@ -503,14 +577,18 @@ function filterDataFromProps({ classes, file, path, header, position, name, iden
     name,
     identifier,
     config,
-  }
+  };
 }
 
 // Like Object.assign but includes getters, setters, and other property descriptors
 function assignProperties(target: object, source: any) {
   for (const k in source) {
     if (Object.prototype.hasOwnProperty.call(source, k)) {
-      Object.defineProperty(target, k, Object.getOwnPropertyDescriptor(source, k)!);
+      Object.defineProperty(
+        target,
+        k,
+        Object.getOwnPropertyDescriptor(source, k)!
+      );
     }
   }
 }

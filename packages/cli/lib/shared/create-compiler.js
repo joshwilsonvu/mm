@@ -1,10 +1,10 @@
-'use strict';
+"use strict";
 
 const webpack = require("webpack");
 const chalk = require("chalk");
 const forkTsCheckerWebpackPlugin = require("react-dev-utils/ForkTsCheckerWebpackPlugin");
-const formatWebpackMessages = require('react-dev-utils/formatWebpackMessages');
-const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
+const formatWebpackMessages = require("react-dev-utils/formatWebpackMessages");
+const typescriptFormatter = require("react-dev-utils/typescriptFormatter");
 
 module.exports = createCompiler;
 function createCompiler({ config, useTypeScript }) {
@@ -13,7 +13,7 @@ function createCompiler({ config, useTypeScript }) {
   // "invalid" event fires when you have changed a file, and webpack is
   // recompiling a bundle. If you refresh, it'll wait instead of serving the old one.
   // "invalid" is short for "bundle invalidated", it doesn't imply any errors.
-  compiler.hooks.watchRun.tap('buildStart', () => {
+  compiler.hooks.watchRun.tap("buildStart", () => {
     handlers.invalid();
   });
 
@@ -21,26 +21,31 @@ function createCompiler({ config, useTypeScript }) {
   let tsMessagesResolver;
 
   if (useTypeScript) {
-    compiler.hooks.beforeCompile.tap('beforeCompile', () => {
-      tsMessagesPromise = new Promise(resolve => {
-        tsMessagesResolver = msgs => resolve(msgs);
+    compiler.hooks.beforeCompile.tap("beforeCompile", () => {
+      tsMessagesPromise = new Promise((resolve) => {
+        tsMessagesResolver = (msgs) => resolve(msgs);
       });
     });
 
     forkTsCheckerWebpackPlugin
       .getCompilerHooks(compiler)
-      .receive.tap('afterTypeScriptCheck', (diagnostics) => {
-        const format = message => `${message.file}\n${typescriptFormatter(message)}`;
+      .receive.tap("afterTypeScriptCheck", (diagnostics) => {
+        const format = (message) =>
+          `${message.file}\n${typescriptFormatter(message)}`;
         tsMessagesResolver({
-          errors: diagnostics.filter(msg => msg.severity === 'error').map(format),
-          warnings: diagnostics.filter(msg => msg.severity === 'warning').map(format),
+          errors: diagnostics
+            .filter((msg) => msg.severity === "error")
+            .map(format),
+          warnings: diagnostics
+            .filter((msg) => msg.severity === "warning")
+            .map(format),
         });
       });
   }
 
   // "done" event fires when webpack has finished recompiling the bundle.
   // Whether or not you have warnings or errors, you will get this event.
-  compiler.hooks.done.tap('done', async stats => {
+  compiler.hooks.done.tap("done", async (stats) => {
     // We have switched off the default webpack output
     // so we are going to "massage" the warnings and errors and present
     // them in a readable focused way.
@@ -79,27 +84,33 @@ function createCompiler({ config, useTypeScript }) {
 
 const handlers = {
   invalid() {
-    console.info('Compiling...')
+    console.info("Compiling...");
   },
   success() {
-    console.success('Compiled successfully!');
+    console.success("Compiled successfully!");
   },
   warning(messages) {
     console.warn(
-      chalk.bold.yellow('Compiled with warnings.\n'),
-      messages.warnings.join('\n\n'), "\n"
+      chalk.bold.yellow("Compiled with warnings.\n"),
+      messages.warnings.join("\n\n"),
+      "\n"
     );
 
     // Teach some ESLint tricks.
     console.log(
-      `Search for the ${chalk.underline(chalk.yellow('keywords'))} to learn more about each warning.`,
-      `\nTo ignore, add ${chalk.cyan('// eslint-disable-next-line')} to the line before.\n`
+      `Search for the ${chalk.underline(
+        chalk.yellow("keywords")
+      )} to learn more about each warning.`,
+      `\nTo ignore, add ${chalk.cyan(
+        "// eslint-disable-next-line"
+      )} to the line before.\n`
     );
   },
   error(messages) {
     console.error(
-      chalk.bold.red('Failed to compile.\n'),
-      messages.errors[0], "\n"
+      chalk.bold.red("Failed to compile.\n"),
+      messages.errors[0],
+      "\n"
     );
-  }
-}
+  },
+};

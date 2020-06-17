@@ -4,31 +4,39 @@
 
 import React from "react";
 import { renderHook, act } from "@testing-library/react-hooks";
-import { ConfigProvider, useCurrentConfig, useSetConfig, useModifyConfig, initializeConfig } from '../src';
+import {
+  ConfigProvider,
+  useCurrentConfig,
+  useSetConfig,
+  useModifyConfig,
+  initializeConfig,
+} from "../src";
 
 const initialConfig = { port: 8080, timeFormat: 12 };
 let currentConfig;
 
 function Wrapper({ children }) {
-  const [config, setConfig] = React.useState(() => initializeConfig(initialConfig));
+  const [config, setConfig] = React.useState(() =>
+    initializeConfig(initialConfig)
+  );
   currentConfig = config;
   return (
     <ConfigProvider config={config} setConfig={setConfig}>
       {children}
     </ConfigProvider>
-  )
+  );
 }
 
-beforeEach(() => currentConfig = void 0);
+beforeEach(() => (currentConfig = void 0));
 
-test('useCurrentConfig', () => {
+test("useCurrentConfig", () => {
   const { result, rerender } = renderHook(() => useCurrentConfig(), {
-    wrapper: Wrapper
+    wrapper: Wrapper,
   });
   expect(result.current).toEqual({
-    language: 'en',
+    language: "en",
     timeFormat: 12,
-    units: 'metric',
+    units: "metric",
     modules: [],
   });
   expect(result.current).toBe(currentConfig);
@@ -37,16 +45,16 @@ test('useCurrentConfig', () => {
   expect(first).toBe(result.current); // referential equality
 });
 
-test('useSetConfig', () => {
+test("useSetConfig", () => {
   const { result } = renderHook(() => useSetConfig(), {
-    wrapper: Wrapper
+    wrapper: Wrapper,
   });
   expect(typeof result.current).toBe("function");
   const setConfig = result.current;
   const newConfig = {
-    language: 'fr',
+    language: "fr",
     timeFormat: 24,
-    units: 'imperial',
+    units: "imperial",
     modules: [],
   };
   act(() => {
@@ -55,15 +63,15 @@ test('useSetConfig', () => {
   expect(newConfig).toEqual(currentConfig);
 });
 
-test('useModifyConfig', () => {
+test("useModifyConfig", () => {
   const { result } = renderHook(() => useModifyConfig(), {
-    wrapper: Wrapper
+    wrapper: Wrapper,
   });
   const first = currentConfig;
   expect(typeof result.current).toBe("function");
   const modifyConfig = result.current;
   act(() => {
-    modifyConfig(conf => {
+    modifyConfig((conf) => {
       conf.timeFormat = 24;
     });
   });

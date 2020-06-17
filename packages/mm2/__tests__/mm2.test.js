@@ -6,13 +6,11 @@ const { Module, Escape } = require("../src");
 
 const React = require("react");
 const { render, screen } = require("@testing-library/react");
-const matchers = require('@testing-library/jest-dom/matchers');
+const matchers = require("@testing-library/jest-dom/matchers");
 expect.extend(matchers);
 
-
 test("Module", () => {
-  const Component = Module.register("Test", {
-  });
+  const Component = Module.register("Test", {});
 });
 
 test("Escape", () => {
@@ -27,7 +25,9 @@ test("Escape", () => {
 
   // render the DOM nodes using Escape
   const text1 = "Result of Module#getDOM()";
-  const { rerender, unmount } = render(React.createElement(Escape, { dom: createDomNodes(text1) }));
+  const { rerender, unmount } = render(
+    React.createElement(Escape, { dom: createDomNodes(text1) })
+  );
   expect(screen.getByText(text1)).toBeInTheDocument();
 
   // rerender with different DOM nodes
@@ -39,4 +39,4 @@ test("Escape", () => {
   // unmount and make sure the DOM nodes are gone
   unmount();
   expect(screen.queryByText(text2)).toBe(null);
-})
+});

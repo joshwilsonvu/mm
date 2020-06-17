@@ -1,7 +1,7 @@
 import { renderHook } from "@testing-library/react-hooks";
 import { useInterval } from "../src";
 
-test('useInterval', () => {
+test("useInterval", () => {
   jest.useFakeTimers();
 
   const handler = jest.fn();

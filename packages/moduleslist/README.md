@@ -14,9 +14,7 @@ containing the source code, and a `category` for organization.
 ```typescript
 const moduleslist = require("@mm/moduleslist");
 
-console.log(
-  moduleslist.filter(mod => mod.name === "MMM-SystemTemperature")
-)
+console.log(moduleslist.filter((mod) => mod.name === "MMM-SystemTemperature"));
 // [
 //   {
 //     name: 'MMM-SystemTemperature',
@@ -27,9 +25,7 @@ console.log(
 //   }
 // ]
 
-console.log(
-  new Set(moduleslist.map(mod => mod.category))
-)
+console.log(new Set(moduleslist.map((mod) => mod.category)));
 // Set {
 //   'Development and Core',
 //   'Finance',
@@ -62,11 +58,11 @@ an entry to the file that looks like the following:
 
 ```yml
 <Category>:
- - name: <name>
-   author: <author>
-   description: <description line 1>
-     <optional description line 2>
-   repository: "https://github.com/<user>/<repository>"  # Must be a GitHub url
+  - name: <name>
+    author: <author>
+    description: <description line 1>
+      <optional description line 2>
+    repository: "https://github.com/<user>/<repository>" # Must be a GitHub url
 ```
 
 You can make the changes without leaving GitHub.

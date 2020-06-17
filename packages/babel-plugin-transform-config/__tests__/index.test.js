@@ -1,9 +1,8 @@
-
-const pluginTester = require('babel-plugin-tester').default;
-const plugin = require('..');
+const pluginTester = require("babel-plugin-tester").default;
+const plugin = require("..");
 
 // replaces project path with <PROJECT_ROOT> in absolute paths
-const jestSerializerPath = require('jest-serializer-path');
+const jestSerializerPath = require("jest-serializer-path");
 expect.addSnapshotSerializer(jestSerializerPath);
 
 pluginTester({
@@ -61,11 +60,11 @@ pluginTester({
       snapshot: true,
       pluginOptions: {
         modulesPath: "../../custom-modules",
-      }
-    }
+      },
+    },
   },
   babelOptions: {
-    filename: require.resolve('./config/dummy'),
+    filename: require.resolve("./config/dummy"),
     babelrc: false,
     configFile: false,
     root: __dirname,

@@ -6,94 +6,93 @@ export function ModuleLayout({ children }: React.PropsWithChildren<{}>) {
   // and slice it based on position
   const regions = React.useMemo(() => {
     const regions = makeRegions<React.ReactNode>();
-    React.Children.forEach(children, child => {
+    React.Children.forEach(children, (child) => {
       if (React.isValidElement(child)) {
-        const position = (child.props.position || "none") as keyof typeof regions;
+        const position = (child.props.position ||
+          "none") as keyof typeof regions;
         if (regions.hasOwnProperty(position)) {
           regions[position].push(child);
         } else {
-          throw new Error(`React element ${child} has an incorrect "position" prop ${position}.`);
+          throw new Error(
+            `React element ${child} has an incorrect "position" prop ${position}.`
+          );
         }
       }
     });
     return regions;
   }, [children]);
   const {
-    none, fullscreen_below, top_bar, top_left, top_center, top_right, upper_third, middle_center,
-    lower_third, bottom_bar, bottom_left, bottom_center, bottom_right, fullscreen_above,
+    none,
+    fullscreen_below,
+    top_bar,
+    top_left,
+    top_center,
+    top_right,
+    upper_third,
+    middle_center,
+    lower_third,
+    bottom_bar,
+    bottom_left,
+    bottom_center,
+    bottom_right,
+    fullscreen_above,
   } = regions;
 
   return (
     <>
-      <div style={{ display: 'none' }}>{none}</div>
-      <div className="region fullscreen below">
-        {fullscreen_below}
-      </div>
+      <div style={{ display: "none" }}>{none}</div>
+      <div className="region fullscreen below">{fullscreen_below}</div>
       <div className="region top bar">
         {top_bar}
-        <div className="region top left">
-          {top_left}
-        </div>
-        <div className="region top center">
-          {top_center}
-        </div>
-        <div className="region top right">
-          {top_right}
-        </div>
+        <div className="region top left">{top_left}</div>
+        <div className="region top center">{top_center}</div>
+        <div className="region top right">{top_right}</div>
       </div>
-      <div className="region upper third">
-        {upper_third}
-      </div>
-      <div className="region middle center">
-        {middle_center}
-      </div>
+      <div className="region upper third">{upper_third}</div>
+      <div className="region middle center">{middle_center}</div>
       <div className="region lower third">
-        <br />{lower_third}
+        <br />
+        {lower_third}
       </div>
       <div className="region bottom bar">
         {bottom_bar}
-        <div className="region bottom left">
-          {bottom_left}
-        </div>
-        <div className="region bottom center">
-          {bottom_center}
-        </div>
-        <div className="region bottom right">
-          {bottom_right}
-        </div>
+        <div className="region bottom left">{bottom_left}</div>
+        <div className="region bottom center">{bottom_center}</div>
+        <div className="region bottom right">{bottom_right}</div>
       </div>
-      <div className="region fullscreen above">
-        {fullscreen_above}
-      </div>
+      <div className="region fullscreen above">{fullscreen_above}</div>
     </>
   );
 }
 
 const regionsArray = [
-  'none',
-  'top_bar',
-  'top_left',
-  'top_center',
-  'top_right',
-  'upper_third',
-  'middle_center',
-  'lower_third',
-  'bottom_left',
-  'bottom_center',
-  'bottom_right',
-  'bottom_bar',
-  'fullscreen_above',
-  'fullscreen_below',
+  "none",
+  "top_bar",
+  "top_left",
+  "top_center",
+  "top_right",
+  "upper_third",
+  "middle_center",
+  "lower_third",
+  "bottom_left",
+  "bottom_center",
+  "bottom_right",
+  "bottom_bar",
+  "fullscreen_above",
+  "fullscreen_below",
 ] as const;
 
-type ModulePosition = (typeof regionsArray)[number];
+type ModulePosition = typeof regionsArray[number];
 
 function makeRegions<T>() {
   // Create a new object with keys from regionsArray and empty arrays as values
   let regionsPartial: Partial<Record<ModulePosition, T[]>> = {};
-  let regions: Record<ModulePosition, T[]> = regionsArray.reduce((obj, region) => {
-    obj[region] = [];
-    return obj;
-  }, regionsPartial) as Record<ModulePosition, T[]>;
+  let regions: Record<ModulePosition, T[]> = regionsArray.reduce(
+    (obj, region) => {
+      obj[region] = [];
+      return obj;
+    },
+    regionsPartial
+  ) as Record<ModulePosition, T[]>;
   return regions;
 }

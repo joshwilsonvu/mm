@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-type State = { hasError: boolean, error?: Error, errorInfo?: React.ErrorInfo };
+type State = { hasError: boolean; error?: Error; errorInfo?: React.ErrorInfo };
 type Props = React.PropsWithChildren<{ name: string }>;
 
 // Error boundary for nice presentation of errors
@@ -30,7 +30,7 @@ export class ModuleGuard extends React.Component<Props, State> {
 
   render() {
     if (this.state.hasError) {
-      if (process.env.NODE_ENV !== 'production') {
+      if (process.env.NODE_ENV !== "production") {
         return (
           <div>
             <h4>{`Something went wrong in module ${this.props.name}.`}</h4>
@@ -45,9 +45,7 @@ export class ModuleGuard extends React.Component<Props, State> {
       return (
         // Suspense lets each module load independently, so one module with
         // many dependencies doesn't affect another module's loading time
-        <React.Suspense fallback={
-          <div>Loading...</div>
-        }>
+        <React.Suspense fallback={<div>Loading...</div>}>
           {this.props.children}
         </React.Suspense>
       );

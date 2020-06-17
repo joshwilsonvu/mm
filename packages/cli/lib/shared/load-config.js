@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 const defaults = {
   address: "127.0.0.1",
@@ -37,10 +37,12 @@ module.exports = function loadConfig(configPath, overrides = {}) {
   }
   // add `url` for convenience
   if (!config.url) {
-    config.url = `${config.useHttps ? "https" : "http"}://${config.address || "127.0.0.1"}:${config.port}/`;
+    config.url = `${config.useHttps ? "https" : "http"}://${
+      config.address || "127.0.0.1"
+    }:${config.port}/`;
   }
   checkDeprecatedConfig(config);
   return config;
-}
+};
 
-function checkDeprecatedConfig(config) { }
+function checkDeprecatedConfig(config) {}

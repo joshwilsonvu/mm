@@ -16,7 +16,8 @@ Development and Core:
     repository: https://github.com/Jopyth/MMM-Buttons
   - name: MMM-BurnIn
     author: werthdavid
-    description: A module that flickers the whole screen to prevent a burn-in effect
+    description:
+      A module that flickers the whole screen to prevent a burn-in effect
       on your display.
     repository: https://github.com/werthdavid/MMM-BurnIn
   - name: MMM-Carousel w/ Navigation
@@ -50,7 +51,8 @@ Development and Core:
     repository: https://github.com/jancalve/MMM-flick-gestures
   - name: MMM-Gestures
     author: thobach
-    description: allows gesture control of compliments (only show when stepping in
+    description:
+      allows gesture control of compliments (only show when stepping in
       front of mirror), newsfeed (wave left / right, up for full-screen) and
       pages with two types of infrared sensors. Gestures can be up, down, left,
       right, far and close movements of the hand in front of a gesture sensor
@@ -71,7 +73,8 @@ Development and Core:
     repository: https://github.com/shbatm/MMM-Logging
   - name: MMM-ModuleScheduler
     author: ianperrin
-    description: Create schedules to control when other modules are shown, hidden or
+    description:
+      Create schedules to control when other modules are shown, hidden or
       dimmed and to send notifications to other modules.
     repository: https://github.com/ianperrin/MMM-ModuleScheduler
   - name: MMM-ModuleToggleButton
@@ -82,7 +85,8 @@ Development and Core:
     repository: https://github.com/balassy/MMM-ModuleToggleButton
   - name: MMM-Navigate
     author: AxLED
-    description: A module to connect a rotary encoder to MagicMirror and use it for
+    description:
+      A module to connect a rotary encoder to MagicMirror and use it for
       Navigation inside of MagicMirror.
     repository: https://github.com/Ax-LED/MMM-Navigate
   - name: MMM-NetworkConnection
@@ -95,7 +99,8 @@ Development and Core:
     repository: https://github.com/PoOwAa/MMM-network-signal
   - name: MMM-NotificationTrigger
     author: eouia
-    description: MMM-NotificationTrigger is a simple notification relay which can
+    description:
+      MMM-NotificationTrigger is a simple notification relay which can
       convert notifications from TRIGGER_NOTIFICATION to FIRE_NOTIFICATION
     repository: https://github.com/eouia/MMM-NotificationTrigger
   - name: MMM-OnScreenMenu
@@ -108,7 +113,8 @@ Development and Core:
     repository: https://github.com/edward-shen/MMM-pages
   - name: MMM-page-indicator
     author: edward-shen
-    description: A helper module to display what page you're on. Intended to be used
+    description:
+      A helper module to display what page you're on. Intended to be used
       with other modules that rotate out modules.
     repository: https://github.com/edward-shen/MMM-page-indicator
   - name: MMM-Page-Selector
@@ -127,7 +133,8 @@ Development and Core:
     repository: https://github.com/eouia/MMM-Remote-Control-Repository
   - name: MMM-Remote-Control
     author: Jopyth
-    description: Cleanly shutdown (or reboot) your mirror, edit which modules are
+    description:
+      Cleanly shutdown (or reboot) your mirror, edit which modules are
       shown on your mirror and turn your monitor off and on from a simple
       website, i.e. from your smartphone.
     repository: https://github.com/Jopyth/MMM-Remote-Control
@@ -137,7 +144,8 @@ Development and Core:
     repository: https://github.com/ralberth/MMM-SendNotificationButton
   - name: MMM-Simple-Swiper
     author: Bee-Mar; OttoJuba
-    description: Simple, multi-threaded interface for HC-SR04 ultra sonic sensors to
+    description:
+      Simple, multi-threaded interface for HC-SR04 ultra sonic sensors to
       be used with MMM-pages
     repository: https://github.com/Bee-Mar/MMM-Simple-Swiper
   - name: MMM-Tabulator
@@ -147,12 +155,14 @@ Development and Core:
     repository: https://github.com/E3V3A/MMM-Tabulator
   - name: MMM-ViewNotifications
     author: glitch452
-    description: Display a list of notifications that have been broadcast to all the
+    description:
+      Display a list of notifications that have been broadcast to all the
       modules.
     repository: https://github.com/glitch452/MMM-ViewNotifications
   - name: MagicMirror-Module-Template
     author: MichMich
-    description: Module to help developers to start building their own modules for
+    description:
+      Module to help developers to start building their own modules for
       the MagicMirror.
     repository: https://github.com/roramirez/MagicMirror-Module-Template
   - name: MMM-HTMLSnippet
@@ -241,7 +251,8 @@ Finance:
     repository: https://github.com/amcolash/MMM-GoogleFit
   - name: MMM-MyPrayerTimes
     author: HTilburgs
-    description: MyPrayerTimes is a simple Module, that calculate prayer times for
+    description:
+      MyPrayerTimes is a simple Module, that calculate prayer times for
       any location around the world, based on a variety of calculation methods
       currently used in Muslim communities using the Aladhan API
     repository: https://github.com/htilburgs/MMM-MyPrayerTimes
@@ -306,7 +317,8 @@ Transport and Travel:
     repository: https://github.com/j-hiller/MMM-AC-aseag
   - name: MMM-AtbSanntid
     author: Springvar
-    description: Unofficial module showing departure times from given stops for the
+    description:
+      Unofficial module showing departure times from given stops for the
       public transport service in Trøndelag, Norway - AtB
     repository: https://github.com/Springvar/MMM-AtbSanntid
   - name: MMM-Avinor
@@ -327,7 +339,8 @@ Transport and Travel:
     repository: https://github.com/hdurdle/MMM-BMWConnected
   - name: MMM-Bubi
     author: balassy
-    description: Displays the number of available bikes on the selected stations of
+    description:
+      Displays the number of available bikes on the selected stations of
       the Budapest public bike system (aka MOL Bubi).
     repository: https://github.com/balassy/MMM-Bubi
   - name: MMM-Bysykkel
@@ -341,7 +354,8 @@ Transport and Travel:
     repository: https://github.com/zzhenney/MMM-Caltrain
   - name: MMM-CTA
     author: NateDee
-    description: Displays arrival times for the Chicago Transit Authority 'L' system
+    description:
+      Displays arrival times for the Chicago Transit Authority 'L' system
       buses and trains.
     repository: https://github.com/NateDee/MMM-CTA
   - name: MMM-DCMetroTrainTimes
@@ -358,7 +372,8 @@ Transport and Travel:
     repository: https://github.com/kyle-kelly/MMM-DCMetroTimes
   - name: MMM-DVB
     author: skastenholz
-    description: Station monitor for the Dresden/Germany local transport (DVB) bus,
+    description:
+      Station monitor for the Dresden/Germany local transport (DVB) bus,
       tram and train system.
     repository: https://github.com/skastenholz/MMM-DVB
   - name: MMM-DisneyWaitTimes
@@ -408,12 +423,14 @@ Transport and Travel:
     repository: https://github.com/fewieden/MMM-Fuel
   - name: MMM-Futar
     author: balassy
-    description: Displays Budapest public transport information directly from the
+    description:
+      Displays Budapest public transport information directly from the
       Futár webservice.
     repository: https://github.com/balassy/MMM-Futar
   - name: MMM-GeoTracking
     author: asimhsidd
-    description: Geo-track a moving object on the map by continuously listening to a
+    description:
+      Geo-track a moving object on the map by continuously listening to a
       pubnub channel where the publisher (example file attached) has to publish
       the new location (lat, lon) as and when moves
     repository: https://github.com/asimhsidd/MMM-GeoTracking
@@ -476,7 +493,8 @@ Transport and Travel:
     repository: https://github.com/edward-shen/MMM-MBTA
   - name: MMM-MTA-NextBus
     author: Tie
-    description: Displays the arrival time of the next few buses for a particular
+    description:
+      Displays the arrival time of the next few buses for a particular
       bus stop. This is for the Metropolitan Transit Authority (MTA) in New York
       City.
     repository: https://github.com/tie624/MMM-MTA-NextBus
@@ -494,7 +512,8 @@ Transport and Travel:
     repository: https://github.com/dimitrystd/MMM-NJTransit
   - name: MMM-NLDepartureTimes
     author: travelbacon
-    description: Shows departure times of Dutch public transport. Where you can sort
+    description:
+      Shows departure times of Dutch public transport. Where you can sort
       on destination and group stops in one stop. Good for hubs where multiple
       lines and authorities merge, so yo have one stop instead of multiple.
     repository: https://github.com/Travelbacon/MMM-NLDepartureTimes
@@ -504,12 +523,14 @@ Transport and Travel:
     repository: https://github.com/Jan-Bart/MMM-NMBS-Connection
   - name: MMM-Nantes-TAN
     author: normyx
-    description: time to the next buses, tramways or navibus from a list of stations
+    description:
+      time to the next buses, tramways or navibus from a list of stations
       / lines for Nantes (TAN).
     repository: https://github.com/normyx/MMM-Nantes-TAN
   - name: MMM-NesteBussAtB
     author: ottopaulsen
-    description: A Magic Mirror Module that shows how many minutes until the next
+    description:
+      A Magic Mirror Module that shows how many minutes until the next
       bus(es) goes from given bus stops.
     repository: https://github.com/ottopaulsen/MMM-NesteBussAtB
   - name: MMM-nstreinen
@@ -544,18 +565,21 @@ Transport and Travel:
     repository: https://github.com/pbuabthong/MMM-PasadenaTransit
   - name: MMM-Paris-RATP-PG
     author: da4throux
-    description: "Time to the next buses, metros, rers & tramways for Paris Network
+    description:
+      "Time to the next buses, metros, rers & tramways for Paris Network
       (RATP), along with: the traffic status for selected lines, the risk of
       rain in the next hour, autolib and velib stations status."
     repository: https://github.com/da4throux/MMM-Paris-RATP-PG
   - name: MMM-PublicTransportBerlin
     author: deg0nz
-    description: Display departures for public transport in Berlin and Brandenburg
+    description:
+      Display departures for public transport in Berlin and Brandenburg
       (Covers VBB Area).
     repository: https://github.com/deg0nz/MMM-PublicTransportBerlin
   - name: MMM-PublicTransportDB
     author: olexs
-    description: "Display departures for public transport in Germany using db-hafas
+    description:
+      "Display departures for public transport in Germany using db-hafas
       data (Deutsche Bahn). Includes most local networks with buses, trams etc.,
       however will less details than other modules that use local network APIs
       directly (e.g. RMV has no real-time delay data, only scheduled
@@ -574,14 +598,16 @@ Transport and Travel:
     repository: https://github.com/raywo/MMM-PublicTransportHafas
   - name: MMM-PublicTransportLeipzig
     author: raywo
-    description: Display departures for public transport in Leipzig. The used data
+    description:
+      Display departures for public transport in Leipzig. The used data
       are quite unreliable. Please use
       MMM-PublicTransportHafas
       instead. It comes preconfigured for Leipzig.
     repository: https://github.com/raywo/MMM-PublicTransportLeipzig
   - name: MMM-PublicTransportVVO
     author: ChristianGeie
-    description: Display live departures from public passenger transport service of
+    description:
+      Display live departures from public passenger transport service of
       the 'Verkehrsverbund Oberelbe' (VVO).
     repository: https://github.com/ChristianGeie/MMM-PublicTransportVVO
   - name: MMM-RMV
@@ -594,7 +620,8 @@ Transport and Travel:
     repository: https://github.com/yawnsde/MMM-RNV
   - name: MMM-RVV
     author: sebikolon
-    description: Departure monitor for the RVV (Regensburger Verkehrsverbund) public
+    description:
+      Departure monitor for the RVV (Regensburger Verkehrsverbund) public
       transport (bus) system (Bavaria/Germany)
     repository: https://github.com/sebikolon/MMM-RVV
   - name: MMM-ResRobot
@@ -607,7 +634,8 @@ Transport and Travel:
     repository: https://github.com/CatoAntonsen/MMM-Ruter
   - name: MMM-SFMuniBusTimes
     author: vikramraja1995
-    description: Displays the ETA of San Francisco's MUNI Bus and Rail systems based
+    description:
+      Displays the ETA of San Francisco's MUNI Bus and Rail systems based
       on the given stops and routes.
     repository: https://github.com/vikramraja1995/MMM-SFMuniBusTimes
   - name: MMM-SL-PublicTransport
@@ -628,12 +656,14 @@ Transport and Travel:
     repository: https://github.com/alexandreLavenant/MMM-Star-Metro
   - name: MMM-SwissCommute
     author: nixnuex
-    description: Display the next departures for your favorite (train) connection in
+    description:
+      Display the next departures for your favorite (train) connection in
       Switzerland (SBB)
     repository: https://github.com/nixnuex/MMM-SwissCommute
   - name: MMM-SwissStationboard
     author: vanhoekd
-    description: Display the next departures in every direction for your favorite
+    description:
+      Display the next departures in every direction for your favorite
       trainstation in Switzerland with delay information
     repository: https://github.com/vanhoekd/MMM-SwissStationboard
   - name: MMM-TFL
@@ -667,7 +697,8 @@ Transport and Travel:
     repository: https://github.com/f00d4tehg0dz/MMM-TeslaFi
   - name: MMM-TeslaFi
     author: mattdy
-    description: Enhanced version of MMM-TeslaFi by f00d4tehg0dz. Adds additional
+    description:
+      Enhanced version of MMM-TeslaFi by f00d4tehg0dz. Adds additional
       fields, plus configuration of which fields to display
     repository: https://github.com/mattdy/MMM-TeslaFi
   - name: MMM-TeslaStatus
@@ -695,7 +726,8 @@ Transport and Travel:
     repository: https://github.com/LoneWanderer-GH/MMM-Toulouse-Transports
   - name: MMM-TracCar
     author: asimhsidd
-    description: Track moving objects through Traccar.org APIs on google maps. This
+    description:
+      Track moving objects through Traccar.org APIs on google maps. This
       is based on a websocket connection to the Traccar.org server over which
       the locations of all the registered users are received upon any update.
       Not only the markers are updated but also the map's center & zoom level.
@@ -728,7 +760,8 @@ Transport and Travel:
     repository: https://github.com/nigel-daniels/MMM-Tube-Status
   - name: MMM-UKLiveBusStopInfo
     author: nwootton
-    description: This module displays LIVE UK information about a specific bus stop
+    description:
+      This module displays LIVE UK information about a specific bus stop
       and the routes that serve it.
     repository: https://github.com/nwootton/MMM-UKLiveBusStopInfo
   - name: MMM-UKNationalRail
@@ -738,12 +771,14 @@ Transport and Travel:
     repository: https://github.com/nwootton/MMM-UKNationalRail
   - name: MMM-VTA-Live
     author: nigel-daniels
-    description: Lets you see when VTA light rail trains are about to arrive at your
+    description:
+      Lets you see when VTA light rail trains are about to arrive at your
       selected stop.
     repository: https://github.com/nigel-daniels/MMM-VTA-Live
   - name: MMM-Vasttrafik-PublicTransport
     author: bureus
-    description: Display public transport operated by Västtrafik for western part of
+    description:
+      Display public transport operated by Västtrafik for western part of
       Sweden, including Gothenburg.
     repository: https://github.com/bureus/MMM-Vasttrafik-PublicTransport
   - name: MMM-VolvoOnCall
@@ -762,17 +797,20 @@ Transport and Travel:
     repository: https://github.com/fewieden/MMM-WienerLinien
   - name: MMM-bustimes
     author: cirdan
-    description: Display Dutch bus and some other public transports for a targeted
+    description:
+      Display Dutch bus and some other public transports for a targeted
       set of bus stops.
     repository: https://github.com/73cirdan/MMM-bustimes
   - name: MMM-google-route
     author: mrdis
-    description: Displays the two best routes from an origin to a destination, using
+    description:
+      Displays the two best routes from an origin to a destination, using
       Google Directions API.
     repository: https://github.com/mrdis/MMM-google-route
   - name: MMM-iHaveBeenThere
     author: basti0001
-    description: Visulizes your places where you have been traveled..or intend to
+    description:
+      Visulizes your places where you have been traveled..or intend to
       go.......or or or.
     repository: https://github.com/basti0001/MMM-iHaveBeenThere
   - name: MMM-lyft
@@ -793,7 +831,8 @@ Transport and Travel:
     repository: https://github.com/ytmytm/MMM-pekavm
   - name: MMM-socialbicycles
     author: 0lek
-    description: Station monitor for bicycle networks based on the Socialbicycles
+    description:
+      Station monitor for bicycle networks based on the Socialbicycles
       API/Infrastructure, e.g. Wavelo in Kraków, Poland.
     repository: https://github.com/0lek/MMM-socialbicycles
   - name: MMM-stib
@@ -831,7 +870,8 @@ Transport and Travel:
     repository: https://github.com/htilburgs/MMM-MyTraffic
   - name: MMM-CoupEscooters
     author: Bogomips
-    description: Display COUP e-scooters around you and sort them by distance. It
+    description:
+      Display COUP e-scooters around you and sort them by distance. It
       works for Berlin and other cities
     repository: https://github.com/bogomips/MMM-CoupEscooters
   - name: MMM-PGHBus
@@ -858,7 +898,8 @@ Transport and Travel:
     repository: https://github.com/wkra/MMM-CracowMPK
   - name: MMM-Ilevia-Lille
     author: Jilano5
-    description: time to the next buses, tramways from a list of stations / lines
+    description:
+      time to the next buses, tramways from a list of stations / lines
       for Lille (Ilevia).
     repository: https://github.com/Jilano5/MMM-Ilevia-Lille
   - name: MMM-CuandoLlega
@@ -867,7 +908,8 @@ Transport and Travel:
     repository: https://github.com/bibaldo/MMM-CuandoLlega
   - name: MMM-MiBiciTuBici
     author: bibaldo
-    description: Displays the number of available bikes on the selected stations of
+    description:
+      Displays the number of available bikes on the selected stations of
       Rosario, Santa Fe, Argentina public bike system (aka MOVI)
     repository: https://github.com/bibaldo/MMM-MiBiciTuBici
   - name: MMM-yandex-route
@@ -877,7 +919,8 @@ Transport and Travel:
 Voice Control:
   - name: MMM-AlexaOnOff
     author: shbatm
-    description: Simple Mirror Control from External Home Assistant (Alexa/Google
+    description:
+      Simple Mirror Control from External Home Assistant (Alexa/Google
       Home/HASS.io)
     repository: https://github.com/shbatm/MMM-AlexaOnOff
   - name: MMM-Alexa
@@ -890,12 +933,14 @@ Voice Control:
     repository: https://github.com/eouia/MMM-AssistantMk2
   - name: MMM-Assistant2Display
     author: bugsounet
-    description: MMM-AssistantMk2 Addon to display links / photos / YouTube video
+    description:
+      MMM-AssistantMk2 Addon to display links / photos / YouTube video
       and more...
     repository: https://github.com/bugsounet/MMM-Assistant2Display
   - name: MMM-AlexaControl
     author: JoChef2
-    description: The MMM-AlexaControl module allows you to control your Mirror with
+    description:
+      The MMM-AlexaControl module allows you to control your Mirror with
       Alexa (every device that support Wemos devices). You can turn it on and
       off, change the page and send notifications to other modules.
     repository: https://github.com/JoChef2/MMM-AlexaControl
@@ -905,22 +950,26 @@ Voice Control:
     repository: https://github.com/bugsounet/MMM-GoogleAssistant
   - name: MMM-GoogleAssistant
     author: gauravsacc
-    description: Google Assistant integration using python library. Activated using
+    description:
+      Google Assistant integration using python library. Activated using
       hotword 'Ok Google'
     repository: https://github.com/gauravsacc/MMM-GoogleAssistant
   - name: MMM-GoogleTTS
     author: eouia
-    description: Text-to-Speech module for MagicMirror with Google Cloud TTS API.
+    description:
+      Text-to-Speech module for MagicMirror with Google Cloud TTS API.
       Give a voice to your Mirror.
     repository: https://github.com/eouia/MMM-GoogleTTS
   - name: Hello-Lucy
     author: Mykle1
-    description: Hide/Show individual modules and pages of modules with custom audio
+    description:
+      Hide/Show individual modules and pages of modules with custom audio
       responses that you create.
     repository: https://github.com/mykle1/Hello-Lucy
   - name: MMM-Hello-Mirror
     author: Matzefication
-    description: Voice-Control for the MagicMirror based on Google Speech Recognizer
+    description:
+      Voice-Control for the MagicMirror based on Google Speech Recognizer
       (annyang). Send a notification to all other modules on voice detection.
     repository: https://github.com/Matzefication/MMM-Hello-Mirror
   - name: MMM-Hotword
@@ -959,7 +1008,8 @@ Voice Control:
     repository: https://github.com/kalliope-project/MMM-kalliope
   - name: MMM-voice
     author: fewieden
-    description: Offline Voice Recognition Module for MagicMirror2, with ability to
+    description:
+      Offline Voice Recognition Module for MagicMirror2, with ability to
       control other modules, based on pocketsphinx.
     repository: https://github.com/fewieden/MMM-voice
   - name: magic-mirror-voice
@@ -981,7 +1031,8 @@ Voice Control:
 Weather:
   - name: MMM-3Day-Forecast
     author: nigel-daniels
-    description: Simple display of today, tomorrow & next-day, designed to work with
+    description:
+      Simple display of today, tomorrow & next-day, designed to work with
       MMM-Weather-Now. Now uses WeatherBit API as Wunderground are cancelling
       the free service :( Please update and update config!
     repository: https://github.com/nigel-daniels/MMM-3Day-Forecast
@@ -1030,7 +1081,8 @@ Weather:
     repository: https://github.com/mykle1/MMM-Climacell-Hourly
   - name: MMM-Currentweather-MQTT
     author: spitzlbergerj
-    description: Extension of the standard module currentweather by the possibility
+    description:
+      Extension of the standard module currentweather by the possibility
       to process and integrate MQTT telegrams of an own weather station
     repository: https://github.com/spitzlbergerj/MMM-Currentweather-MQTT
   - name: MMM-PilotWX
@@ -1039,7 +1091,8 @@ Weather:
     repository: https://github.com/mykle1/MMM-PilotWX
   - name: MMM-PLOW
     author: Mykle1
-    description: Pig Latin On Weather! Multiple views in a single module. Driven by
+    description:
+      Pig Latin On Weather! Multiple views in a single module. Driven by
       Darksky API.
     repository: https://github.com/mykle1/MMM-PLOW
   - name: MMM-WeatherOrNot
@@ -1049,7 +1102,8 @@ Weather:
     repository: https://github.com/mykle1/MMM-WeatherOrNot
   - name: MMM-Buienradar
     author: StefanNienhuis
-    description: This module will show a map with the weather forecast provided by
+    description:
+      This module will show a map with the weather forecast provided by
       Buienradar.
     repository: https://github.com/StefanNienhuis/MMM-Buienradar
   - name: MMM-DHT22
@@ -1071,12 +1125,14 @@ Weather:
     repository: https://github.com/carstendirks/MMM-DWD-Pollen
   - name: MMM-DarkSkyForecast
     author: jclarke0000
-    description: A weather module that displays current, hourly and daily forecast
+    description:
+      A weather module that displays current, hourly and daily forecast
       information using data from the Dark Sky API.
     repository: https://github.com/jclarke0000/MMM-DarkSkyForecast
   - name: MMM-DarkSky24Hours
     author: thobach
-    description: shows weather information for the next 24 hours using the Dark Sky
+    description:
+      shows weather information for the next 24 hours using the Dark Sky
       API. The idea of this module is to give you confidence on what to wear
       when you go outside / to work, or what transport mode you should take (in
       case you are a good weather-only biker). The hourly forecast gives you a
@@ -1120,7 +1176,8 @@ Weather:
     repository: https://github.com/MichaelF1/MMM-HDC1080
   - name: MMM-IndoorTemp
     author: sebastianhodapp
-    description: The module emits the notification "INDOOR_TEMPERATURE" to display
+    description:
+      The module emits the notification "INDOOR_TEMPERATURE" to display
       the indoor temperature received via a subscribed MQTT topic in the default
       Current Weather module.
     repository: https://github.com/sebastianhodapp/MMM-IndoorTemp
@@ -1141,7 +1198,8 @@ Weather:
     repository: https://github.com/marska/MMM-Looko2-aq
   - name: MMM-MarineWeather
     author: Grena
-    description: A Magic Mirror Module displaying the current marine weather (water
+    description:
+      A Magic Mirror Module displaying the current marine weather (water
       and air temperatures, wind and wave conditions).
     repository: https://github.com/grenagit/MMM-MarineWeather
   - name: MMM-MyDutchWeather
@@ -1156,7 +1214,8 @@ Weather:
     repository: https://github.com/martinkooij/MMM-MyWeather
   - name: MMM-NOAA3
     author: Cowboysdude
-    description: Different providers for users to choose from.  Shows current plus 3
+    description:
+      Different providers for users to choose from.  Shows current plus 3
       day forecast. Mouseover shows forecast, with Air, UV, Humidity, Sunrise
       and Set.
     repository: https://github.com/cowboysdude/MMM-NOAA3
@@ -1171,7 +1230,8 @@ Weather:
     repository: https://github.com/CFenner/MMM-Netatmo
   - name: MMM-OpenmapWeather
     author: SathyarajV
-    description: Display current weather as image based on the Openmap Weather API
+    description:
+      Display current weather as image based on the Openmap Weather API
       data with different formatting.
     repository: https://github.com/sathyarajv/MMM-OpenmapWeather
   - name: MMM-Pollen
@@ -1192,12 +1252,14 @@ Weather:
     repository: https://github.com/tttooommm56/MMM-RainForecast-FR
   - name: MMM-VigilanceMeteoFrance
     author: Grena
-    description: A Magic Mirror Module displaying the current level of vigilance of
+    description:
+      A Magic Mirror Module displaying the current level of vigilance of
       weather phenomena and associated risks for France.
     repository: https://github.com/grenagit/MMM-VigilanceMeteoFrance
   - name: MMM-VigiCrues
     author: Grena
-    description: A Magic Mirror Module displaying the last value of water level at a
+    description:
+      A Magic Mirror Module displaying the last value of water level at a
       station in the Vigicrues network in France.
     repository: https://github.com/grenagit/MMM-VigiCrues
   - name: MMM-RecentRainfall
@@ -1206,7 +1268,8 @@ Weather:
     repository: https://github.com/vincep5/MMM-RecentRainfall
   - name: MMM-RemoteTemperature
     author: balassy
-    description: Displays the temperature from a remote sensor that is capable to
+    description:
+      Displays the temperature from a remote sensor that is capable to
       POST the measured value through HTTP protocol in JSON.
     repository: https://github.com/balassy/MMM-RemoteTemperature
   - name: MMM-SmokedMirror
@@ -1228,7 +1291,8 @@ Weather:
     repository: https://github.com/erikmohn/MMM-Vindsiden
   - name: MMM-WWI
     author: Mykle1
-    description: Nope! Not World War I. It's **Weather Without Icons**. Up to the
+    description:
+      Nope! Not World War I. It's **Weather Without Icons**. Up to the
       minute weather. Full weather information, yet a small footprint.
     repository: https://github.com/mykle1/MMM-WWI
   - name: MMM-Weather-Now
@@ -1243,7 +1307,8 @@ Weather:
     repository: https://github.com/Menturan/MMM-Weather-SMHI-Hourly
   - name: MMM-WeatherBackground
     author: eouia
-    description: MagicMirror Module - for Weather image background from Unsplash.
+    description:
+      MagicMirror Module - for Weather image background from Unsplash.
       This is a plugin of other weather modules.
     repository: https://github.com/eouia/MMM-WeatherBackground
   - name: MMM-WeatherDependentClothes
@@ -1284,7 +1349,8 @@ Weather:
     repository: https://github.com/gpailler/MMM-aqicn
   - name: MMM-aviationwx
     author: stuloh
-    description: Display aviation weather (METAR) and FAA delay data for continental
+    description:
+      Display aviation weather (METAR) and FAA delay data for continental
       U.S. airports.
     repository: https://github.com/stuloh/MMM-aviationwx
   - name: MMM-bergfex.at
@@ -1297,7 +1363,8 @@ Weather:
     repository: https://github.com/jacquesCedric/MMM-darksky-hourly
   - name: MMM-dht22
     author: nebulx29
-    description: displays temperature/humidity readings from DHT22 sensor connected
+    description:
+      displays temperature/humidity readings from DHT22 sensor connected
       via GPIOs
     repository: https://github.com/nebulx29/MMM-dht22
   - name: MMM-forecast-io
@@ -1338,7 +1405,8 @@ Weather:
     repository: https://github.com/jharttech/MMM-weatherforecast
   - name: wuforecast
     author: MattLugar
-    description: Weather Underground Forecast Module Retrieves forecast from Weather
+    description:
+      Weather Underground Forecast Module Retrieves forecast from Weather
       Underground. Also adds a percentage probability of precipitation to
       forecast display.
     repository: https://github.com/MattLugar/wuforecast
@@ -1380,7 +1448,8 @@ Sports:
     repository: https://github.com/buxxi/MMM-Liquipedia-Dota2
   - name: MMM-MyScoreboard
     author: jclarke000
-    description: Module for MagicMirror to display today's scores for your favourite
+    description:
+      Module for MagicMirror to display today's scores for your favourite
       teams across multiple sports.
     repository: https://github.com/jclarke0000/MMM-MyScoreboard
   - name: MMM-MyStandings
@@ -1418,12 +1487,14 @@ Sports:
     repository: https://github.com/LukeSkywalker92/MMM-SoccerLiveScore
   - name: MMM-soccer
     author: fewieden
-    description: A module that displays standings from European Soccer (Football)
+    description:
+      A module that displays standings from European Soccer (Football)
       leagues. (optional voice-control)
     repository: https://github.com/fewieden/MMM-soccer
   - name: MMM-OpenSprinkler
     author: johnny-co
-    description: Sprinkler module for displaying OpenSprinkler lawn care station and
+    description:
+      Sprinkler module for displaying OpenSprinkler lawn care station and
       programs
     repository: https://github.com/johnny-co/MMM-OpenSprinkler
 "Utilities, IOT, and Services":
@@ -1451,7 +1522,8 @@ Sports:
     repository: https://github.com/cybex-dev/MMM-ServiceViewer
   - name: MMM-Xdg-Open
     author: cybex-dev
-    description: Opens a file, URL, etc using default applications for a particular
+    description:
+      Opens a file, URL, etc using default applications for a particular
       MIME, all done by using the [Notification
       Mechanism](https://github.com/michMich/MagicMirror/wiki/notifications)
     repository: https://github.com/cybex-dev/MMM-XDG-OPEN
@@ -1469,7 +1541,8 @@ Sports:
     repository: https://github.com/codetheweb/MMM-AnyList
   - name: MMM-AirbarHelper
     author: Ryan Cooke
-    description: Module to add touch input to your mirror using a ~$50 usb plug and
+    description:
+      Module to add touch input to your mirror using a ~$50 usb plug and
       play sensor.
     repository: https://github.com/ryanzor/MMM-AirbarHelper
   - name: MMM-Airtable
@@ -1609,12 +1682,14 @@ Sports:
     repository: https://github.com/nitpum/MMM-EmbedYoutube
   - name: MMM-FinParcel
     author: jesmak
-    description: MagicMirror module that tracks packages from Finnish Posti and/or
+    description:
+      MagicMirror module that tracks packages from Finnish Posti and/or
       Matkahuolto
     repository: https://github.com/jesmak/MMM-FinParcel
   - name: MMM-FRITZ-Box-Callmonitor
     author: PaViRo
-    description: FRITZ!Box Callmonitor (Display an alert when someone is calling and
+    description:
+      FRITZ!Box Callmonitor (Display an alert when someone is calling and
       offers a call history...)
     repository: https://github.com/paviro/MMM-FRITZ-Box-Callmonitor
   - name: MMM-FreeBox-Monitor
@@ -1669,7 +1744,8 @@ Sports:
     repository: https://github.com/delightedCrow/MMM-HabiticaStats
   - name: MMM-Homematic
     author: Sickboy78
-    description: Shows values and warnings from HomeMatic smart home components and
+    description:
+      Shows values and warnings from HomeMatic smart home components and
       system variables as text and/or icons. Highly flexible and customizable
       design.
     repository: https://github.com/Sickboy78/MMM-Homematic
@@ -1684,7 +1760,8 @@ Sports:
     repository: https://github.com/spitzlbergerj/MMM-Homematic-Thermostats
   - name: MMM-HideAll
     author: Snille
-    description: A fork of masters1222s module. Module to Hide Everything on Screen.
+    description:
+      A fork of masters1222s module. Module to Hide Everything on Screen.
       I have added lot's of new features and consummations.
     repository: https://github.com/Snille/MMM-HideAll
   - name: MMM-Hover
@@ -1694,7 +1771,8 @@ Sports:
     repository: https://github.com/dancj/MMM-Hover
   - name: MMM-Hue-Lights
     author: michael5r
-    description: Display the status of your Philips Hue lights and light groups on
+    description:
+      Display the status of your Philips Hue lights and light groups on
       your Magic Mirror. Supports multiple view types and modes.
     repository: https://github.com/michael5r/mmm-hue-lights
   - name: MMM-Hue
@@ -1703,7 +1781,8 @@ Sports:
     repository: https://github.com/MitchSS/MMM-Hue
   - name: MMM-IOTStatus
     author: aduyng
-    description: Show my Smartthings Home automation device status using firebase
+    description:
+      Show my Smartthings Home automation device status using firebase
       realtime database
     repository: https://github.com/aduyng/MMM-IOTStatus
   - name: MMM-IPCam
@@ -1712,7 +1791,8 @@ Sports:
     repository: https://github.com/RedNax67/MMM-IPCam
   - name: MMM-ISY
     author: shbatm
-    description: Display status of lights and variables on a floor plan connected to
+    description:
+      Display status of lights and variables on a floor plan connected to
       an ISY-994i Device.
     repository: https://github.com/shbatm/MMM-ISY
   - name: MMM-JSONStatusChecker
@@ -1731,7 +1811,8 @@ Sports:
     repository: https://github.com/timdows/MMM-JsonGraph
   - name: MMM-JsonTable
     author: Timdows
-    description: Creates a table filled by a list gathered from a json request, and
+    description:
+      Creates a table filled by a list gathered from a json request, and
       puts all variables of the object in its own table column
     repository: https://github.com/timdows/MMM-JsonTable
   - name: MMM-KeyBindings
@@ -1779,24 +1860,28 @@ Sports:
     repository: https://github.com/ottopaulsen/MMM-MQTT
   - name: MMM-MQTTbind
     author: Janm84
-    description: A MagicMirror Module to subscribe to MQTT Topics and forward the
+    description:
+      A MagicMirror Module to subscribe to MQTT Topics and forward the
       payload (as it is) as notification and vice versa. Features QoS, Clean
       Session, Retained Messages and Shortcuts...
     repository: https://github.com/janm84/MMM-MQTTbind
   - name: MMM-MQTT-Publisher
     author: cybex-dev
-    description: MM Module that publishes notifications with any payload (messages,
+    description:
+      MM Module that publishes notifications with any payload (messages,
       values, etc) sent via received by ```sendNotification()``` method to
       specified topics on MQTT Broker(s).
     repository: https://github.com/cybex-dev/MMM-MQTT-Publisher
   - name: MMM-MQTTfloorplan
     author: DMailMan
-    description: A Magic Mirror Module that subscribes to topics from MQTT message
+    description:
+      A Magic Mirror Module that subscribes to topics from MQTT message
       queues, and displays the sensor results on a floor plan of your house.
     repository: https://github.com/DMailMan/MMM-MQTTfloorplan
   - name: MMM-Memo
     author: schnibel
-    description: Add one to many memo notes ("post-it look & feel") on your Magic
+    description:
+      Add one to many memo notes ("post-it look & feel") on your Magic
       Mirror. Content is manageable through HTTP get requests.
     repository: https://github.com/schnibel/MMM-Memo
   - name: MMM-MotionDetector
@@ -1823,7 +1908,8 @@ Sports:
     repository: https://github.com/jclarke0000/MMM-MyWastePickup
   - name: MMM-MysqlQuery
     author: ralberth
-    description: Run a SQL SELECT against a MySQL database and display the results
+    description:
+      Run a SQL SELECT against a MySQL database and display the results
       in an HTML table.
     repository: https://github.com/ralberth/MMM-MysqlQuery
   - name: MMM-MyStudyLife
@@ -1833,7 +1919,8 @@ Sports:
     repository: https://github.com/ethanpartida/MMM-MyStudyLife
   - name: MMM-NearCompliments
     author: semox
-    description: Uses HC-SR04 sensors to measure distance and display compliments if
+    description:
+      Uses HC-SR04 sensors to measure distance and display compliments if
       USER_PRESENCE is detected by MMM-PIR-Sensor and user is near the magic
       mirror.
     repository: https://github.com/semox/MMM-NearCompliments
@@ -1851,7 +1938,8 @@ Sports:
     repository: https://github.com/michael5r/mmm-nest-status
   - name: MMM-Netatmo-Presence
     author: AgP42
-    description: Display live snapshot of Netatmo Presence and Welcome cameras and
+    description:
+      Display live snapshot of Netatmo Presence and Welcome cameras and
       an events timeline of all your Netatmo Presence cameras.
     repository: https://github.com/AgP42/MMM-Netatmo-Presence
   - name: MMM-Netatmo-Thermostat
@@ -1873,7 +1961,8 @@ Sports:
     repository: https://github.com/bugsounet/MMM-NewPIR
   - name: MMM-NewsFeedTicker
     author: justjim1220
-    description: Mod of the default newsfeed module - shows the logo and scrolls the
+    description:
+      Mod of the default newsfeed module - shows the logo and scrolls the
       headlines and brief description across the screen like those seen on the
       news channels.
     repository: https://github.com/justjim1220/MMM-NewsFeedTicker
@@ -1901,17 +1990,20 @@ Sports:
     repository: https://github.com/dgburr/MMM-PageReader
   - name: MMM-PC-Stats
     author: mykle1
-    description: A MagicMirror module to get system stats from a PC board. Supports
+    description:
+      A MagicMirror module to get system stats from a PC board. Supports
       multiple core CPU's.
     repository: https://github.com/mykle1/MMM-PC-Stats
   - name: MMM-PIR-Sensor
     author: PaViRo
-    description: This module can monitor a PIR motion sensor and put your mirror to
+    description:
+      This module can monitor a PIR motion sensor and put your mirror to
       sleep if nobody uses it.
     repository: https://github.com/paviro/MMM-PIR-Sensor
   - name: MMM-PIR
     author: mboskamp
-    description: Another PIR monitoring module that allows you to run custom scripts
+    description:
+      Another PIR monitoring module that allows you to run custom scripts
       and integrates MMM-TelegramBot commands.
     repository: https://github.com/mboskamp/MMM-PIR
   - name: MMM-Parcel
@@ -1954,7 +2046,8 @@ Sports:
     repository: https://github.com/MarinescuEvghenii/MMM-QRCode
   - name: MMM-Ring
     author: Dustin Bryant
-    description: Displays a video stream of your Ring doorbell when someone rings
+    description:
+      Displays a video stream of your Ring doorbell when someone rings
       your doorbell.
     repository: https://github.com/DustinBryant/MMM-Ring
   - name: MMM-RPI-LED
@@ -1996,7 +2089,8 @@ Sports:
     repository: https://github.com/relm923/MMM-Roomba980
   - name: MMM-ROVA-trashcalendar
     author: jeroenpeters1986
-    description: Module which shows when and which type of trash will be collected
+    description:
+      Module which shows when and which type of trash will be collected
       by Dutch garbage service ROVA
     repository: https://github.com/jeroenpeters1986/MMM-ROVA-trashcalendar
   - name: Rubbish Collection
@@ -2009,7 +2103,8 @@ Sports:
     repository: https://github.com/parnic/MMM-ScreenLogic
   - name: MMM-Selfie
     author: Txukie
-    description: Takes a Selfie with an official Raspberry Pi Cam and can publish it
+    description:
+      Takes a Selfie with an official Raspberry Pi Cam and can publish it
       to Facebook or Twitter. Needs API keys. Integrates nicely with
       MMM-Assistant (for voice control) and MMM-TelegramBot (for Telegram
       control).
@@ -2025,7 +2120,8 @@ Sports:
     repository: https://github.com/Si-Hill/MMM-Seneye
   - name: MMM-ShairportMetadata
     author: surekap
-    description: A module to integrate Apple AirTunes/Airplay metadata coming via
+    description:
+      A module to integrate Apple AirTunes/Airplay metadata coming via
       shairport-sync into the MagicMirror. Does not work with video or
       mirroring.
     repository: https://github.com/surekap/MMM-ShairportMetadata
@@ -2088,7 +2184,8 @@ Sports:
     repository: https://github.com/tbouron/MMM-Sonos
   - name: MMM-Sonos
     author: Snille
-    description: A fork of CFenners module with new features. It's used to display
+    description:
+      A fork of CFenners module with new features. It's used to display
       informations about the currently playing songs on your Sonos system.
     repository: https://github.com/Snille/MMM-Sonos
   - name: MMM-StorH
@@ -2121,7 +2218,8 @@ Sports:
     repository: https://github.com/MichMich/mmm-systemtemperature
   - name: MMM-TFL-Arrivals
     author: MMM-TFL-Arrivals
-    description: This module gets real time arrival predictions for specifc stops
+    description:
+      This module gets real time arrival predictions for specifc stops
       using the TfL API.
     repository: https://github.com/ryck/MMM-TFL-Arrivals
   - name: MMM-TelegramBot
@@ -2130,7 +2228,8 @@ Sports:
     repository: https://github.com/eouia/MMM-TelegramBot
   - name: MMM-Tibber
     author: ottopaulsen
-    description: Show electricity related data for Tibber customers. Shows power,
+    description:
+      Show electricity related data for Tibber customers. Shows power,
       prices, consumption, voltage, current and more
     repository: https://github.com/ottopaulsen/MMM-Tibber
   - name: MMM-Timetable
@@ -2148,7 +2247,8 @@ Sports:
     repository: https://github.com/cbrooker/MMM-Todoist
   - name: MMM-Tools
     author: eouia
-    description: Display system stats and control. With `MMM-TelegramBot` you can
+    description:
+      Display system stats and control. With `MMM-TelegramBot` you can
       command screen on/off, capture screen. Asus Tinker Board also supported.
     repository: https://github.com/eouia/MMM-Tools
   - name: MMM-Toon
@@ -2173,12 +2273,14 @@ Sports:
     repository: https://github.com/crimsonclyde/mmm-udr
   - name: MMM-UserPresenceToMQTT
     author: olexs
-    description: Publish USER_PRESENCE from PIR or motion detector modules to MQTT,
+    description:
+      Publish USER_PRESENCE from PIR or motion detector modules to MQTT,
       allowing to use the mirror as a smart home presence sensor.
     repository: https://github.com/olexs/MMM-UserPresenceToMQTT
   - name: MMM-WatchDog
     author: MichMich
-    description: Keeps an eye on your UI and quits app in case the UI crashes. If
+    description:
+      Keeps an eye on your UI and quits app in case the UI crashes. If
       you combine this with the PM2 process manager, MM2 will automaticly
       restart after a UI failure.
     repository: https://github.com/MichMich/MMM-WatchDog
@@ -2188,7 +2290,8 @@ Sports:
     repository: https://github.com/vincep5/MMM-Wattvision
   - name: MMM-WestBerksBinDay
     author: hdurdle
-    description: Displays next refuse and recycling collections for West Berkshire
+    description:
+      Displays next refuse and recycling collections for West Berkshire
       (UK) houses based on Unique Property Reference Number.
     repository: https://github.com/hdurdle/MMM-WestBerksBinDay
   - name: MMM-Widget
@@ -2197,7 +2300,8 @@ Sports:
     repository: https://github.com/eouia/MMM-Widget
   - name: MMM-Wunderlist-Enhanced
     author: DaveRicher
-    description: A modified MMM-Wunderlist that allows you to create sub groupings
+    description:
+      A modified MMM-Wunderlist that allows you to create sub groupings
       using multiple lists...
     repository: https://github.com/funsocietyirc/MMM-Wunderlist-Enhanced
   - name: MMM-Wunderlist
@@ -2210,13 +2314,15 @@ Sports:
     repository: https://github.com/slametps/MMM-Yeelight
   - name: MMM-YouLess2
     author: eckonator
-    description: This module reads from a YouLess energy meter in your network to
+    description:
+      This module reads from a YouLess energy meter in your network to
       display a gauge of realtime energy usage information. It´s a optimized
       fork from QNimbus first module.
     repository: https://github.com/eckonator/MMM-YouLess2
   - name: MMM-YouLess
     author: QNimbus
-    description: This module reads from a YouLess energy meter in your network to
+    description:
+      This module reads from a YouLess energy meter in your network to
       display realtime energy usage information.
     repository: https://github.com/QNimbus/MMM-YouLess
   - name: MMM-chromecast
@@ -2241,7 +2347,8 @@ Sports:
     repository: https://github.com/sp4ceman/MMM-googlemaps
   - name: MMM-HomeAssistant
     author: zuo000
-    description: HomeAssistant frontend module using HA REST API, including Light,
+    description:
+      HomeAssistant frontend module using HA REST API, including Light,
       Switch, Sensor.
     repository: https://github.com/zuo000/MMM-HomeAssistant
   - name: MMM-hass
@@ -2259,13 +2366,15 @@ Sports:
     repository: https://github.com/Snille/MMM-homeassistant-sensors
   - name: MMM-iCloud-Client
     author: Bitte-ein-Bit
-    description: Load iCloud addressbook and provide birthday iCal feed for calendar
+    description:
+      Load iCloud addressbook and provide birthday iCal feed for calendar
       module and addressbook for
       MMM-FRITZ-Box-Callmonitor.
     repository: https://github.com/bitte-ein-bit/MMM-iCloud-Client
   - name: MMM-iFrame-GSlides
     author: jharttech
-    description: The MMM-iFrame-GSlides module is a module for MagicMirror. It is a
+    description:
+      The MMM-iFrame-GSlides module is a module for MagicMirror. It is a
       simple way to add an iFrame of a published Google Slides Presentation to
       your MagicMirror.
     repository: https://github.com/jharttech/MMM-iFrame-GSlides
@@ -2298,7 +2407,8 @@ Sports:
     repository: https://github.com/amcolash/MMM-json-feed
   - name: MMM-max
     author: mirko3000
-    description: Displays the status of you MAX! radiator thermostats via the MAX!
+    description:
+      Displays the status of you MAX! radiator thermostats via the MAX!
       cube gateway.
     repository: https://github.com/mirko3000/MMM-max
   - name: MMM-nagios
@@ -2403,7 +2513,8 @@ Sports:
     repository: https://github.com/ptrbld/mmm-pins
   - name: MMM-SensorGateway
     author: Mattileh
-    description: This module enables having live sensor data without touching the Pi
+    description:
+      This module enables having live sensor data without touching the Pi
       hardware by utilizing the BLE advertisment beacons from sensors and
       routing that live info into MagicMirror² platform
     repository: https://github.com/mattileh/MMM-SensorGateway
@@ -2440,7 +2551,8 @@ Sports:
     repository: https://github.com/l0b5ter/KeyDisplayed
   - name: MMM-PiTemp
     author: ckoutavas
-    description: MMM-PiTemp works in conjunction with MagicMirror2 and tells you the
+    description:
+      MMM-PiTemp works in conjunction with MagicMirror2 and tells you the
       temperature of your raspberry pi's CPU. If the temperature is ever greater
       than 85 degrees then the pi shuts down.
     repository: https://github.com/ckoutavas/MMM-PiTemp
@@ -2475,7 +2587,8 @@ Entertainment and Miscellaneous:
     repository: https://github.com/ngnijland/MMM-text-clock
   - name: Hello-Lucy
     author: Mykle1
-    description: Using voice commands, hide or show individual modules, all modules,
+    description:
+      Using voice commands, hide or show individual modules, all modules,
       or pages of modules with custom sound support
     repository: https://github.com/mykle1/Hello-Lucy
   - name: MMM-ATM
@@ -2505,7 +2618,8 @@ Entertainment and Miscellaneous:
     repository: https://github.com/mykle1/MMM-BMI
   - name: MMM-BMW
     author: Mykle1
-    description: Minimalist Weather for the bottom_bar or thirds position of your
+    description:
+      Minimalist Weather for the bottom_bar or thirds position of your
       MagicMirror.
     repository: https://github.com/mykle1/MMM-BMW
   - name: MMM-BackgroundSlideshow
@@ -2515,7 +2629,8 @@ Entertainment and Miscellaneous:
     repository: https://github.com/darickc/MMM-BackgroundSlideshow
   - name: MMM-BrawlStars
     author: retroflex
-    description: Shows stats (level, trophies and victories) for players of mobile
+    description:
+      Shows stats (level, trophies and victories) for players of mobile
       game Brawl Stars.
     repository: https://github.com/retroflex/MMM-BrawlStars
   - name: MMM-Brewdog
@@ -2524,7 +2639,8 @@ Entertainment and Miscellaneous:
     repository: https://github.com/jsteel715/MMM-Brewdog
   - name: MMM-Bob-Ross
     author: Veldrovive
-    description: Spice up your life with a happy little painting and video of the
+    description:
+      Spice up your life with a happy little painting and video of the
       man himself.
     repository: https://github.com/Veldrovive/MMM-Bob-Ross
   - name: MMM-CANTEEN
@@ -2541,7 +2657,8 @@ Entertainment and Miscellaneous:
     repository: https://github.com/nischi/MMM-CECControl
   - name: MMM-Census
     author: Mykle1
-    description: World Population and demographics, by age and sex, or by individual
+    description:
+      World Population and demographics, by age and sex, or by individual
       country. 1950 - 2100.
     repository: https://github.com/mykle1/MMM-Census
   - name: MMM-Chuck-Norris
@@ -2563,7 +2680,8 @@ Entertainment and Miscellaneous:
     repository: https://github.com/macd2point0/MMM-CloneWarsQuotes
   - name: MMM-Cocktails
     author: Mykle1
-    description: How to make all kinds of mixed drinks - Instructions, ingredients
+    description:
+      How to make all kinds of mixed drinks - Instructions, ingredients
       and images. For MagicMirror²
     repository: https://github.com/mykle1/MMM-Cocktails
   - name: MMM-CountEvents
@@ -2588,12 +2706,14 @@ Entertainment and Miscellaneous:
     repository: https://github.com/justjim1220/MMM-DigClock
   - name: MMM-DigitalAlarmClock
     author: justjim1220
-    description: A vintage-style Digital Alarm Clock integrating MMM-DigClock and
+    description:
+      A vintage-style Digital Alarm Clock integrating MMM-DigClock and
       MMM-AlarmClock.
     repository: https://github.com/justjim1220/MMM-DigitalAlarmClock
   - name: MMM-Dreambox
     author: AxLED
-    description: A module to connect a Dreambox or a Enigma2 Receiver (like VU or
+    description:
+      A module to connect a Dreambox or a Enigma2 Receiver (like VU or
       VU+) to MagicMirror and stream stations via omxplayer.
     repository: https://github.com/Ax-LED/MMM-Dreambox
   - name: MMM-Dribbble
@@ -2632,13 +2752,15 @@ Entertainment and Miscellaneous:
     repository: https://github.com/mykle1/MMM-EventHorizon
   - name: MMM-Events
     author: Mykle1
-    description: Upcoming events in your city. Concerts, Performances, Comedy Shows,
+    description:
+      Upcoming events in your city. Concerts, Performances, Comedy Shows,
       Sporting Events, Theatre, Exhibits, Art Galleries, Museums, Festivals,
       Food & Drink and many more.
     repository: https://github.com/mykle1/MMM-Events
   - name: MMM-EveryNews
     author: Mykle1
-    description: Over 30,000 News sources! Up to 10 at once. Simplified addition to
+    description:
+      Over 30,000 News sources! Up to 10 at once. Simplified addition to
       your config entry.
     repository: https://github.com/mykle1/MMM-EveryNews
   - name: MMM-EyeCandy
@@ -2672,7 +2794,8 @@ Entertainment and Miscellaneous:
     repository: https://github.com/nigel-daniels/MMM-Fish
   - name: MMM-Flickr
     author: kapsolas
-    description: A module to load last 20 images posted to user's Flickr photostream
+    description:
+      A module to load last 20 images posted to user's Flickr photostream
       to mirror and animate them; with the need of an API_KEY
     repository: https://github.com/kapsolas/MMM-Flickr
   - name: MMM-Fortnite
@@ -2725,7 +2848,8 @@ Entertainment and Miscellaneous:
     repository: https://github.com/mykle1/MMM-Insults
   - name: MMM-ISS-Live
     author: Mykle1
-    description: Displays live video from the International Space Station on your
+    description:
+      Displays live video from the International Space Station on your
       MagicMirror.
     repository: https://github.com/mykle1/MMM-ISS-Live
   - name: MMM-ISS
@@ -2757,7 +2881,8 @@ Entertainment and Miscellaneous:
     repository: https://github.com/PjTewkesbury/MMM-WebHookAlerts
   - name: MMM-PlexSlideshow
     author: PJTewkesbury-GitHub
-    description: Displays images in the bacground one at a time, pulling the images
+    description:
+      Displays images in the bacground one at a time, pulling the images
       from a PLEX Media Server.
     repository: https://github.com/PjTewkesbury/MMM-PlexSlideshow
   - name: MMM-Inspirobot
@@ -2766,7 +2891,8 @@ Entertainment and Miscellaneous:
     repository: https://github.com/JonathanAndersonPE/MMM-inspirobot
   - name: MMM-Instagram
     author: kapsolas
-    description: A module load the images from a users Instagram feed. The images
+    description:
+      A module load the images from a users Instagram feed. The images
       are displayed on the mirror and animated; it requires an API_KEY
     repository: https://github.com/kapsolas/MMM-Instagram
   - name: MMM-Instagram2020
@@ -2778,7 +2904,8 @@ Entertainment and Miscellaneous:
     repository: https://github.com/AlexanderSalter/MMM-Instagram2020
   - name: MMM-JEOPARDY
     author: Mykle1
-    description: Spanning more than 40 years, the widely popular game show comes to
+    description:
+      Spanning more than 40 years, the widely popular game show comes to
       your Magic Mirror. With more than 156,800 clues and answers from the show.
     repository: https://github.com/mykle1/MMM-JEOPARDY
   - name: MMM-JewishDate
@@ -2787,18 +2914,21 @@ Entertainment and Miscellaneous:
     repository: https://github.com/yohaybn/MMM-JewishDate
   - name: MMM-KudaGo
     author: polarbearjngl
-    description: Can show upcoming events (concerts, theater plays, exhibitions and
+    description:
+      Can show upcoming events (concerts, theater plays, exhibitions and
       etc.), that collected from KudaGo.
     repository: https://github.com/polarbearjngl/MMM-KudaGo
   - name: MMM-Launch
     author: Mykle1
-    description: Ever wonder just how often mankind is launching things into space?
+    description:
+      Ever wonder just how often mankind is launching things into space?
       Once a year? Twice? WRONG! On a daily basis. Often, several times a day!
       Don’t believe it? Neither did I.
     repository: https://github.com/mykle1/MMM-Launch
   - name: MMM-Lottery
     author: Mykle1
-    description: A MagicMirror module that gives you truly random lottery numbers,
+    description:
+      A MagicMirror module that gives you truly random lottery numbers,
       coinciding with many International lotteries.
     repository: https://github.com/mykle1/MMM-Lottery
   - name: MMM-LunarDate
@@ -2807,7 +2937,8 @@ Entertainment and Miscellaneous:
     repository: https://github.com/eouia/MMM-LunarDate
   - name: MMM-Lunartic
     author: Mykle1
-    description: Up to the minute information about our Lunar partner, with a splash
+    description:
+      Up to the minute information about our Lunar partner, with a splash
       of EyeCandy, to boot!
     repository: https://github.com/mykle1/MMM-Lunartic
   - name: MMM-MARS
@@ -2845,12 +2976,14 @@ Entertainment and Miscellaneous:
     repository: https://github.com/Tueti/MMM-MovieListings
   - name: MMM-buxxi/MMM-MPRIS2-WebSocket
     author: buxxi
-    description: Displays current playing media on a remote machine with a MPRIS2
+    description:
+      Displays current playing media on a remote machine with a MPRIS2
       capable player.
     repository: https://github.com/buxxi/MMM-MPRIS2-WebSocket
   - name: MMM-MyTraktSeries
     author: TheVieiraAkA
-    description: A module to display your show's watch progress in a private list in
+    description:
+      A module to display your show's watch progress in a private list in
       your trakt.tv account.
     repository: https://github.com/TheVieiraAkA/MMM-MyTraktSeries
   - name: MMM-MyVideoPlayer
@@ -2859,12 +2992,14 @@ Entertainment and Miscellaneous:
     repository: https://github.com/justjim1220/MMM-MyVideoPlayer
   - name: MMM-NASA
     author: Mykle1
-    description: Stunning imagery and information about your universe. Choose from a
+    description:
+      Stunning imagery and information about your universe. Choose from a
       host of categories. Looks amazing on your mirror!
     repository: https://github.com/mykle1/MMM-NASA
   - name: MMM-NEO
     author: Mykle1
-    description: Near Earth Objects passing by our planet this week. Be afraid. Be
+    description:
+      Near Earth Objects passing by our planet this week. Be afraid. Be
       VERY afraid!
     repository: https://github.com/mykle1/MMM-NEO
   - name: MMM-NameDay
@@ -2877,7 +3012,8 @@ Entertainment and Miscellaneous:
     repository: https://github.com/Menturan/MMM-Namnsdag
   - name: MMM-NatureCalendar
     author: Mykle1
-    description: Simple calendar. Optional Rotating Nature Scenes. Optional color
+    description:
+      Simple calendar. Optional Rotating Nature Scenes. Optional color
       schemes. 17 different languages.
     repository: https://github.com/mykle1/MMM-NatureCalendar
   - name: MMM-NowPlayingOnAIMP
@@ -2920,7 +3056,8 @@ Entertainment and Miscellaneous:
     repository: https://github.com/Ax-LED/MMM-Podcast2
   - name: MMM-Podcast
     author: PtrBld
-    description: This module can show/hide a video downloaded from a Podcast or a
+    description:
+      This module can show/hide a video downloaded from a Podcast or a
       private server (needs static file path). At the moment you can only
       display the video by clicking a button (use the MMM-Button module).
     repository: https://github.com/ptrbld/MMM-Podcast
@@ -2930,7 +3067,8 @@ Entertainment and Miscellaneous:
     repository: https://github.com/mykle1/MMM-PopulationClock
   - name: MMM-Profile
     author: Kurtern84
-    description: A simple module to show a profilpicture with your name and wheater
+    description:
+      A simple module to show a profilpicture with your name and wheater
       report for your MagicMirrorDisplays Swedish name of the day.
     repository: https://github.com/kurtern84/MMM-profile
   - name: MMM-RandomPhoto
@@ -2948,17 +3086,20 @@ Entertainment and Miscellaneous:
     repository: https://github.com/cowboysdude/MMM-Recipe
   - name: MMM-Reddit
     author: kjb085
-    description: Displays top level content from Reddit in either headlines or image
+    description:
+      Displays top level content from Reddit in either headlines or image
       based display types.
     repository: https://github.com/kjb085/MMM-Reddit
   - name: MMM-Rijks
     author: eouia
-    description: MagicMirror module for Rijks Museum. This was developed using the
+    description:
+      MagicMirror module for Rijks Museum. This was developed using the
       Rijksmuseum API.
     repository: https://github.com/eouia/MMM-Rijks
   - name: MMM-RottenTomatoes
     author: AdamMoses-GitHub
-    description: Displays the Rotten Tomatoes meter score for the current box office
+    description:
+      Displays the Rotten Tomatoes meter score for the current box office
       and movies coming soon.
     repository: https://github.com/AdamMoses-GitHub/MMM-RottenTomatoes
   - name: MMM-SearchLight
@@ -2967,7 +3108,8 @@ Entertainment and Miscellaneous:
     repository: https://github.com/mykle1/MMM-SearchLight
   - name: MMM-SORT
     author: Mykle1
-    description: Static Or Rotating Tides module. Replaces/combines MMM-SimpleTides
+    description:
+      Static Or Rotating Tides module. Replaces/combines MMM-SimpleTides
       and MMM-StaticTides.
     repository: https://github.com/mykle1/MMM-SORT
   - name: MMM-Screencast
@@ -2977,7 +3119,8 @@ Entertainment and Miscellaneous:
     repository: https://github.com/kevinatown/MMM-Screencast
   - name: MMM-ScriptScheduler
     author: ralberth
-    description: Run a set of command-line scripts on a cron schedule and display an
+    description:
+      Run a set of command-line scripts on a cron schedule and display an
       icon to differentiate
     repository: https://github.com/ralberth/MMM-ScriptScheduler
   - name: MMM-Scrobbler
@@ -3007,7 +3150,8 @@ Entertainment and Miscellaneous:
     repository: https://github.com/buxxi/MMM-SteamPlaytime
   - name: MMM-SunRiseSet
     author: Mykle1
-    description: More information than you ever wanted to know about the rising and
+    description:
+      More information than you ever wanted to know about the rising and
       setting of the sun.
     repository: https://github.com/mykle1/MMM-SunRiseSet
   - name: MMM-TautulliActivity
@@ -3036,7 +3180,8 @@ Entertainment and Miscellaneous:
     repository: https://github.com/AdamMoses-GitHub/MMM-TweetsByTimelineOrList
   - name: MMM-TwitterTrendsByPlace
     author: AdamMoses-GitHub
-    description: Displays the Twitter Trending Topics for a given place or city, as
+    description:
+      Displays the Twitter Trending Topics for a given place or city, as
       well as showing the tweet volume for each topic.
     repository: https://github.com/AdamMoses-GitHub/MMM-TwitterTrendsByPlace
   - name: MMM-Unsplash
@@ -3045,7 +3190,8 @@ Entertainment and Miscellaneous:
     repository: https://github.com/parnic/MMM-Unsplash
   - name: MMM-VideoPlayer
     author: Asimsidd
-    description: A module for playing video on your magic mirror from any device on
+    description:
+      A module for playing video on your magic mirror from any device on
       the same network.
     repository: https://github.com/asimhsidd/MMM-VideoPlayer
   - name: MMM-Volume
@@ -3066,7 +3212,8 @@ Entertainment and Miscellaneous:
     repository: https://github.com/C4TFLY/MMM-YouTube-API
   - name: MMM-food2fork-recipes
     author: Spectroman
-    description: Fetches one recipe type per day from food2fork API and display as a
+    description:
+      Fetches one recipe type per day from food2fork API and display as a
       small menu.
     repository: https://github.com/spectroman/mmm-food2fork-recipes
   - name: MMM-horoscope
@@ -3079,7 +3226,8 @@ Entertainment and Miscellaneous:
     repository: https://github.com/pvyParts/MMM-jokes
   - name: MMM-kudos
     author: thomo
-    description: Compliment clone - allows to define when (at which hour) the used
+    description:
+      Compliment clone - allows to define when (at which hour) the used
       kudo(compliment) subset will change and you can define further subsets -
       up to one for each hour.
     repository: https://github.com/thomo/MMM-kudos
@@ -3102,7 +3250,8 @@ Entertainment and Miscellaneous:
     repository: https://github.com/grenagit/MMM-SolarPicture
   - name: MMM-APOD
     author: Grena
-    description: "A Magic Mirror Module displaying the last Astronomy Picture Of the
+    description:
+      "A Magic Mirror Module displaying the last Astronomy Picture Of the
       Day (APOD). This is an evolution of MMM-nasaastropic : supports image and
       video and display title, description and copyright."
     repository: https://github.com/grenagit/MMM-APOD
@@ -3125,12 +3274,14 @@ Entertainment and Miscellaneous:
     repository: https://github.com/mrdis/MMM-volumio-playing
   - name: PlutoTime
     author: croxis
-    description: Display the next time on a clear morning or evening that you can go
+    description:
+      Display the next time on a clear morning or evening that you can go
       outside and experience the brightness of high noon on Pluto.
     repository: https://github.com/croxis/PlutoTime
   - name: Snow
     author: nhubbard
-    description: Get your festive on. Put snow in the background for winter or anti
+    description:
+      Get your festive on. Put snow in the background for winter or anti
       burn-in purposes... your family won't know the difference.
     repository: https://github.com/nhubbard/MagicPlugins/tree/master/snow
   - name: Swiss, Bern dialect Word Clock
@@ -3143,7 +3294,8 @@ Entertainment and Miscellaneous:
     repository: https://github.com/salpar/MagicMirror-QuoteCatalog/
   - name: WallberryTheme
     author: delightedCrow
-    description: Re-themes MagicMirror² to look like a beautiful digital photo wall
+    description:
+      Re-themes MagicMirror² to look like a beautiful digital photo wall
       display. It adds a new font, styles, redesigned clock and weather
       displays, and rotating background image pulled from Unsplash.com
     repository: https://github.com/delightedCrow/WallberryTheme
@@ -3198,12 +3350,14 @@ Entertainment and Miscellaneous:
     repository: https://github.com/bibaldo/MMM-CountUP
   - name: MMM-yijv
     author: jdonge
-    description: Instead of default compliments with classical poems,just supports
+    description:
+      Instead of default compliments with classical poems,just supports
       Chinese.随机产生一句古诗词。
     repository: https://github.com/jdonge/MMM-yijv
   - name: MMM-Face-Recognition-SMAI
     author: EbenKouao
-    description: This module allows you to access profiles using face recognition.
+    description:
+      This module allows you to access profiles using face recognition.
       This works on the back of OpenCV face recognition module. Program this
       script to control applicances e.g. Smart Plugs, lights based on an
       individual's face profile being recognised.

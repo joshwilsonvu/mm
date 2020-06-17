@@ -1,22 +1,17 @@
-import * as React from 'react';
-import useConstant from 'use-constant';
-import mitt from 'mitt';
-import io from 'socket.io-client';
+import * as React from "react";
+import useConstant from "use-constant";
+import mitt from "mitt";
+import io from "socket.io-client";
 
-export {
-  NotificationProvider,
-  useNotification,
-  useSocketNotification,
-};
+export { NotificationProvider, useNotification, useSocketNotification };
 
 /**
  * Include this component in the tree to use `useNotification` and `useSendNotification`.
  */
 function NotificationProvider({ children }: React.PropsWithChildren<{}>) {
   const emitter = useConstant(mitt) as Emitter;
-  return React.createElement(Context.Provider,  { value: emitter }, children);
+  return React.createElement(Context.Provider, { value: emitter }, children);
 }
-
 
 /**
  * To subscribe to a notification, call this hook with the name of the notification
@@ -34,16 +29,31 @@ function NotificationProvider({ children }: React.PropsWithChildren<{}>) {
 function useNotification(): Emit;
 function useNotification(event: "*", subscriber: WildcardHandler): Emit;
 function useNotification(event: string, subscriber: Handler): Emit;
-function useNotification(event?: string, subscriber?: Handler | WildcardHandler): Emit {
+function useNotification(
+  event?: string,
+  subscriber?: Handler | WildcardHandler
+): Emit {
   const emitter = useContextEmitter();
   useNotificationImpl(emitter, event, subscriber);
   return emitter.emit;
 }
 
 function useSocketNotification(sender: string): Emit;
-function useSocketNotification(sender: string, event: string, subscriber: Handler): Emit;
-function useSocketNotification(sender: string, event: "*", subscriber: WildcardHandler): Emit
-function useSocketNotification(sender: string, event?: string, subscriber?: Handler | WildcardHandler) {
+function useSocketNotification(
+  sender: string,
+  event: string,
+  subscriber: Handler
+): Emit;
+function useSocketNotification(
+  sender: string,
+  event: "*",
+  subscriber: WildcardHandler
+): Emit;
+function useSocketNotification(
+  sender: string,
+  event?: string,
+  subscriber?: Handler | WildcardHandler
+) {
   const emitter = useSocketEmitter(sender);
   useNotificationImpl(emitter, event, subscriber);
   return emitter.emit;
@@ -52,9 +62,15 @@ function useSocketNotification(sender: string, event?: string, subscriber?: Hand
 /********** Private API ***********/
 
 const Context = React.createContext({});
-function useContextEmitter() { return React.useContext(Context) as Emitter; }
+function useContextEmitter() {
+  return React.useContext(Context) as Emitter;
+}
 
-function useNotificationImpl(emitter: Emitter, event?: string, subscriber?: Handler | WildcardHandler) {
+function useNotificationImpl(
+  emitter: Emitter,
+  event?: string,
+  subscriber?: Handler | WildcardHandler
+) {
   if (event === undefined || subscriber === undefined) {
     event = undefined;
     subscriber = undefined;
@@ -76,25 +92,28 @@ function useNotificationImpl(emitter: Emitter, event?: string, subscriber?: Hand
       const e = event.toLowerCase();
       emitter.on(e, cb);
       return () => {
-        emitter.off(e, cb)
+        emitter.off(e, cb);
       };
     }
   }, [event, emitter]);
 }
 
 interface RefMap<K, V> {
-  ref(k: K): V,
-  unref(k: K): void,
+  ref(k: K): V;
+  unref(k: K): void;
 }
 // Allows sharing an item accessed by key k and destroying it when no references to
 // it remain
-function createRefMap<K, V>(create: (k: K) => V, destroy?: (v: V, k: K) => void) {
-  let map = new Map<K, { v: V, refcount: number }>();
+function createRefMap<K, V>(
+  create: (k: K) => V,
+  destroy?: (v: V, k: K) => void
+) {
+  let map = new Map<K, { v: V; refcount: number }>();
   return {
     ref(k: K): V {
       let rv = map.get(k);
       if (!rv) {
-        rv = { v: create(k), refcount: 0 }
+        rv = { v: create(k), refcount: 0 };
         map.set(k, rv);
       }
       rv.refcount += 1;
@@ -107,26 +126,29 @@ function createRefMap<K, V>(create: (k: K) => V, destroy?: (v: V, k: K) => void)
       } else {
         rv.refcount -= 1;
         if (rv.refcount === 0) {
-          destroy?.(rv.v, k)
+          destroy?.(rv.v, k);
           map.delete(k); // allow value to be garbage collected
         }
       }
-    }
-  }
+    },
+  };
 }
 // create a React hook to access the RefMap, synchronously returns shared RefMap value for any key
 function createUseRefMap<K, V>(refMap: RefMap<K, V>) {
   return function useRefMap(k: K) {
-    let box = React.useRef<{ k?: K, v?: V }>({});
+    let box = React.useRef<{ k?: K; v?: V }>({});
     if (box.current.k !== k) {
       const next = { k: k, v: refMap.ref(k) };
       box.current.k && refMap.unref(box.current.k);
       box.current = next;
     }
     // ensure unref on unmount
-    React.useEffect(() => () => box.current.k && refMap.unref(box.current.k), []);
+    React.useEffect(
+      () => () => box.current.k && refMap.unref(box.current.k),
+      []
+    );
     return box.current.v!;
-  }
+  };
 }
 
 // create socket and emitter and wire them together
@@ -135,14 +157,16 @@ const socketMap = createRefMap(
     if (namespace.startsWith("/")) {
       namespace = namespace.substr(1);
     }
-    const socket = io(`${window.location.href}${namespace}`, { transports: ["websocket"]});
+    const socket = io(`${window.location.href}${namespace}`, {
+      transports: ["websocket"],
+    });
     const emitter = mitt() as Emitter;
     socket.on("message", emitter.emit);
     return { socket, emitter };
   },
-  ({socket, emitter}) => {
+  ({ socket, emitter }) => {
     socket.off("message", emitter.emit);
-    socket.close()
+    socket.close();
   }
 );
 const useSocketMap = createUseRefMap(socketMap);
@@ -155,22 +179,25 @@ function useSocketEmitter(namespace: string = "/") {
   }
   // share one socket and emitter for each namespace
   const { socket, emitter } = useSocketMap(namespace);
-  return React.useMemo(() => ({
-    emit(event: string, payload: any) {
-      socket?.send(event, payload);
-    },
-    on: emitter.on,
-    off: emitter.off,
-  }), [emitter, socket?.send]);
-};
+  return React.useMemo(
+    () => ({
+      emit(event: string, payload: any) {
+        socket?.send(event, payload);
+      },
+      on: emitter.on,
+      off: emitter.off,
+    }),
+    [emitter, socket?.send]
+  );
+}
 
 type Emit = (event: string, payload: any) => void;
 type Emitter = {
   on(event: "*", handler: WildcardHandler): void;
-  on(event: string, handler: Handler): void
+  on(event: string, handler: Handler): void;
   off(event: "*", handler: WildcardHandler): void;
-  off(event: string, handler: Handler): void
-  emit: Emit
-}
+  off(event: string, handler: Handler): void;
+  emit: Emit;
+};
 type Handler = (payload: any) => void;
-type WildcardHandler = (event: string, payload: any) => void
+type WildcardHandler = (event: string, payload: any) => void;

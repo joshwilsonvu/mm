@@ -4,4 +4,3 @@
 [![npm version](https://img.shields.io/npm/v/@mm/cli)](https://yarnpkg.com/package/@mm/cli)
 
 The command line tool for all things Magic Mirror.
-
