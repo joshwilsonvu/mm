@@ -6,6 +6,7 @@ const resolve = require("resolve");
 const loadConfig = require("./shared/load-config");
 const memoize = require("fast-memoize");
 const consola = require("consola");
+
 consola.wrapConsole(); // redirect `console.*` to consola
 if (process.env.NODE_ENV === "test") {
   consola.setReporters(new consola.BasicReporter());
@@ -14,7 +15,7 @@ if (process.env.MM_LOG_LEVEL) {
   consola.level = process.env.MM_LOG_LEVEL;
 }
 
-
+// Default to development mode
 if (!process.env.NODE_ENV) {
   process.env.NODE_ENV = 'development';
 }

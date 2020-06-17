@@ -13,6 +13,6 @@ const path = require("path");
     data[category].map(entry => ({ ...entry, category }))
   ));
 
-  // Write the list to lib/index.json
-  await fs.writeJson(path.resolve(__dirname, "lib", "index.json"), list, { spaces: 1 });
+  // Write the list to dist/index.json
+  await fs.writeJson(path.resolve(__dirname, "..", "dist", "index.json"), list, { spaces: 1 });
 })();

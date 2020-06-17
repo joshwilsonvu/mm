@@ -49,15 +49,24 @@ export type ComponentProps = Omit<InternalModuleConfig, "_component">;
 export type Config = {
   port?: number,
   address?: string,
+  /**
+   * @deprecated use ipAllowlist
+   */
   ipWhitelist?: string[],
+  ipAllowlist?: string[],
   zoom?: number,
   language?: string,
   timeFormat?: 12 | 24,
   units?: "metric" | "imperial",
-  // if useHttps is true but either of the following two properties are undefined, they will be generated
+  /**
+   * if useHttps is true but either of httpsPrivateKey or httpCertificate are not given, they will be generated
+   */
   useHttps?: boolean,
   httpsPrivateKey?: string,
   httpsCertificate?: string,
+  /**
+   * the list of modules to be displayed on the mirror
+   */
   modules?: ModuleConfig[],
   electronOptions?: BrowserWindowConstructorOptions,
 }

@@ -24,6 +24,9 @@ class BuildCommand extends Command {
   analyze = false;
 
   async execute() {
+    // Force production mode
+    process.env.NODE_ENV = 'production';
+
     const fs = require("fs-extra");
     const { promisify } = require("util");
     const createCompiler = require("./shared/create-compiler");
@@ -32,12 +35,8 @@ class BuildCommand extends Command {
 
     const paths = this.context.paths();
 
-    if (!process.env.NODE_ENV) {
-      process.env.NODE_ENV = 'production';
-    }
-
     const webpackConfig = require("./shared/webpack.config")({
-      mode: "production",
+      mode: process.env.NODE_ENV,
       paths: paths,
       analyze: Boolean(this.analyze),
     });
@@ -55,7 +54,7 @@ class BuildCommand extends Command {
       // build errors will be logged here
     } catch (err) {
       // log webpack errors, not build errors
-      console.error(chalk.red('Failed to compile.\n'));
+      console.error(chalk.red('Failed to compile.'));
       printBuildError(err);
       return 1;
     }

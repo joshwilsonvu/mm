@@ -5,7 +5,7 @@ const defaults = {
   port: 8080,
   kioskmode: false,
   electronOptions: {},
-  ipWhitelist: [],
+  ipAllowlist: [],
   useHttps: false,
   httpsPrivateKey: "",
   httpsCertificate: "",
@@ -25,6 +25,10 @@ module.exports = function loadConfig(configPath, overrides = {}) {
       rawConfig = rawConfig.default; // export default
     }
   }
+  // migrate to ipAllowlist
+  rawConfig.ipAllowlist.push(...(rawConfig.ipWhitelist || []));
+  delete rawConfig.ipWhitelist;
+
   let config = Object.assign({}, defaults, rawConfig);
   for (let key of Object.keys(overrides)) {
     if (overrides[key] !== undefined) {

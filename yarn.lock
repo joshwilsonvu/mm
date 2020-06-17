@@ -3008,7 +3008,7 @@ __metadata:
     babel-preset-react-app: ^9.1.2
     browserslist: ^4.12.0
     case-sensitive-paths-webpack-plugin: ^2.3.0
-    chalk: ^3.0.0
+    chalk: ^4.1.0
     clipanion: ^2.4.0
     confusing-browser-globals: ^1.0.9
     consola: ^2.12.2
@@ -5422,6 +5422,16 @@ __metadata:
     ansi-styles: ^4.1.0
     supports-color: ^7.1.0
   checksum: 12b01a228b5ca2f03a82684c62d54c06e2ba2f7b81dd08fac56c5b9288958dd24f9cae866e140df5c29cb736059cb4be0165157ebb0b15039cc1ea511a2dab60
+  languageName: node
+  linkType: hard
+
+"chalk@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "chalk@npm:4.1.0"
+  dependencies:
+    ansi-styles: ^4.1.0
+    supports-color: ^7.1.0
+  checksum: f860285b419f9e925c2db0f45ffa88aa8794c14b80cc5d01ff30930bcfc384996606362706f0829cf557f6d36152a5fb2d227ad63c4bc90e2ec9e9dbed4a3c07
   languageName: node
   linkType: hard
 
@@ -10770,6 +10780,7 @@ fsevents@^1.2.7:
     husky: ^4.2.3
     jest: ^26.0.1
     jest-watch-suspend: ^1.1.2
+    prettier: ^2.0.5
     strip-ansi: ^6.0.0
     ts-jest: ^26.1.0
     typescript: ^3.9.4
@@ -12437,7 +12448,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.0.1":
+"prettier@npm:^2.0.1, prettier@npm:^2.0.5":
   version: 2.0.5
   resolution: "prettier@npm:2.0.5"
   bin:

@@ -2,7 +2,7 @@
 /**
  * The Babel config used by babel-loader (client) and babel-register (server).
  */
-exports.config = (paths, mode) => ({
+exports.config = (paths) => ({
   root: paths.cwd,
   babelrc: false,
   configFile: false,
@@ -21,7 +21,7 @@ exports.config = (paths, mode) => ({
     paths.appConfig && {
       include: paths.appConfig,
       plugins: [
-        require.resolve("@mm/babel-plugin-transform-config")
+        [require.resolve("@mm/babel-plugin-transform-config"), { modulesPath: paths.appModules }]
       ]
     }
   ].filter(Boolean),
@@ -37,9 +37,9 @@ let registered = false;
  * same configuration as the frontend. There is an upfront performance penalty for these
  * files, but it's acceptable even in "production" mode because so few files will be transpiled.
  */
-exports.register = (paths, mode = "development") => {
+exports.register = (paths) => {
   if (!registered && paths.appModules && paths.appConfig) {
-    const config = exports.config(paths, mode);
+    const config = exports.config(paths);
     // Convert import/export to require/module.exports, required for node but not for webpack
     config.plugins.push(require.resolve("babel-plugin-transform-es2015-modules-commonjs"));
     require("@babel/register")({

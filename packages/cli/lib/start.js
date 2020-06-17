@@ -37,7 +37,7 @@ class StartCommand extends Command {
     const config = this.context.config();
 
     const webpackConfig = require("./shared/webpack.config")({
-      mode: "development",
+      mode: process.env.NODE_ENV,
       paths: paths,
     });
     const compiler = createCompiler({
@@ -45,8 +45,8 @@ class StartCommand extends Command {
       useTypeScript: fs.existsSync(paths.appTsConfig),
     });
 
-    const devMiddleware = webpackDevMiddleware(compiler, { logLevel: "silent" });
     const hotMiddleware = webpackHotMiddleware(compiler, { log: false });
+    const devMiddleware = webpackDevMiddleware(compiler, { logLevel: "silent" });
 
     const server = await createServer(config, paths, hotMiddleware, devMiddleware);
     console.success("Listening on", config.url);

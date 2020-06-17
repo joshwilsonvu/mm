@@ -1,8 +1,8 @@
 {
   "name": "@mm/moduleslist",
   "version": "0.0.1",
-  "main": "lib/index.json",
-  "types": "lib/index.d.ts",
+  "main": "dist/index.json",
+  "types": "dist/index.d.ts",
   "author": "Josh Wilson",
   "license": "MIT",
   "keywords": [
@@ -11,7 +11,7 @@
   ],
   "homepage": "https://github.com/joshwilsonvu/mm#readme",
   "files": [
-    "lib"
+    "dist"
   ],
   "publishConfig": {
     "access": "public"
@@ -21,7 +21,7 @@
     "url": "git+https://github.com/joshwilsonvu/mm.git"
   },
   "scripts": {
-    "build": "node build.js",
+    "build": "node src/build.js",
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "bugs": {

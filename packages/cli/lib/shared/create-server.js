@@ -6,7 +6,9 @@ const express = require("express");
 const SocketIO = require("socket.io");
 const { IpFilter, IpDeniedError } = require("express-ipfilter");
 const morgan = require("morgan");
+morgan.token('status-text', function (req, res) { return res.statusMessage });
 const helmet = require("helmet");
+const chalk = require("chalk");
 const { promisify } = require("util");
 
 
@@ -22,12 +24,13 @@ module.exports = async function createServer(config, paths, ...middlewares) {
   const server = await createHttpServer(config, app);
   const io = SocketIO(server);
   // Log error requests
-  app.use(morgan(":method :url :status :res[content-length] - :total-time ms", {
-    skip(_, res) { return res.statusCode < 400 }
+  app.use(morgan(`A :method request to ${chalk.underline(":url")} from ${chalk.underline(":remote-addr")} `
+  + `failed with status ${chalk.bold.red(":status :status-text")}. ${chalk.dim("(:res[content-length] bytes, :total-time ms)")}`, {
+    skip(req, res) { return res.statusCode < 400 }
   }));
-  // Only allow whitelisted IP addresses
-  if (config.ipWhitelist.length) {
-    //app.use(IpFilter(config.ipWhitelist, { mode: "allow", log: false }));
+  // Only allow listed IP addresses
+  if (config.ipAllowlist.length) {
+    //app.use(IpFilter(config.ipAllowlist, { mode: "allow", log: false }));
   }
   // Add various security measures
   //app.use(helmet());
@@ -42,9 +45,9 @@ module.exports = async function createServer(config, paths, ...middlewares) {
 
   // Use top-level package version
   const version = (fs.existsSync(paths.appPackageJson) && fs.readJsonSync(paths.appPackageJson).version) || "0.0.0";
-  app.get("/version", (req, res) => res.send(version));
+  app.get("/version", (req, res) => res.json(version));
   // Config goes stale if client dynamically changes config
-  app.get("/config", (req, res) => res.send(config));
+  app.get("/config", (req, res) => res.type('application/json').send(JSON.stringify(config, undefined, 2)));
 
   const nodeHelpers = collectNodeHelpers(paths);
   io.of((nsp, query, next) => {
@@ -63,8 +66,8 @@ module.exports = async function createServer(config, paths, ...middlewares) {
       console.log(`No helper found for module ${helperName}.`);
     }
     socket.on("disconnect", () => {
-      if (nodeHelpers[helperName]) {
-        nodeHelpers[helperName].unref();
+      if (helper) {
+        helper.unref();
       }
     })
   });
@@ -90,6 +93,7 @@ module.exports = async function createServer(config, paths, ...middlewares) {
   }
   middlewares.forEach(middleware => app.use(middleware));
 
+  // 404 for all paths not already handled
   app.get("*", (req, res) => {
     res.status(404).send(`
     <html><head>
@@ -100,7 +104,7 @@ module.exports = async function createServer(config, paths, ...middlewares) {
     </main></body></html>`);
   })
 
-  // Error handler, for when a device not on the ipWhitelist tries to access
+  // Error handler, for when a device not on the ipAllowlist tries to access
   app.use(function (err, req, res, next) {
     if (err instanceof IpDeniedError) {
       console.warn(err.message);
@@ -108,7 +112,7 @@ module.exports = async function createServer(config, paths, ...middlewares) {
       <html><head>
         <style>body { background: #000; color: #FFF; width: 100%; text-align: center } main { display: inline-block; }</style>
       </head><body><main>
-        <h1>This device (is not allowed to access .</h4>
+        <h1>This device is not allowed to access your mirror.</h4>
         <p>Check the output of your terminal for more information.</p>
       </main></body></html>`);
     } else {

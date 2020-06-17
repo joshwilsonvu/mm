@@ -82,11 +82,11 @@ const handlers = {
     console.info('Compiling...')
   },
   success() {
-    console.success('Compiled successfully!\n');
+    console.success('Compiled successfully!');
   },
   warning(messages) {
     console.warn(
-      chalk.bold.yellow('Compiled with warnings.\n\n'),
+      chalk.bold.yellow('Compiled with warnings.\n'),
       messages.warnings.join('\n\n'), "\n"
     );
 
@@ -98,7 +98,7 @@ const handlers = {
   },
   error(messages) {
     console.error(
-      chalk.bold.red('Failed to compile.\n\n'),
+      chalk.bold.red('Failed to compile.\n'),
       messages.errors[0], "\n"
     );
   }

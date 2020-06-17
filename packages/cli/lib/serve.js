@@ -4,7 +4,8 @@ const { Command } = require("clipanion");
 
 const details = `
 \`mm serve\` will serve files previously built with \`mm build\` \
-and run Node helpers as needed based on the config.
+and run Node helpers as needed based on the config. If necessary, \`mm build\`
+will be run automatically.
 
 Unlike \`mm start\`, \`mm serve\` doesn't automatically update on file changes.
 
@@ -17,19 +18,22 @@ class ServeCommand extends Command {
     description: "Serve prebuilt files and run Node helpers.",
     details: details,
     examples: [
-      ["serve from a build for another device", "yarn mm serve"],
-      ["run `mm build` before serving if necessary", "yarn mm serve --build"],
+      ["serve for another device", "yarn mm serve"],
+      ["always run `mm build` before serving", "yarn mm serve --rebuild"],
       ["serve and view in Electron on the same device", "yarn mm serve --view"],
       ["serve and view in a browser on the same device", "yarn mm serve --browser"]
     ]
   })
 
   // options
-  build = false;
+  rebuild = false;
   view = false;
   browser = false;
 
   async execute() {
+    // Force production mode
+    process.env.NODE_ENV = 'production';
+
     const createServer = require("./shared/create-server");
     const fs = require("fs");
     const openBrowser = require("react-dev-utils/openBrowser");
@@ -37,11 +41,12 @@ class ServeCommand extends Command {
     const paths = this.context.paths();
     const config = this.context.config();
 
-    if (this.build) {
-      if (!fs.existsSync(paths.appBuild) || fs.readdirSync(paths.appBuild).length === 0) {
-        console.info(`No files found at ${paths.appBuild}. Building...`);
-        await this.cli.run(["build"]);
-      }
+    if (!fs.existsSync(paths.appBuild) || fs.readdirSync(paths.appBuild).length === 0) {
+      console.info(`No files found in ${paths.appBuild}. Building...`);
+      await this.cli.run(["build"]);
+    } else if (this.rebuild) {
+      console.info(`Rebuilding files to ${paths.appBuild} ...`);
+      await this.cli.run(["build"]);
     }
 
     let server = await createServer(config, paths);
@@ -65,7 +70,7 @@ class ServeCommand extends Command {
 }
 
 ServeCommand.addPath("serve");
-ServeCommand.addOption("build", Command.Boolean("--build"));
+ServeCommand.addOption("rebuild", Command.Boolean("--rebuild"));
 ServeCommand.addOption("view", Command.Boolean("--view"));
 ServeCommand.addOption("browser", Command.Boolean("--browser"));
 
