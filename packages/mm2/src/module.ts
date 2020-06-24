@@ -12,7 +12,7 @@ import {
   useNotification,
   useModifyConfig,
   useSocketNotification,
-  ComponentProps,
+  Props,
 } from "@mm/core";
 
 /**
@@ -306,7 +306,7 @@ export class Module implements ModuleInjectedProperties, ModuleOverrides {
   static register(
     name: string,
     module: Partial<ModuleOverrides>
-  ): React.ComponentType<ComponentProps> {
+  ): React.ComponentType<Props> {
     const Subclass = class extends Module {};
     assignProperties(Subclass.prototype, module);
     return makeCompat(Subclass, name);
@@ -419,15 +419,15 @@ type LockOptions = {
 };
 
 /**
- * This Higher-Order Component takes an MM2 module and produces a React component
+ * This Component Factory takes an MM2 module and produces a React component
  * that provides compatibility between React MagicMirror modules and MM2 modules.
  */
-export function makeCompat<T extends Module>(
+function makeCompat<T extends Module>(
   MM2: { new (...args: ConstructorParameters<typeof Module>): T },
   name: string
 ) {
   // Create a React component wrapping the given subclass
-  function Compat(props: ComponentProps) {
+  function Compat(props: Props) {
     const { hidden } = props;
     let mm2: T;
 
@@ -537,7 +537,7 @@ function isElement(o: any): o is HTMLElement {
 }
 
 // An escape hatch from React. Pass the dom prop to imperatively add HTMLElements.
-export function Escape({
+function Escape({
   dom,
   children: _,
   ...rest

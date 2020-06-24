@@ -40,6 +40,7 @@ class ServeCommand extends Command {
     const createServer = require("./shared/create-server");
     const fs = require("fs");
     const openBrowser = require("react-dev-utils/openBrowser");
+    const keypress = require("./shared/keypress");
 
     const paths = this.context.paths();
     const config = this.context.config();
@@ -58,7 +59,10 @@ class ServeCommand extends Command {
     let server = await createServer(config, paths);
     server.listen();
     console.success("Listening on", config.url);
-    console.info("Press Ctrl+C to stop.");
+    console.info("Press 'q'' to stop.");
+
+    const kp = keypress();
+    kp.on("q", () => process.kill(process.pid, "SIGINT"));
 
     if (this.browser) {
       openBrowser(config.url);
@@ -69,6 +73,7 @@ class ServeCommand extends Command {
     return new Promise((resolve) => {
       process.once("SIGINT", () => {
         setTimeout(() => process.exit(0), 1000).unref();
+        kp.done();
         resolve && resolve();
       });
     });

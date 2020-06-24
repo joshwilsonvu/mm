@@ -55,7 +55,7 @@ export default class NodeHelper {
   }
 
   init() {
-    console.log("Initializing new module helper ...");
+    console.log("Initializing new module helper...");
   }
 
   /**

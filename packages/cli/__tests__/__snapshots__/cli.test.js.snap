@@ -32,12 +32,13 @@ exports[`shows help message on '$ mm serve -h' 1`] = `
 
 Usage:
 
-$ mm serve [--build] [--view] [--browser]
+$ mm serve [--rebuild] [--view] [--browser]
 
 Details:
 
 \`mm serve\` will serve files previously built with \`mm build\` and run Node 
-helpers as needed based on the config.
+helpers as needed based on the config. If necessary, \`mm build\`will be run 
+automatically.
 
 Unlike \`mm start\`, \`mm serve\` doesn't automatically update on file changes.
 
@@ -47,11 +48,11 @@ Unlike \`mm start\`, \`mm serve\` doesn't automatically update on file changes.
 
 Examples:
 
-serve from a build for another device
+serve for another device
   $ yarn mm serve
 
-run \`mm build\` before serving if necessary
-  $ yarn mm serve --build
+always run \`mm build\` before serving
+  $ yarn mm serve --rebuild
 
 serve and view in Electron on the same device
   $ yarn mm serve --view
@@ -97,7 +98,7 @@ Where <command> is one of:
   mm build [--analyze]
     Prepare all source files, stylesheets, and asset files to be served with \`mm serve\`.
 
-  mm serve [--build] [--view] [--browser]
+  mm serve [--rebuild] [--view] [--browser]
     Serve prebuilt files and run Node helpers.
 
   mm start [--no-view] [--browser]

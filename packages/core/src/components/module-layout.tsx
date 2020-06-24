@@ -1,4 +1,5 @@
 import React from "react";
+import { ModulePosition, modulePositions } from "../types";
 
 export function ModuleLayout({ children }: React.PropsWithChildren<{}>) {
   // take an array of JSX
@@ -65,29 +66,10 @@ export function ModuleLayout({ children }: React.PropsWithChildren<{}>) {
   );
 }
 
-const regionsArray = [
-  "none",
-  "top_bar",
-  "top_left",
-  "top_center",
-  "top_right",
-  "upper_third",
-  "middle_center",
-  "lower_third",
-  "bottom_left",
-  "bottom_center",
-  "bottom_right",
-  "bottom_bar",
-  "fullscreen_above",
-  "fullscreen_below",
-] as const;
-
-type ModulePosition = typeof regionsArray[number];
-
 function makeRegions<T>() {
-  // Create a new object with keys from regionsArray and empty arrays as values
+  // Create a new object with keys from modulePositions and empty arrays as values
   let regionsPartial: Partial<Record<ModulePosition, T[]>> = {};
-  let regions: Record<ModulePosition, T[]> = regionsArray.reduce(
+  let regions: Record<ModulePosition, T[]> = modulePositions.reduce(
     (obj, region) => {
       obj[region] = [];
       return obj;

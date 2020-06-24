@@ -30,9 +30,9 @@ module.exports = async function createServer(config, paths, ...middlewares) {
       `A :method request to ${chalk.underline(":url")} from ${chalk.underline(
         ":remote-addr"
       )} ` +
-        `failed with status ${chalk.bold.red(
-          ":status :status-text"
-        )}. ${chalk.dim("(:res[content-length] bytes, :total-time ms)")}`,
+        `failed with status ${chalk.red(":status :status-text")}. ${chalk.dim(
+          "(:res[content-length] bytes, :total-time ms)"
+        )}`,
       {
         skip(req, res) {
           return res.statusCode < 400;
@@ -168,7 +168,7 @@ function getHelperFor(modulePath, paths) {
     .replace("\\", "/");
   let nodeHelperPath;
   try {
-    nodeHelperPath = paths.resolve(requirePath); // adds appropriate file extension and ensures file exists
+    nodeHelperPath = require.resolve(requirePath); // adds appropriate file extension and ensures file exists
   } catch (err) {
     return null;
   }
@@ -236,7 +236,7 @@ function collectNodeHelpers(paths) {
   for (const modulePath of moduleDirs) {
     const helper = getHelperFor(modulePath, paths);
     if (helper) {
-      console.debug("loaded helper for", modulePath);
+      console.debug("found helper for", modulePath);
       nodeHelpers[helper.name] = helper;
     }
   }

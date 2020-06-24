@@ -35,27 +35,27 @@
     "url": "https://github.com/joshwilsonvu/mm/issues"
   },
   "dependencies": {
-    "@types/react": "^16.9.35",
+    "@types/react": "^16.9.38",
     "@types/socket.io": "^2.1.8",
     "fast-memoize": "^2.5.2",
-    "immer": "^6.0.9",
+    "immer": "^7.0.4",
     "mitt": "^1.2.0",
-    "nanoid": "^3.1.9",
-    "react-query": "^1.5.7",
+    "nanoid": "^3.1.10",
+    "react-query": "^2.0.2",
     "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.0",
     "tslib": "^2.0.0",
     "use-constant": "^1.0.0"
   },
   "devDependencies": {
-    "@testing-library/dom": "^7.11.0",
+    "@testing-library/dom": "^7.16.2",
     "@testing-library/react-hooks": "^3.3.0",
     "@types/node": "^14.0.13",
     "@types/react-query": "^1.1.2",
     "@types/socket.io-client": "^1.4.33",
     "react": "^16.13.1",
     "react-test-renderer": "^16.13.1",
-    "typescript": "^3.9.4"
+    "typescript": "^3.9.5"
   },
   "peerDependencies": {
     "@types/react": ">=16.9.35",

@@ -16,6 +16,5 @@
       }
     ],
     "@babel/preset-react"
-  ],
-  "sourceMaps": true
+  ]
 }

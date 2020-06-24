@@ -1,3 +1,99 @@
+"use strict";
+
+const { Command } = require("clipanion");
+
+class CheckCommand extends Command {
+  static usage = Command.Usage({
+    description: "Check your files for problems.",
+    details:
+      "`mm check` checks your files for potential problems with ESLint and/or TypeScript.",
+    examples: [
+      ["Check your config and source files", "yarn mm check"],
+      ["Only check one or more modules", "yarn mm check calendar clock"],
+      [
+        "Check your config, source files, and entire modules directory",
+        "yarn mm check --all",
+      ],
+      // to do in future: merge typescript type checking into output?
+    ],
+  });
+
+  all = false;
+  modules = [];
+
+  async execute() {
+    const { ESLint } = require("eslint");
+    const path = require("path");
+    const fs = require("fs");
+    const memoize = require("fast-memoize");
+
+    const paths = this.context.paths();
+
+    const defaultModules = memoize(
+      () =>
+        fs.existsSync(paths.appModulesDefault) &&
+        fs
+          .readdirSync(paths.appModulesDefault)
+          .filter((p) => !p.startsWith("."))
+    );
+    const lintPaths = [
+      // config and source files
+      (!this.modules.length || this.all) && [
+        paths.appConfig,
+        path.dirname(paths.appIndex),
+      ],
+      // modules directory
+      this.all && paths.appModules,
+      // specific modules
+      this.modules.map((m) =>
+        path.join(
+          defaultModules().indexOf(m) !== -1
+            ? paths.appModulesDefault
+            : paths.appModules,
+          m
+        )
+      ),
+    ]
+      .filter(Boolean)
+      .flat();
+
+    // 1. Create an instance.
+    const eslint = new ESLint({
+      cwd: paths.cwd,
+      extensions: paths.extensions.filter((p) => p !== ".json"),
+      overrideConfig: eslintConfig(), // defined below
+      useEslintrc: false,
+      resolvePluginsRelativeTo: path.join(__dirname, __filename),
+    });
+    // 2. Lint files.
+    let results;
+    try {
+      results = await eslint.lintFiles(lintPaths);
+    } catch (err) {
+      console.error(
+        `An error occurred while trying to lint ${lintPaths
+          .map((p) => p.replace(paths.cwd, "."))
+          .join(", ")}. Do these paths exist?`
+      );
+      console.log(err);
+      return 1;
+    }
+    // 3. Format the results.
+    const formatter = await eslint.loadFormatter(
+      require.resolve("./shared/eslint-formatter")
+    );
+    const resultText = formatter.format(results);
+
+    console.log(resultText);
+    return Number(results.some(({ errorCount }) => errorCount > 0));
+  }
+}
+CheckCommand.addPath("check");
+CheckCommand.addOption("modules", Command.Rest());
+CheckCommand.addOption("all", Command.Boolean("--all"));
+
+module.exports = CheckCommand;
+
 /**
  * Copyright (c) 2015-present, Facebook, Inc.
  *
@@ -12,10 +108,10 @@
 // To use them, explicitly reference them, e.g. `window.name` or `window.status`.
 const restrictedGlobals = require("confusing-browser-globals");
 
-module.exports = {
+const eslintConfig = () => ({
   root: true,
 
-  parser: "babel-eslint",
+  parser: require.resolve("babel-eslint"),
 
   plugins: ["import", "flowtype", "jsx-a11y", "react", "react-hooks"],
 
@@ -44,8 +140,8 @@ module.exports = {
 
   overrides: [
     {
-      files: [`./**/*.tsx`],
-      parser: "asdffghjjkhl",
+      files: [`**/*.tsx`],
+      parser: require.resolve("@typescript-eslint/parser"), // OVERRIDE DOESN'T WORK
       parserOptions: {
         ecmaVersion: 2018,
         sourceType: "module",
@@ -103,6 +199,11 @@ module.exports = {
       },
     },
   ],
+  // Tolerate global variables from MM2 even without /* global */ comment
+  globals: {
+    moment: "readonly",
+    Log: "readonly",
+  },
 
   // NOTE: When adding rules here, you need to make sure they are compatible with
   // `typescript-eslint`, as some rules such as `no-array-constructor` aren't compatible.
@@ -305,4 +406,4 @@ module.exports = {
     "flowtype/require-valid-file-annotation": "warn",
     "flowtype/use-flow-type": "warn",
   },
-};
+});

@@ -1,8 +1,9 @@
 import * as React from "react";
 import produce from "immer";
-import { InternalConfig as Config } from "../types";
-
-export { ConfigProvider, useCurrentConfig, useModifyConfig, useSetConfig };
+import {
+  InternalConfig as Config,
+  InternalModuleConfig as ModuleConfig,
+} from "../types";
 
 type ConfigContextProps = {
   config?: Config;
@@ -17,7 +18,7 @@ const Context = React.createContext<ConfigContextArray>([]);
 /**
  * Include this component in the tree to use `useCurrentConfig`, `useModifyConfig`, and `useSetConfig`.
  */
-function ConfigProvider({
+export function ConfigProvider({
   config,
   setConfig,
   children,
@@ -34,7 +35,7 @@ function ConfigProvider({
  * To access the app configuration, call `const config = useCurrentConfig()`. The return value will be updated
  * when a module changes the configuration.
  */
-function useCurrentConfig() {
+export function useCurrentConfig() {
   const [config] = React.useContext(Context);
   return config;
 }
@@ -44,7 +45,7 @@ function useCurrentConfig() {
  * Make sure not to miss any properties that were in the original config, or they will be lost.
  * Any modules using changed portions of the config will be rerendered.
  */
-function useSetConfig() {
+export function useSetConfig() {
   const [, setConfig] = React.useContext(Context);
   return setConfig;
 }
@@ -55,13 +56,31 @@ function useSetConfig() {
  * There's no need to return the conf object. Any modules using changed portions of the config
  * will be rerendered.
  */
-function useModifyConfig() {
+export function useModifyConfig() {
   const setConfig = useSetConfig();
-  const setConfigImmer = React.useCallback(
+  const modifyConfig = React.useCallback(
     (modify: (conf: Config) => void) => {
       setConfig && setConfig(produce(modify));
     },
     [setConfig]
   );
-  return setConfigImmer;
+  return modifyConfig;
+}
+
+/**
+ * Like useModifyConfig, except the modify function only receives the module with a matching identifier,
+ * not the full internal config object.
+ */
+export function useModifyOwnConfig(identifier: string) {
+  const modifyConfig = useModifyConfig();
+  const modifyOwnConfig = React.useCallback(
+    (modifyOwn: (mod: ModuleConfig) => void) => {
+      modifyConfig((conf: Config) => {
+        const mod = conf.modules.find((mod) => mod.identifier === identifier);
+        mod && modifyOwn(mod);
+      });
+    },
+    [identifier, modifyConfig]
+  );
+  return modifyOwnConfig;
 }

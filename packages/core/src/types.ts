@@ -4,21 +4,24 @@ import { nanoid } from "nanoid";
 /**
  * A module may appear in any of these positions on screen.
  */
-export type ModulePosition =
-  | "none"
-  | "top_bar"
-  | "top_left"
-  | "top_center"
-  | "top_right"
-  | "upper_third"
-  | "middle_center"
-  | "lower_third"
-  | "bottom_left"
-  | "bottom_center"
-  | "bottom_right"
-  | "bottom_bar"
-  | "fullscreen_above"
-  | "fullscreen_below";
+export const modulePositions = Object.freeze([
+  "none",
+  "top_bar",
+  "top_left",
+  "top_center",
+  "top_right",
+  "upper_third",
+  "middle_center",
+  "lower_third",
+  "bottom_left",
+  "bottom_center",
+  "bottom_right",
+  "bottom_bar",
+  "fullscreen_above",
+  "fullscreen_below",
+] as const);
+// Union type of all string literals of modulePositions
+export type ModulePosition = typeof modulePositions[number];
 
 /**
  * Config file options for each module. While only `module` is strictly required,
@@ -32,7 +35,7 @@ export type ModuleConfig = {
   config?: Record<string, any>;
   disabled?: boolean;
   // Note: the rest of these properties are automatically added but won't be typechecked
-  _component?: React.ComponentType<ComponentProps>;
+  _component?: React.ComponentType<Props>;
   _path?: string; // the absolute path to the module file
 };
 
@@ -45,16 +48,16 @@ export type InternalModuleConfig = Required<
 > & {
   name: string;
   hidden: boolean;
-  identifier: string;
-  file: string; // the module filename
-  path: string; // the directory containing the module file
+  readonly identifier: string;
+  readonly file: string; // the module filename
+  readonly path: string; // the directory containing the module file
 };
 
 /**
  * MagicMirror components won't receive the following properties because they are
  * applied elsewhere.
  */
-export type ComponentProps = Omit<InternalModuleConfig, "_component">;
+export type Props = Omit<InternalModuleConfig, "_component">;
 
 /**
  * Options for MagicMirror.
@@ -62,10 +65,6 @@ export type ComponentProps = Omit<InternalModuleConfig, "_component">;
 export type Config = {
   port?: number;
   address?: string;
-  /**
-   * @deprecated use ipAllowlist
-   */
-  ipWhitelist?: string[];
   ipAllowlist?: string[];
   zoom?: number;
   language?: string;
@@ -93,16 +92,26 @@ export type InternalConfig = Required<
   modules: InternalModuleConfig[];
 };
 
-export function initializeConfig(c: Config): InternalConfig {
+export function initializeConfigClient(c: Config): InternalConfig {
+  const { language, timeFormat, units, modules } = initializeConfig(c);
   return {
-    language: c.language || "en",
-    timeFormat: c.timeFormat || 24,
-    units: c.units || "metric",
-    modules: (c.modules || []).map(initializeModule),
+    language,
+    timeFormat,
+    units,
+    modules: modules.map(initializeModule),
   };
 }
 
+export function initializeConfig(c: Config): Required<Config> {
+  const config: Required<Config> = {
+    ...defaults,
+    ...c,
+  };
+  return config;
+}
+
 function initializeModule(mod: ModuleConfig): InternalModuleConfig {
+  // @mm/babel-plugin-transform-config automatically adds _path and _component properties to config
   if (!mod._path || !mod._component) {
     throw new Error(
       `Babel loader not working for module ${mod.module}: ${JSON.stringify(
@@ -110,6 +119,7 @@ function initializeModule(mod: ModuleConfig): InternalModuleConfig {
       )}.`
     );
   }
+  // extract dirname and filename from relative or absolute path
   const [, path = ".", file] = mod._path.match(/(.*[\\/])?([^/\\]+)$/) || [];
   return {
     name: mod.module,
@@ -126,6 +136,22 @@ function initializeModule(mod: ModuleConfig): InternalModuleConfig {
     path,
   };
 }
+
+const defaults: Omit<Required<Config>, "ipWhitelist"> = {
+  address: "localhost",
+  port: 8080,
+  electronOptions: {},
+  ipAllowlist: ["127.0.0.1", "::ffff:127.0.0.1", "::1"],
+  useHttps: false,
+  httpsPrivateKey: "",
+  httpsCertificate: "",
+  zoom: 1,
+
+  language: "en",
+  timeFormat: 24,
+  units: "metric",
+  modules: [],
+};
 
 /**
  * These options modify Electron's behavior. Certain platform-specific options have been

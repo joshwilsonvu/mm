@@ -28,7 +28,10 @@ app.on("ready", () => {
   });
 
   // and load the index.html of the app.
-  window.loadURL(config.url);
+  const url = `http${config.useHttps ? "s" : ""}://${config.address}:${
+    config.port
+  }`;
+  window.loadURL(url);
 
   // Open the DevTools if run with "npm start dev"
   if (options.dev) {

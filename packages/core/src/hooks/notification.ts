@@ -3,12 +3,12 @@ import useConstant from "use-constant";
 import mitt from "mitt";
 import io from "socket.io-client";
 
-export { NotificationProvider, useNotification, useSocketNotification };
-
 /**
  * Include this component in the tree to use `useNotification` and `useSendNotification`.
  */
-function NotificationProvider({ children }: React.PropsWithChildren<{}>) {
+export function NotificationProvider({
+  children,
+}: React.PropsWithChildren<{}>) {
   const emitter = useConstant(mitt) as Emitter;
   return React.createElement(Context.Provider, { value: emitter }, children);
 }
@@ -26,10 +26,10 @@ function NotificationProvider({ children }: React.PropsWithChildren<{}>) {
  *     const sendNotification = useSendNotification();
  *     useEffect(() => fetch(something).then(content => sendNotification("FETCHED", content, 'sender')), [something]);
  */
-function useNotification(): Emit;
-function useNotification(event: "*", subscriber: WildcardHandler): Emit;
-function useNotification(event: string, subscriber: Handler): Emit;
-function useNotification(
+export function useNotification(): Emit;
+export function useNotification(event: "*", subscriber: WildcardHandler): Emit;
+export function useNotification(event: string, subscriber: Handler): Emit;
+export function useNotification(
   event?: string,
   subscriber?: Handler | WildcardHandler
 ): Emit {
@@ -38,18 +38,18 @@ function useNotification(
   return emitter.emit;
 }
 
-function useSocketNotification(sender: string): Emit;
-function useSocketNotification(
+export function useSocketNotification(sender: string): Emit;
+export function useSocketNotification(
   sender: string,
   event: string,
   subscriber: Handler
 ): Emit;
-function useSocketNotification(
+export function useSocketNotification(
   sender: string,
   event: "*",
   subscriber: WildcardHandler
 ): Emit;
-function useSocketNotification(
+export function useSocketNotification(
   sender: string,
   event?: string,
   subscriber?: Handler | WildcardHandler

@@ -59,10 +59,10 @@ function transformModulesProperty(t, path, state, options) {
     }
     // resolve the path of the module being requested
     const tryResolvePaths = [
-      nodepath.join(modulesPath, moduleName, moduleName), // {moduleName}.jsx?, {moduleName}.tsx?
       nodepath.join(modulesPath, moduleName), // index.jsx?, index.tsx?, or package.json#main field
+      nodepath.join(modulesPath, moduleName, moduleName), // {moduleName}.jsx?, {moduleName}.tsx?
     ];
-    let absoluteModulesPath = resolveModulesPath(
+    const absoluteModulesPath = resolveModulesPath(
       state.file.opts.filename,
       tryResolvePaths,
       (errMsg) => {

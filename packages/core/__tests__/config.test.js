@@ -5,11 +5,11 @@
 import React from "react";
 import { renderHook, act } from "@testing-library/react-hooks";
 import {
-  ConfigProvider,
   useCurrentConfig,
   useSetConfig,
   useModifyConfig,
   initializeConfig,
+  ConfigProvider,
 } from "../src";
 
 const initialConfig = { port: 8080, timeFormat: 12 };

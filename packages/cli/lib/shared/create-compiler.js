@@ -2,12 +2,12 @@
 
 const webpack = require("webpack");
 const chalk = require("chalk");
-const forkTsCheckerWebpackPlugin = require("react-dev-utils/ForkTsCheckerWebpackPlugin");
+//const forkTsCheckerWebpackPlugin = require("react-dev-utils/ForkTsCheckerWebpackPlugin");
 const formatWebpackMessages = require("react-dev-utils/formatWebpackMessages");
-const typescriptFormatter = require("react-dev-utils/typescriptFormatter");
+//const typescriptFormatter = require("react-dev-utils/typescriptFormatter");
 
 module.exports = createCompiler;
-function createCompiler({ config, useTypeScript }) {
+function createCompiler({ config }) {
   let compiler = webpack(config);
 
   // "invalid" event fires when you have changed a file, and webpack is
@@ -16,32 +16,6 @@ function createCompiler({ config, useTypeScript }) {
   compiler.hooks.watchRun.tap("buildStart", () => {
     handlers.invalid();
   });
-
-  let tsMessagesPromise;
-  let tsMessagesResolver;
-
-  if (useTypeScript) {
-    compiler.hooks.beforeCompile.tap("beforeCompile", () => {
-      tsMessagesPromise = new Promise((resolve) => {
-        tsMessagesResolver = (msgs) => resolve(msgs);
-      });
-    });
-
-    forkTsCheckerWebpackPlugin
-      .getCompilerHooks(compiler)
-      .receive.tap("afterTypeScriptCheck", (diagnostics) => {
-        const format = (message) =>
-          `${message.file}\n${typescriptFormatter(message)}`;
-        tsMessagesResolver({
-          errors: diagnostics
-            .filter((msg) => msg.severity === "error")
-            .map(format),
-          warnings: diagnostics
-            .filter((msg) => msg.severity === "warning")
-            .map(format),
-        });
-      });
-  }
 
   // "done" event fires when webpack has finished recompiling the bundle.
   // Whether or not you have warnings or errors, you will get this event.
@@ -57,25 +31,18 @@ function createCompiler({ config, useTypeScript }) {
       errors: true,
     });
 
-    if (useTypeScript && statsData.errors.length === 0) {
-      const messages = await tsMessagesPromise;
-
-      statsData.errors.push(...messages.errors);
-      statsData.warnings.push(...messages.warnings);
-    }
-
     const messages = formatWebpackMessages(statsData);
-    const isSuccessful = !messages.errors.length && !messages.warnings.length;
-    if (isSuccessful) {
-      handlers.success();
-    } else if (messages.errors.length > 0) {
+    // console.log(JSON.stringify(messages, null, 2));
+    if (messages.errors.length > 0) {
       // If errors exist, only show errors, and only show the first error.
       messages.errors.length = 1;
       handlers.error(messages);
       return;
-    } else {
+    } else if (messages.warnings.length > 0) {
       // Show warnings if no errors were found.
       handlers.warning(messages);
+    } else {
+      handlers.success();
     }
   });
 
@@ -94,16 +61,6 @@ const handlers = {
       chalk.bold.yellow("Compiled with warnings.\n"),
       messages.warnings.join("\n\n"),
       "\n"
-    );
-
-    // Teach some ESLint tricks.
-    console.log(
-      `Search for the ${chalk.underline(
-        chalk.yellow("keywords")
-      )} to learn more about each warning.`,
-      `\nTo ignore, add ${chalk.cyan(
-        "// eslint-disable-next-line"
-      )} to the line before.\n`
     );
   },
   error(messages) {

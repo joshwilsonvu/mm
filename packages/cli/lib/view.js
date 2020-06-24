@@ -39,13 +39,12 @@ class ViewCommand extends Command {
   async execute() {
     const createWindow = require("./shared/create-window");
 
-    let overrides = {
-      address: this.address || "127.0.0.1",
-      port: this.port,
-    };
-    const config = this.context.config(overrides);
-    if (!config.address) {
-      config.address = "127.0.0.1";
+    const config = this.context.config();
+    if (this.address) {
+      config.address = this.address;
+    }
+    if (this.port) {
+      config.port = this.port;
     }
     const url = this.url || config.url;
     console.info("Viewing", url);

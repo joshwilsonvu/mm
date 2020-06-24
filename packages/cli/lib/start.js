@@ -28,7 +28,8 @@ class StartCommand extends Command {
   browser = false;
 
   async execute() {
-    const fs = require("fs");
+    const fs = require("fs-extra");
+    const path = require("path");
     const createCompiler = require("./shared/create-compiler");
     const webpackDevMiddleware = require("webpack-dev-middleware");
     const webpackHotMiddleware = require("webpack-hot-middleware");
@@ -36,6 +37,7 @@ class StartCommand extends Command {
 
     const createServer = require("./shared/create-server");
     const createWindow = require("./shared/create-window");
+    const keypress = require("./shared/keypress");
 
     const paths = this.context.paths();
     const config = this.context.config();
@@ -61,22 +63,37 @@ class StartCommand extends Command {
       devMiddleware
     );
     console.success("Listening on", config.url);
-    console.info("Press Ctrl+C to stop.");
+    console.info("Press 'q' to stop. Press 'space' to force recompile.");
     server.listen();
 
-    if (this.noView) {
-      // don't open anything
-    } else if (this.browser) {
-      openBrowser(config.url);
-    } else {
-      const window = createWindow(config, { dev: true });
-      await window.open();
-    }
+    const kp = keypress();
+    kp.on("q", () => process.kill(process.pid, "SIGINT"));
+    let valid = true;
+    kp.on(" ", async () => {
+      if (valid) {
+        await fs.remove(path.resolve(paths.appNodeModules, ".cache"));
+        devMiddleware.invalidate();
+        valid = false;
+        devMiddleware.waitUntilValid(() => (valid = true));
+      }
+    });
+
+    devMiddleware.waitUntilValid(async () => {
+      if (this.noView) {
+        // don't open anything
+      } else if (this.browser) {
+        openBrowser(config.url);
+      } else {
+        const window = createWindow(config, { dev: true });
+        await window.open();
+      }
+    });
 
     return new Promise((resolve) => {
       process.once("SIGINT", () => {
         devMiddleware.close();
         hotMiddleware.close();
+        kp.done();
         setTimeout(() => process.exit(0), 1000).unref();
         resolve && resolve();
       });

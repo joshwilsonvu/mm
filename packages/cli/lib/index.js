@@ -3,9 +3,9 @@
 const { Cli, Command } = require("clipanion");
 const path = require("path");
 const resolve = require("resolve");
-const loadConfig = require("./shared/load-config");
 const memoize = require("fast-memoize");
 const consola = require("consola");
+const { initializeConfig } = require("@mm/core");
 
 consola.wrapConsole(); // redirect `console.*` to consola
 if (process.env.NODE_ENV === "test") {
@@ -24,22 +24,18 @@ const extensions = [".mjs", ".js", ".ts", ".tsx", ".json", ".jsx"];
 
 const cwd = process.cwd();
 // Try to resolve an extensioned or extensionless, relative or absolute, posix or windows path
-const resolveExtensions = (p) => {
-  const relative =
-    "./" + path.relative(cwd, path.resolve(cwd, p)).replace("\\", "/");
+function resolveExtensions(p) {
   try {
+    const relative =
+      "./" + path.relative(cwd, path.resolve(cwd, p)).replace("\\", "/");
     return resolve.sync(relative, {
       extensions: extensions,
       basedir: cwd,
     });
-  } catch (e) {
-    if (e.code === "MODULE_NOT_FOUND") {
-      return "";
-    } else {
-      throw e;
-    }
+  } catch (err) {
+    return "";
   }
-};
+}
 
 const paths = memoize(() => {
   const paths = {
@@ -54,7 +50,6 @@ const paths = memoize(() => {
     appTsConfig: path.resolve("tsconfig.json"),
     appNodeModules: path.resolve("node_modules"), // be careful to only use this in Webpack options, so Yarn PnP works
     extensions: extensions,
-    resolve: resolveExtensions,
   };
   if (!paths.appIndex) {
     console.fatal(
@@ -78,10 +73,19 @@ const paths = memoize(() => {
   // transpile server-side user files: MagicMirror config and module node helpers
   const { register } = require("./shared/babel-config");
   register(paths);
+  console.debug("using paths:", paths);
   return paths;
 });
 
-const config = memoize((overrides) => loadConfig(paths().appConfig, overrides));
+const config = memoize(() => {
+  let rawConfig = require(paths().appConfig);
+  if (rawConfig.default) {
+    rawConfig = rawConfig.default;
+  }
+  const initializedConfig = initializeConfig(rawConfig);
+  console.debug("loaded config:", initializedConfig);
+  return initializedConfig;
+});
 const context = { paths, config };
 
 const cli = new Cli({
@@ -91,10 +95,10 @@ const cli = new Cli({
 });
 
 // Support the following commands
-cli.register(require("./start"));
-cli.register(require("./build"));
-cli.register(require("./serve"));
-cli.register(require("./view"));
+for (const command of ["./start", "./build", "./serve", "./view", "./check"]) {
+  console.debug("loading command:", command);
+  cli.register(require(command));
+}
 Command.Entries.Help.addPath(); // run help by default
 cli.register(Command.Entries.Help);
 cli.register(Command.Entries.Version);
