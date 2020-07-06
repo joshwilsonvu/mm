@@ -157,15 +157,13 @@ const socketMap = createRefMap(
     if (namespace.startsWith("/")) {
       namespace = namespace.substr(1);
     }
-    const socket = io(`${window.location.href}${namespace}`, {
-      transports: ["websocket"],
-    });
+    const socket = io(`${window.location.href}${namespace}`);
     const emitter = mitt() as Emitter;
-    socket.on("message", emitter.emit);
+    socket.on("notification", emitter.emit);
     return { socket, emitter };
   },
   ({ socket, emitter }) => {
-    socket.off("message", emitter.emit);
+    socket.off("notification", emitter.emit);
     socket.close();
   }
 );
@@ -178,16 +176,17 @@ function useSocketEmitter(namespace: string = "/") {
     namespace = "/" + namespace;
   }
   // share one socket and emitter for each namespace
-  const { socket, emitter } = useSocketMap(namespace);
+  const { emitter, socket } = useSocketMap(namespace);
+
   return React.useMemo(
     () => ({
       emit(event: string, payload: any) {
-        socket?.send(event, payload);
+        socket.emit("notification", event, payload);
       },
       on: emitter.on,
       off: emitter.off,
     }),
-    [emitter, socket?.send]
+    [emitter, socket]
   );
 }
 

@@ -23,16 +23,23 @@ module.exports = async function createServer(config, paths, ...middlewares) {
   // Initialize the express app
   const app = express();
   const server = await createHttpServer(config, app);
-  const io = SocketIO(server);
+  if (config.useHttps) {
+    app.use("*", (req, res, next) => {
+      console.log(`Got ${req.secure ? "secure" : "insecure"} request`);
+      if (!req.secure) {
+        return res.redirect(`https://${req.get("Host")}/`);
+      }
+      next();
+    });
+  }
   // Log error requests
   app.use(
     morgan(
       `A :method request to ${chalk.underline(":url")} from ${chalk.underline(
         ":remote-addr"
-      )} ` +
-        `failed with status ${chalk.red(":status :status-text")}. ${chalk.dim(
-          "(:res[content-length] bytes, :total-time ms)"
-        )}`,
+      )} failed with status ${chalk.red(":status :status-text")}. ${chalk.dim(
+        "(:res[content-length] bytes, :total-time ms)"
+      )}`,
       {
         skip(req, res) {
           return res.statusCode < 400;
@@ -42,10 +49,10 @@ module.exports = async function createServer(config, paths, ...middlewares) {
   );
   // Only allow listed IP addresses
   if (config.ipAllowlist.length) {
-    //app.use(IpFilter(config.ipAllowlist, { mode: "allow", log: false }));
+    app.use(IpFilter(config.ipAllowlist, { mode: "allow", log: false }));
   }
   // Add various security measures
-  //app.use(helmet());
+  app.use(helmet());
   // Serve client-side files
   app.use(express.urlencoded({ extended: true }));
   for (const directory of ["modules", "translations"]) {
@@ -60,12 +67,13 @@ module.exports = async function createServer(config, paths, ...middlewares) {
     (fs.existsSync(paths.appPackageJson) &&
       fs.readJsonSync(paths.appPackageJson).version) ||
     "0.0.0";
-  app.get("/version", (req, res) => res.json(version));
+  app.get("/version", (_, res) => res.json(version));
   // Config goes stale if client dynamically changes config
-  app.get("/config", (req, res) =>
-    res.type("application/json").send(JSON.stringify(config, undefined, 2))
+  app.get("/config", (_, res) =>
+    res.type("application/json").send(JSON.stringify(config, null, 2))
   );
 
+  const io = SocketIO(server);
   const nodeHelpers = collectNodeHelpers(paths);
   io.of((nsp, query, next) => {
     return next(null, true); // this lets us connect with dynamic namespaces
@@ -74,7 +82,6 @@ module.exports = async function createServer(config, paths, ...middlewares) {
     if (helperName.startsWith("/")) {
       helperName = helperName.substr(1);
     }
-    console.log("connecting namespace", helperName);
     // Start helper if not already started
     const helper = nodeHelpers[helperName];
     if (helper) {
@@ -102,33 +109,35 @@ module.exports = async function createServer(config, paths, ...middlewares) {
 
   // Add the middleware needed to serve html/js/css, defaulting to statically serving the "/build" folder
   if (!middlewares.length) {
-    if (paths.appBuild) {
+    if (paths.appBuild && fs.readdirSync(paths.appBuild).length > 0) {
       middlewares = [express.static(paths.appBuild)];
     } else {
-      console.warn();
+      console.warn("No content found to serve; has `mm build` been run?");
     }
   }
   middlewares.forEach((middleware) => app.use(middleware));
 
   // 404 for all paths not already handled
-  app.get("*", (req, res) => {
-    res.status(404).send(`
+  app.get("*", (_, res) => {
+    res.status(404).type("html").send(`
     <html><head>
       <style>body { background: #000; color: #FFF; width: 100%; text-align: center } main { display: inline-block; }</style>
-    </head><body><main>
+    </head>
+    <body><main>
       <h1>Something is wrong.</h4>
       <p>Check the output of your terminal for more information.</p>
     </main></body></html>`);
   });
 
   // Error handler, for when a device not on the ipAllowlist tries to access
-  app.use(function (err, req, res, next) {
+  app.use(function (err, _, res, next) {
     if (err instanceof IpDeniedError) {
       console.warn(err.message);
-      res.status(403).send(`
+      res.status(403).type("html").send(`
       <html><head>
         <style>body { background: #000; color: #FFF; width: 100%; text-align: center } main { display: inline-block; }</style>
-      </head><body><main>
+      </head>
+      <body><main>
         <h1>This device is not allowed to access your mirror.</h4>
         <p>Check the output of your terminal for more information.</p>
       </main></body></html>`);
@@ -141,7 +150,7 @@ module.exports = async function createServer(config, paths, ...middlewares) {
     listen() {
       const port = config.port,
         host = config.address;
-      server.listen(...[port, host].filter(Boolean));
+      server.listen(port);
 
       process.on("SIGINT", () => {
         // shut down helpers even if they have connections
@@ -160,7 +169,7 @@ module.exports = async function createServer(config, paths, ...middlewares) {
  * Returns an object representing the node helper for a given path
  * @param {*} modulePath the path to the directory containing a `node_helper`
  */
-function getHelperFor(modulePath, paths) {
+function getHelperFor(modulePath) {
   const moduleName = path.basename(modulePath);
   const requirePath = path
     .resolve(modulePath, "node_helper")
@@ -192,7 +201,11 @@ function getHelperFor(modulePath, paths) {
     },
     _load(io) {
       if (!this.instance) {
-        this.instance = new (require(nodeHelperPath))(io);
+        let Class = require(nodeHelperPath);
+        if (Class.__esModule && Class.default) {
+          Class = Class.default;
+        }
+        this.instance = new Class(io, nodeHelperPath);
         this.instance.start();
       }
     },
@@ -234,7 +247,7 @@ function collectNodeHelpers(paths) {
     .concat(readChildDirs(paths.appModulesDefault));
   const nodeHelpers = {};
   for (const modulePath of moduleDirs) {
-    const helper = getHelperFor(modulePath, paths);
+    const helper = getHelperFor(modulePath);
     if (helper) {
       console.debug("found helper for", modulePath);
       nodeHelpers[helper.name] = helper;
@@ -245,7 +258,7 @@ function collectNodeHelpers(paths) {
 
 async function createHttpServer(config, app) {
   if (config.useHttps) {
-    let options;
+    let options = {};
     if (config.httpsPrivateKey && config.httpsCertificate) {
       console.debug("Using HTTPS certificate from config");
       options = {
@@ -259,18 +272,13 @@ async function createHttpServer(config, app) {
       const { certificate, serviceKey } = await promisify(
         pem.createCertificate.bind(pem)
       )({ selfSigned: true, days: 365 });
-      options = { key: serviceKey, cert: certificate };
+      // For self-signed certificates, the certificate is its own CA.
+      options = { key: serviceKey, cert: certificate, ca: certificate };
     }
     // redirect http:// to https://
     app.set("trust proxy", true);
-    app.use("/", (req, res, next) => {
-      if (!req.secure) {
-        return res.redirect(`https://${req.get("Host")}/`);
-      }
-      next();
-    });
-    return require("https").Server(options, app);
+    return require("https").createServer(options, app);
   } else {
-    return require("http").Server(app);
+    return require("http").createServer(app);
   }
 }

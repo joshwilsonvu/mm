@@ -10,6 +10,7 @@ import express from "express";
 import type SocketIO from "socket.io";
 import { serverSocketEmitter } from "@mm/core";
 import type mitt from "mitt";
+import fs from "fs";
 
 export default class NodeHelper {
   /**
@@ -37,25 +38,33 @@ export default class NodeHelper {
    */
   io?: SocketIO.Server;
 
-  constructor(io: SocketIO.Server) {
-    this.path = __dirname;
+  // See @mm/cli/lib/shared/create-server
+  constructor(io: SocketIO.Server, helperPath: string) {
+    this.path = path.dirname(helperPath);
     this.name = path.basename(this.path);
     this.router = express.Router();
     const publicPath = path.join(this.path, "public");
-    this.router.use("/" + this.name, express.static(publicPath));
+    if (fs.existsSync(publicPath)) {
+      this.router.use("/" + this.name, express.static(publicPath));
+    }
     this.io = io;
 
-    const emitter = serverSocketEmitter(io, this.name);
+    const emitter = serverSocketEmitter(io, this.name, {
+      onConnect: () => console.debug("io connected for", this.name),
+      onDisconnect: () => console.debug("io disconnected for", this.name),
+    });
     this.on = emitter.on;
     this.off = emitter.off;
     this.emit = emitter.emit;
-    this.on("*", this.socketNotificationReceived.bind(this));
+    if (this.socketNotificationReceived) {
+      this.on("*", this.socketNotificationReceived.bind(this));
+    }
 
     this.init();
   }
 
   init() {
-    console.log("Initializing new module helper...");
+    console.debug("Initializing new module helper for", this.name);
   }
 
   /**
@@ -64,7 +73,7 @@ export default class NodeHelper {
   loaded() {}
 
   start() {
-    console.log("Starting module helper: " + this.name);
+    console.log("Starting module helper for", this.name);
   }
 
   /**
@@ -74,7 +83,7 @@ export default class NodeHelper {
    *
    */
   stop() {
-    console.log("Stopping module helper: " + this.name);
+    console.log("Stopping module helper for", this.name);
   }
 
   /**
@@ -86,11 +95,7 @@ export default class NodeHelper {
    */
   socketNotificationReceived(notification?: string, payload?: any) {
     console.log(
-      this.name +
-        " received a socket notification: " +
-        notification +
-        " - Payload: " +
-        payload
+      `${this.name} received a socket notification: ${notification} - Payload: ${payload}`
     );
   }
 

@@ -30,46 +30,48 @@ class StartCommand extends Command {
   async execute() {
     const fs = require("fs-extra");
     const path = require("path");
-    const createCompiler = require("./shared/create-compiler");
-    const webpackDevMiddleware = require("webpack-dev-middleware");
-    const webpackHotMiddleware = require("webpack-hot-middleware");
-    const openBrowser = require("react-dev-utils/openBrowser");
-
-    const createServer = require("./shared/create-server");
-    const createWindow = require("./shared/create-window");
-    const keypress = require("./shared/keypress");
 
     const paths = this.context.paths();
     const config = this.context.config();
 
-    const webpackConfig = require("./shared/webpack.config")({
+    const url = `http${config.useHttps ? "s" : ""}://${config.address}:${
+      config.port
+    }`;
+
+    const webpackConfig = require("../shared/webpack.config")({
       mode: process.env.NODE_ENV,
       paths: paths,
     });
+    const createCompiler = require("../shared/create-compiler");
     const compiler = createCompiler({
       config: webpackConfig,
       useTypeScript: fs.existsSync(paths.appTsConfig),
     });
 
+    const webpackDevMiddleware = require("webpack-dev-middleware");
+    const webpackHotMiddleware = require("webpack-hot-middleware");
     const hotMiddleware = webpackHotMiddleware(compiler, { log: false });
     const devMiddleware = webpackDevMiddleware(compiler, {
       logLevel: "silent",
     });
 
+    const createServer = require("../shared/create-server");
+    const createWindow = require("../shared/create-window");
     const server = await createServer(
       config,
       paths,
       hotMiddleware,
       devMiddleware
     );
-    console.success("Listening on", config.url);
-    console.info("Press 'q' to stop. Press 'space' to force recompile.");
+    console.success("Listening on", url);
+    console.info("Press 'q' to quit. Press 'r' to force rebuild.");
     server.listen();
 
+    const keypress = require("../shared/keypress");
     const kp = keypress();
     kp.on("q", () => process.kill(process.pid, "SIGINT"));
     let valid = true;
-    kp.on(" ", async () => {
+    kp.on("r", async () => {
       if (valid) {
         await fs.remove(path.resolve(paths.appNodeModules, ".cache"));
         devMiddleware.invalidate();
@@ -82,6 +84,7 @@ class StartCommand extends Command {
       if (this.noView) {
         // don't open anything
       } else if (this.browser) {
+        const openBrowser = require("react-dev-utils/openBrowser");
         openBrowser(config.url);
       } else {
         const window = createWindow(config, { dev: true });

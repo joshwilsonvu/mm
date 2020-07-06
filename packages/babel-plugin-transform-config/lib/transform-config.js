@@ -42,6 +42,12 @@ function transformModulesProperty(t, path, state, options) {
       continue;
     }
     const moduleName = moduleProperty.node.value.value;
+    if (moduleName !== encodeURIComponent(moduleName)) {
+      // name is not safe for a URI, syntax error and suggest a conservative character set
+      throw moduleProperty.buildCodeFrameError(
+        `'${moduleName}' is not safe for URIs. Please use only the following characters: A-Z a-z 0-9 - _`
+      );
+    }
     // find the relative path to the nearest modules/ folder within the project
     let modulesPath;
     if (typeof options.modulesPath === "string") {

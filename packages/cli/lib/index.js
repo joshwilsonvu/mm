@@ -2,6 +2,7 @@
 
 const { Cli, Command } = require("clipanion");
 const path = require("path");
+const fs = require("fs");
 const resolve = require("resolve");
 const memoize = require("fast-memoize");
 const consola = require("consola");
@@ -79,7 +80,7 @@ const paths = memoize(() => {
 
 const config = memoize(() => {
   let rawConfig = require(paths().appConfig);
-  if (rawConfig.default) {
+  if (rawConfig.__esModule && rawConfig.default) {
     rawConfig = rawConfig.default;
   }
   const initializedConfig = initializeConfig(rawConfig);
@@ -95,9 +96,8 @@ const cli = new Cli({
 });
 
 // Support the following commands
-for (const command of ["./start", "./build", "./serve", "./view", "./check"]) {
-  console.debug("loading command:", command);
-  cli.register(require(command));
+for (const command of fs.readdirSync(path.join(__dirname, "commands"))) {
+  cli.register(require(path.join(__dirname, "commands", command)));
 }
 Command.Entries.Help.addPath(); // run help by default
 cli.register(Command.Entries.Help);

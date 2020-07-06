@@ -17,10 +17,10 @@ export function serverSocketEmitter(
   const emitter = Emitter();
   io.of(namespace).on("connection", (socket) => {
     onConnect?.(socket);
-    // this uses plain 'message' instead of custom events, and then passes the `event`
+    // this uses plain 'notification' instead of custom events, and then passes the `event`
     // argument to Emitter#emit(). This is so we can use special "*" events to represent
     // any event, without mucking with Socket.io's internals.
-    socket.on("message", (event: string, payload: any) => {
+    socket.on("notification", (event: string, payload: any) => {
       if (event !== "*") {
         emitter.emit(event, payload); // calls any emitter.on() handlers
       }
@@ -32,7 +32,7 @@ export function serverSocketEmitter(
   return {
     emit(event: string, payload: any) {
       if (event !== "*") {
-        io.of(namespace).send(event, payload);
+        io.of(namespace).emit("notification", event, payload);
       }
     },
     on: emitter.on,

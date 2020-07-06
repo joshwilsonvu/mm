@@ -16,7 +16,7 @@ const paths = {
   packageJson: path.join(cwd, "package.json"),
 };
 
-describe.skip("MagicMirror template works with mm packages", () => {
+describe("MagicMirror template works with mm packages", () => {
   beforeAll(async () => {
     jest.setTimeout(5 * 60 * 1000);
 
@@ -73,7 +73,7 @@ describe.skip("MagicMirror template works with mm packages", () => {
 
   test.todo("serves HTML");
 
-  test.skip("starts and watches in development mode", async () => {
+  test("starts and watches in development mode", async () => {
     jest.setTimeout(60 * 1000);
 
     expect(await fs.pathExists(paths.entry)).toBe(true);
@@ -82,7 +82,7 @@ describe.skip("MagicMirror template works with mm packages", () => {
     });
 
     // wait for server to start up
-    await delay(10000);
+    await delay(1000);
     const response = await axios.get("http://localhost:8080/");
     expect(response.data).toMatch(/<script src=/);
     expect(response.status).toBe(200);

@@ -48,9 +48,9 @@ function register(paths) {
   if (!registered && paths.appModules && paths.appConfig) {
     const c = config(paths);
     // Convert import/export to require/module.exports, required for node but not for webpack
-    c.plugins.push(
-      require.resolve("babel-plugin-transform-es2015-modules-commonjs")
-    );
+    c.plugins.push([
+      require.resolve("@babel/plugin-transform-modules-commonjs"),
+    ]);
     require("@babel/register")({
       ...c,
       only: [

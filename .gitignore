@@ -22,6 +22,7 @@ jspm_modules
 !.yarn/releases
 !.yarn/plugins
 !.yarn/versions
+!.yarn/sdks
 .pnp.*
 
 # Ignore __tests__ MagicMirror repo

@@ -33,12 +33,12 @@ test("useCurrentConfig", () => {
   const { result, rerender } = renderHook(() => useCurrentConfig(), {
     wrapper: Wrapper,
   });
-  expect(result.current).toEqual({
-    language: "en",
-    timeFormat: 12,
-    units: "metric",
-    modules: [],
-  });
+  expect(result.current).toEqual(
+    expect.objectContaining({
+      port: 8080,
+      timeFormat: 12,
+    })
+  );
   expect(result.current).toBe(currentConfig);
   const first = currentConfig;
   rerender();
@@ -58,9 +58,14 @@ test("useSetConfig", () => {
     modules: [],
   };
   act(() => {
-    setConfig(newConfig);
+    setConfig((oldConfig) => {
+      return {
+        ...oldConfig,
+        ...newConfig,
+      };
+    });
   });
-  expect(newConfig).toEqual(currentConfig);
+  expect(currentConfig).toEqual(expect.objectContaining(newConfig));
 });
 
 test("useModifyConfig", () => {

@@ -37,13 +37,16 @@ class ServeCommand extends Command {
     // Force production mode
     process.env.NODE_ENV = "production";
 
-    const createServer = require("./shared/create-server");
+    const createServer = require("../shared/create-server");
     const fs = require("fs");
     const openBrowser = require("react-dev-utils/openBrowser");
-    const keypress = require("./shared/keypress");
+    const keypress = require("../shared/keypress");
 
     const paths = this.context.paths();
     const config = this.context.config();
+    const url = `http${config.useHttps ? "s" : ""}://${config.address}:${
+      config.port
+    }`;
 
     if (
       !fs.existsSync(paths.appBuild) ||
@@ -58,8 +61,8 @@ class ServeCommand extends Command {
 
     let server = await createServer(config, paths);
     server.listen();
-    console.success("Listening on", config.url);
-    console.info("Press 'q'' to stop.");
+    console.success("Listening on", url);
+    console.info("Press 'q' to quit.");
 
     const kp = keypress();
     kp.on("q", () => process.kill(process.pid, "SIGINT"));

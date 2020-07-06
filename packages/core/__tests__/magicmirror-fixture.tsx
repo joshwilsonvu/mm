@@ -12,13 +12,9 @@ import * as Core from "../src";
  */
 function useModulesFromConfig(dynamicConfig: Core.InternalConfig) {
   // same input, same output for each element of the array
-  const modules = Core.useMemoArray(
-    dynamicConfig.modules,
-    (m: Core.InternalModuleConfig) => {
-      return <MagicMirrorModule {...m} key={m.identifier} />;
-    },
-    []
-  );
+  const modules = dynamicConfig.modules.map((m: Core.InternalModuleConfig) => {
+    return <MagicMirrorModule {...m} key={m.identifier} />;
+  });
   return modules;
 }
 

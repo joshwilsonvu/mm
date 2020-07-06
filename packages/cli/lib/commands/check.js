@@ -6,7 +6,7 @@ class CheckCommand extends Command {
   static usage = Command.Usage({
     description: "Check your files for problems.",
     details:
-      "`mm check` checks your files for potential problems with ESLint and/or TypeScript.",
+      "`mm check` checks your files for potential problems using ESLint.",
     examples: [
       ["Check your config and source files", "yarn mm check"],
       ["Only check one or more modules", "yarn mm check calendar clock"],
@@ -80,12 +80,13 @@ class CheckCommand extends Command {
     }
     // 3. Format the results.
     const formatter = await eslint.loadFormatter(
-      require.resolve("./shared/eslint-formatter")
+      require.resolve("../shared/eslint-formatter")
     );
     const resultText = formatter.format(results);
 
-    console.log(resultText);
-    return Number(results.some(({ errorCount }) => errorCount > 0));
+    const hasErrors = results.some(({ errorCount }) => errorCount > 0);
+    hasErrors ? console.log(resultText) : console.success(resultText);
+    return Number(hasErrors);
   }
 }
 CheckCommand.addPath("check");

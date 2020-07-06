@@ -45,7 +45,7 @@ export class ModuleGuard extends React.Component<Props, State> {
       return (
         // Suspense lets each module load independently, so one module with
         // many dependencies doesn't affect another module's loading time
-        <React.Suspense fallback={<div>Loading...</div>}>
+        <React.Suspense fallback={<div>...</div>}>
           {this.props.children}
         </React.Suspense>
       );

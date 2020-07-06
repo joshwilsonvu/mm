@@ -140,7 +140,6 @@ function initializeModule(mod: ModuleConfig): InternalModuleConfig {
 const defaults: Omit<Required<Config>, "ipWhitelist"> = {
   address: "localhost",
   port: 8080,
-  electronOptions: {},
   ipAllowlist: ["127.0.0.1", "::ffff:127.0.0.1", "::1"],
   useHttps: false,
   httpsPrivateKey: "",
@@ -151,6 +150,11 @@ const defaults: Omit<Required<Config>, "ipWhitelist"> = {
   timeFormat: 24,
   units: "metric",
   modules: [],
+  electronOptions: {
+    webPreferences: {
+      enableRemoteModule: false,
+    },
+  },
 };
 
 /**

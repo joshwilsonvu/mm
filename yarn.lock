@@ -3142,6 +3142,7 @@ __metadata:
   resolution: "@mm/cli@workspace:packages/cli"
   dependencies:
     "@babel/core": ^7.10.3
+    "@babel/plugin-transform-modules-commonjs": ^7.10.1
     "@babel/register": ^7.10.3
     "@mm/babel-plugin-transform-config": "workspace:*"
     "@mm/babel-plugin-transform-mm2": "workspace:*"

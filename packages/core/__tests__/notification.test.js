@@ -62,8 +62,7 @@ describe("useSocketNotification", () => {
   function mockWindowLocation(port) {
     jest
       .spyOn(window, "location", "get")
-      .mockImplementation(() => new URL(`http://localhost:${port}/`));
-    expect(window.location.toString()).toBe(`http://localhost:${port}/`);
+      .mockImplementation(() => new URL(`http://127.0.0.1:${port}/`));
   }
 
   test("client to server", async () => {
@@ -149,14 +148,14 @@ describe("useSocketNotification", () => {
         useSocketNotification("wrongNamespace", "event", wrongNamespace);
       });
 
-      // Emit event from server
       await waitFor(() => expect(onConnect).toHaveBeenCalledTimes(1), {
         timeout: 4000,
       });
+      // Emit event from server
       emit("event", "payload");
 
       await waitFor(() => expect(subscriber).toHaveBeenCalledTimes(1), {
-        timeout: 1000,
+        timeout: 4000,
       });
       expect(subscriber).toHaveBeenCalledWith("payload");
       expect(subscriberStar).toHaveBeenCalledTimes(1);

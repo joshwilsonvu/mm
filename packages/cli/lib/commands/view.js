@@ -37,7 +37,7 @@ class ViewCommand extends Command {
   url = "";
 
   async execute() {
-    const createWindow = require("./shared/create-window");
+    const createWindow = require("../shared/create-window");
 
     const config = this.context.config();
     if (this.address) {

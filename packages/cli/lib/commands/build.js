@@ -33,13 +33,13 @@ class BuildCommand extends Command {
 
     const fs = require("fs-extra");
     const { promisify } = require("util");
-    const createCompiler = require("./shared/create-compiler");
+    const createCompiler = require("../shared/create-compiler");
     const printBuildError = require("react-dev-utils/printBuildError");
     const chalk = require("chalk");
 
     const paths = this.context.paths();
 
-    const webpackConfig = require("./shared/webpack.config")({
+    const webpackConfig = require("../shared/webpack.config")({
       mode: process.env.NODE_ENV,
       paths: paths,
       analyze: Boolean(this.analyze),

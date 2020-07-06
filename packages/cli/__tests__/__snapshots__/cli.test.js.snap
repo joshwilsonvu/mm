@@ -27,6 +27,29 @@ show information about the compiled files after building
   $ yarn mm build --analyze"
 `;
 
+exports[`shows help message on '$ mm check -h' 1`] = `
+"Check your files for problems.
+
+Usage:
+
+$ mm check [--all] ...
+
+Details:
+
+\`mm check\` checks your files for potential problems with ESLint.
+
+Examples:
+
+Check your config and source files
+  $ yarn mm check
+
+Only check one or more modules
+  $ yarn mm check calendar clock
+
+Check your config, source files, and entire modules directory
+  $ yarn mm check --all"
+`;
+
 exports[`shows help message on '$ mm serve -h' 1`] = `
 "Serve prebuilt files and run Node helpers.
 
@@ -97,6 +120,9 @@ Where <command> is one of:
 
   mm build [--analyze]
     Prepare all source files, stylesheets, and asset files to be served with \`mm serve\`.
+
+  mm check [--all] ...
+    Check your files for problems.
 
   mm serve [--rebuild] [--view] [--browser]
     Serve prebuilt files and run Node helpers.

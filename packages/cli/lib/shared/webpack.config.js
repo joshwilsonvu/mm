@@ -82,7 +82,7 @@ function webpackConfig({ mode = "development", paths, analyze }) {
                 {
                   loader: require.resolve("babel-loader"),
                   options: {
-                    //cacheDirectory: true,
+                    cacheDirectory: false,
                     cacheCompression: false,
                     ...require("./babel-config").config(paths, mode),
                   },
