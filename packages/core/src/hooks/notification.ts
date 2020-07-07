@@ -176,8 +176,8 @@ function useSocketEmitter(namespace: string = "/") {
   );
 }
 
-export const private_notificationEmitter = emitter;
-export const private_notificationSocketRefMap = socketMap;
+export const internal_notificationEmitter = emitter;
+export const internal_notificationSocketRefMap = socketMap;
 
 type Emit = (event: string, payload: any) => void;
 type Emitter = {

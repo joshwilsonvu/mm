@@ -7,13 +7,13 @@ import {
   useCurrentConfig,
   useSetConfig,
   useModifyConfig,
-  private_setCurrentConfig,
-  private_getCurrentConfig,
+  internal_setCurrentConfig,
+  internal_getCurrentConfig,
 } from "../src";
 
 const initialConfig = { port: 8080, timeFormat: 12 };
 
-beforeEach(() => private_setCurrentConfig(initialConfig));
+beforeEach(() => internal_setCurrentConfig(initialConfig));
 
 test("useCurrentConfig", () => {
   const { result, rerender } = renderHook(() => useCurrentConfig());
@@ -23,8 +23,8 @@ test("useCurrentConfig", () => {
       timeFormat: 12,
     })
   );
-  expect(result.current).toBe(private_getCurrentConfig());
-  const first = private_getCurrentConfig();
+  expect(result.current).toBe(internal_getCurrentConfig());
+  const first = internal_getCurrentConfig();
   rerender();
   expect(first).toBe(result.current); // referential equality
 });
@@ -47,14 +47,14 @@ test("useSetConfig", () => {
       };
     });
   });
-  expect(private_getCurrentConfig()).toEqual(
+  expect(internal_getCurrentConfig()).toEqual(
     expect.objectContaining(newConfig)
   );
 });
 
 test("useModifyConfig", () => {
   const { result } = renderHook(() => useModifyConfig());
-  const first = private_getCurrentConfig();
+  const first = internal_getCurrentConfig();
   expect(typeof result.current).toBe("function");
   const modifyConfig = result.current;
   act(() => {
@@ -62,6 +62,6 @@ test("useModifyConfig", () => {
       conf.timeFormat = 24;
     });
   });
-  expect(private_getCurrentConfig()).not.toBe(first); // referential inequality from immer, for accurate rerendering
-  expect(private_getCurrentConfig().timeFormat).toBe(24);
+  expect(internal_getCurrentConfig()).not.toBe(first); // referential inequality from immer, for accurate rerendering
+  expect(internal_getCurrentConfig().timeFormat).toBe(24);
 });

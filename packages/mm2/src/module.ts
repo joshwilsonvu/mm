@@ -389,35 +389,6 @@ interface ModuleInjectedProperties {
   sendNotification: (notification: string, payload: any) => void;
 }
 
-interface ModuleArray<T> extends Array<T> {
-  withClass(classnames: string | string[]): ModuleArray<T>;
-  exceptWithClass(classnames: string | string[]): ModuleArray<T>;
-  exceptModule(module: T): ModuleArray<T>;
-  enumerate: Array<T>["forEach"]; // copy type from Array.forEach
-}
-type MMGlobal = {
-  getModules(): ModuleArray<Module>;
-  sendNotification(notification: string, payload?: any, sender?: Module): void;
-  updateDom(module: Module, speed?: number): void;
-  hideModule(
-    module: Module,
-    speed?: number,
-    callback?: () => void,
-    options?: LockOptions
-  ): void;
-  showModule(
-    module: Module,
-    speed?: number,
-    callback?: () => void,
-    options?: LockOptions
-  ): void;
-};
-
-type LockOptions = {
-  lockString: string;
-  force: boolean;
-};
-
 /**
  * This Component Factory takes an MM2 module and produces a React component
  * that provides compatibility between React MagicMirror modules and MM2 modules.

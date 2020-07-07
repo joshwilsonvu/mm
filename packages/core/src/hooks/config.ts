@@ -30,7 +30,7 @@ export function useCurrentConfig() {
   const [, updateState] = React.useState({});
   // Subscribe to config changes and orce rerender every time the config updates
   React.useEffect(() => subscribeToConfigUpdates(() => updateState({})), []);
-  return private_getCurrentConfig();
+  return internal_getCurrentConfig();
 }
 
 /**
@@ -39,7 +39,7 @@ export function useCurrentConfig() {
  * Any modules using changed portions of the config will be rerendered.
  */
 export function useSetConfig() {
-  return private_setCurrentConfig;
+  return internal_setCurrentConfig;
 }
 
 /**
@@ -49,7 +49,7 @@ export function useSetConfig() {
  * will be rerendered.
  */
 export function useModifyConfig() {
-  return modifyConfig;
+  return internal_modifyConfig;
 }
 
 /**
@@ -59,7 +59,7 @@ export function useModifyConfig() {
 export function useModifyOwnConfig(identifier: string) {
   const modifyOwnConfig = React.useCallback(
     (modifyOwn: (mod: ModuleConfig) => void) => {
-      modifyConfig((conf: Config) => {
+      internal_modifyConfig((conf: Config) => {
         const mod = conf.modules.find((mod) => mod.identifier === identifier);
         mod && modifyOwn(mod);
       });
@@ -89,7 +89,7 @@ let config: Config | null = null;
  * Access the current config. Use @see useInitializeConfig for a React hook version that subscribes to config updates.
  * @private
  */
-export function private_getCurrentConfig(): Config {
+export function internal_getCurrentConfig(): Config {
   if (!config) {
     throw new Error("Tried to access config before initializing.");
   }
@@ -101,12 +101,12 @@ export function private_getCurrentConfig(): Config {
  * @param newConfig
  * @private
  */
-export function private_setCurrentConfig(
+export function internal_setCurrentConfig(
   newConfig: Config | ((currentConfig: Config) => Config)
 ) {
   let c =
     typeof newConfig === "function"
-      ? newConfig(private_getCurrentConfig())
+      ? newConfig(internal_getCurrentConfig())
       : newConfig;
   config = c;
   listeners.forEach((listener) => listener(c));
@@ -116,6 +116,6 @@ export function private_setCurrentConfig(
  * Mutate the current config value in place. Uses immer to keep things immutable.
  * @param modify
  */
-function modifyConfig(modify: (conf: Config) => void) {
-  private_setCurrentConfig(produce(modify));
+export function internal_modifyConfig(modify: (conf: Config) => void) {
+  internal_setCurrentConfig(produce(modify));
 }
