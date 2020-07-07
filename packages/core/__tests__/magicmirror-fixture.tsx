@@ -5,19 +5,6 @@
 import React from "react";
 import * as Core from "../src";
 
-/**
- * Modules will control other modules by directly mutating the config object. We
- * can efficiently determine which properties have changed and rerender the
- * module components with the updated properties.
- */
-function useModulesFromConfig(dynamicConfig: Core.InternalConfig) {
-  // same input, same output for each element of the array
-  const modules = dynamicConfig.modules.map((m: Core.InternalModuleConfig) => {
-    return <MagicMirrorModule {...m} key={m.identifier} />;
-  });
-  return modules;
-}
-
 function MagicMirrorModule({
   _component,
   ...props
@@ -44,18 +31,16 @@ function MagicMirrorModule({
 
 function MagicMirrorFixture({ initialConfig }: { initialConfig: Core.Config }) {
   // initialConfig is only initial arg, the component will copy it and manage the copy
-  const [config, setConfig] = React.useState(() =>
-    Core.initializeConfigClient(initialConfig)
-  );
+  Core.useInitializeConfig(() => Core.initializeConfigClient(initialConfig));
+  const config = Core.useCurrentConfig();
 
-  const modules = useModulesFromConfig(config);
   return (
     <React.StrictMode>
-      <Core.NotificationProvider>
-        <Core.ConfigProvider config={config} setConfig={setConfig}>
-          <Core.ModuleLayout>{modules}</Core.ModuleLayout>
-        </Core.ConfigProvider>
-      </Core.NotificationProvider>
+      <Core.ModuleLayout>
+        {config.modules.map((m) => (
+          <MagicMirrorModule {...m} key={m.identifier} />
+        ))}
+      </Core.ModuleLayout>
     </React.StrictMode>
   );
 }

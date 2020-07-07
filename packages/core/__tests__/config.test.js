@@ -2,53 +2,35 @@
  * @jest-environment jsdom
  */
 
-import React from "react";
 import { renderHook, act } from "@testing-library/react-hooks";
 import {
   useCurrentConfig,
   useSetConfig,
   useModifyConfig,
-  initializeConfig,
-  ConfigProvider,
+  private_setCurrentConfig,
+  private_getCurrentConfig,
 } from "../src";
 
 const initialConfig = { port: 8080, timeFormat: 12 };
-let currentConfig;
 
-function Wrapper({ children }) {
-  const [config, setConfig] = React.useState(() =>
-    initializeConfig(initialConfig)
-  );
-  currentConfig = config;
-  return (
-    <ConfigProvider config={config} setConfig={setConfig}>
-      {children}
-    </ConfigProvider>
-  );
-}
-
-beforeEach(() => (currentConfig = void 0));
+beforeEach(() => private_setCurrentConfig(initialConfig));
 
 test("useCurrentConfig", () => {
-  const { result, rerender } = renderHook(() => useCurrentConfig(), {
-    wrapper: Wrapper,
-  });
+  const { result, rerender } = renderHook(() => useCurrentConfig());
   expect(result.current).toEqual(
     expect.objectContaining({
       port: 8080,
       timeFormat: 12,
     })
   );
-  expect(result.current).toBe(currentConfig);
-  const first = currentConfig;
+  expect(result.current).toBe(private_getCurrentConfig());
+  const first = private_getCurrentConfig();
   rerender();
   expect(first).toBe(result.current); // referential equality
 });
 
 test("useSetConfig", () => {
-  const { result } = renderHook(() => useSetConfig(), {
-    wrapper: Wrapper,
-  });
+  const { result } = renderHook(() => useSetConfig());
   expect(typeof result.current).toBe("function");
   const setConfig = result.current;
   const newConfig = {
@@ -65,14 +47,14 @@ test("useSetConfig", () => {
       };
     });
   });
-  expect(currentConfig).toEqual(expect.objectContaining(newConfig));
+  expect(private_getCurrentConfig()).toEqual(
+    expect.objectContaining(newConfig)
+  );
 });
 
 test("useModifyConfig", () => {
-  const { result } = renderHook(() => useModifyConfig(), {
-    wrapper: Wrapper,
-  });
-  const first = currentConfig;
+  const { result } = renderHook(() => useModifyConfig());
+  const first = private_getCurrentConfig();
   expect(typeof result.current).toBe("function");
   const modifyConfig = result.current;
   act(() => {
@@ -80,6 +62,6 @@ test("useModifyConfig", () => {
       conf.timeFormat = 24;
     });
   });
-  expect(currentConfig).not.toBe(first); // referential inequality from immer, for accurate rerendering
-  expect(currentConfig.timeFormat).toBe(24);
+  expect(private_getCurrentConfig()).not.toBe(first); // referential inequality from immer, for accurate rerendering
+  expect(private_getCurrentConfig().timeFormat).toBe(24);
 });

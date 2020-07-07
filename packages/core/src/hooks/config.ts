@@ -5,30 +5,21 @@ import {
   InternalModuleConfig as ModuleConfig,
 } from "../types";
 
-type ConfigContextProps = {
-  config?: Config;
-  setConfig?: React.Dispatch<React.SetStateAction<Config>>;
-};
-type ConfigContextArray = [
-  ConfigContextProps["config"]?,
-  ConfigContextProps["setConfig"]?
-];
-const Context = React.createContext<ConfigContextArray>([]);
+/*
+ * Modules will control other modules by directly mutating the config object. We
+ * can efficiently determine which properties have changed and rerender the
+ * module components with the updated properties.
+ */
 
 /**
- * Include this component in the tree to use `useCurrentConfig`, `useModifyConfig`, and `useSetConfig`.
+ * Simply initializes the config if it hasn't already been set.
  */
-export function ConfigProvider({
-  config,
-  setConfig,
-  children,
-}: React.PropsWithChildren<ConfigContextProps>) {
-  // memoize value to minimize rerenders
-  const memo = React.useMemo(() => [config, setConfig] as ConfigContextArray, [
-    config,
-    setConfig,
-  ]);
-  return React.createElement(Context.Provider, { value: memo }, children);
+export function useInitializeConfig(initialConfig: Config | (() => Config)) {
+  if (config === null) {
+    // directly set config; don't trigger listeners for initialization
+    config =
+      typeof initialConfig === "function" ? initialConfig() : initialConfig;
+  }
 }
 
 /**
@@ -36,8 +27,10 @@ export function ConfigProvider({
  * when a module changes the configuration.
  */
 export function useCurrentConfig() {
-  const [config] = React.useContext(Context);
-  return config;
+  const [, updateState] = React.useState({});
+  // Subscribe to config changes and orce rerender every time the config updates
+  React.useEffect(() => subscribeToConfigUpdates(() => updateState({})), []);
+  return private_getCurrentConfig();
 }
 
 /**
@@ -46,8 +39,7 @@ export function useCurrentConfig() {
  * Any modules using changed portions of the config will be rerendered.
  */
 export function useSetConfig() {
-  const [, setConfig] = React.useContext(Context);
-  return setConfig;
+  return private_setCurrentConfig;
 }
 
 /**
@@ -57,13 +49,6 @@ export function useSetConfig() {
  * will be rerendered.
  */
 export function useModifyConfig() {
-  const setConfig = useSetConfig();
-  const modifyConfig = React.useCallback(
-    (modify: (conf: Config) => void) => {
-      setConfig && setConfig(produce(modify));
-    },
-    [setConfig]
-  );
   return modifyConfig;
 }
 
@@ -72,7 +57,6 @@ export function useModifyConfig() {
  * not the full internal config object.
  */
 export function useModifyOwnConfig(identifier: string) {
-  const modifyConfig = useModifyConfig();
   const modifyOwnConfig = React.useCallback(
     (modifyOwn: (mod: ModuleConfig) => void) => {
       modifyConfig((conf: Config) => {
@@ -80,7 +64,58 @@ export function useModifyOwnConfig(identifier: string) {
         mod && modifyOwn(mod);
       });
     },
-    [identifier, modifyConfig]
+    [identifier]
   );
   return modifyOwnConfig;
+}
+
+/********** Private API ***********/
+
+type Listener = (config: Config) => void;
+const listeners = new Set<Listener>();
+function subscribeToConfigUpdates(listener: Listener) {
+  if (typeof listener === "function") {
+    listeners.add(listener);
+  }
+  return function unsubscribe() {
+    listeners.delete(listener);
+  };
+}
+
+// Keep the current dynamic config as a hidden module variable
+let config: Config | null = null;
+
+/**
+ * Access the current config. Use @see useInitializeConfig for a React hook version that subscribes to config updates.
+ * @private
+ */
+export function private_getCurrentConfig(): Config {
+  if (!config) {
+    throw new Error("Tried to access config before initializing.");
+  }
+  return config;
+}
+
+/**
+ * Replace the current config value. Like React's setState, but framework agnostic.
+ * @param newConfig
+ * @private
+ */
+export function private_setCurrentConfig(
+  newConfig: Config | ((currentConfig: Config) => Config)
+) {
+  let c =
+    typeof newConfig === "function"
+      ? newConfig(private_getCurrentConfig())
+      : newConfig;
+  config = c;
+  listeners.forEach((listener) => listener(c));
+}
+
+/**
+ * Mutate the current config value in place. Uses immer to keep things immutable.
+ * @param modify
+ */
+function modifyConfig(modify: (conf: Config) => void) {
+  private_setCurrentConfig(produce(modify));
 }

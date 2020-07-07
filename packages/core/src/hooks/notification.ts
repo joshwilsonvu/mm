@@ -1,17 +1,8 @@
 import * as React from "react";
-import useConstant from "use-constant";
 import mitt from "mitt";
 import io from "socket.io-client";
 
-/**
- * Include this component in the tree to use `useNotification` and `useSendNotification`.
- */
-export function NotificationProvider({
-  children,
-}: React.PropsWithChildren<{}>) {
-  const emitter = useConstant(mitt) as Emitter;
-  return React.createElement(Context.Provider, { value: emitter }, children);
-}
+const emitter = mitt() as Emitter;
 
 /**
  * To subscribe to a notification, call this hook with the name of the notification
@@ -33,7 +24,6 @@ export function useNotification(
   event?: string,
   subscriber?: Handler | WildcardHandler
 ): Emit {
-  const emitter = useContextEmitter();
   useNotificationImpl(emitter, event, subscriber);
   return emitter.emit;
 }
@@ -54,20 +44,15 @@ export function useSocketNotification(
   event?: string,
   subscriber?: Handler | WildcardHandler
 ) {
-  const emitter = useSocketEmitter(sender);
-  useNotificationImpl(emitter, event, subscriber);
-  return emitter.emit;
+  const socketEmitter = useSocketEmitter(sender);
+  useNotificationImpl(socketEmitter, event, subscriber);
+  return socketEmitter.emit;
 }
 
 /********** Private API ***********/
 
-const Context = React.createContext({});
-function useContextEmitter() {
-  return React.useContext(Context) as Emitter;
-}
-
 function useNotificationImpl(
-  emitter: Emitter,
+  localEmitter: Emitter,
   event?: string,
   subscriber?: Handler | WildcardHandler
 ) {
@@ -84,18 +69,19 @@ function useNotificationImpl(
         if (payload) {
           (current as WildcardHandler)(event, payload);
         } else {
-          (current as Handler)(event); // event is actually the payload
+          // event is actually the payload
+          (current as Handler)(event);
         }
       }
     }
     if (event) {
       const e = event.toLowerCase();
-      emitter.on(e, cb);
+      localEmitter.on(e, cb);
       return () => {
-        emitter.off(e, cb);
+        localEmitter.off(e, cb);
       };
     }
-  }, [event, emitter]);
+  }, [event, localEmitter]);
 }
 
 interface RefMap<K, V> {
@@ -158,12 +144,12 @@ const socketMap = createRefMap(
       namespace = namespace.substr(1);
     }
     const socket = io(`${window.location.href}${namespace}`);
-    const emitter = mitt() as Emitter;
-    socket.on("notification", emitter.emit);
-    return { socket, emitter };
+    const socketEmitter = mitt() as Emitter;
+    socket.on("notification", socketEmitter.emit);
+    return { socket, socketEmitter };
   },
-  ({ socket, emitter }) => {
-    socket.off("notification", emitter.emit);
+  ({ socket, socketEmitter }) => {
+    socket.off("notification", socketEmitter.emit);
     socket.close();
   }
 );
@@ -176,19 +162,22 @@ function useSocketEmitter(namespace: string = "/") {
     namespace = "/" + namespace;
   }
   // share one socket and emitter for each namespace
-  const { emitter, socket } = useSocketMap(namespace);
+  const { socketEmitter, socket } = useSocketMap(namespace);
 
   return React.useMemo(
     () => ({
       emit(event: string, payload: any) {
         socket.emit("notification", event, payload);
       },
-      on: emitter.on,
-      off: emitter.off,
+      on: socketEmitter.on,
+      off: socketEmitter.off,
     }),
-    [emitter, socket]
+    [socketEmitter, socket]
   );
 }
+
+export const private_notificationEmitter = emitter;
+export const private_notificationSocketRefMap = socketMap;
 
 type Emit = (event: string, payload: any) => void;
 type Emitter = {
