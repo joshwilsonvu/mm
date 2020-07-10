@@ -5,35 +5,20 @@
 import { waitFor } from "@testing-library/dom";
 import { renderHook, act } from "@testing-library/react-hooks";
 import {
-  NotificationProvider,
   useNotification,
+  sendNotification,
   useSocketNotification,
+  sendSocketNotification,
   serverSocketEmitter,
 } from "../src";
 import Server from "socket.io";
 
 describe("useNotification", () => {
-  function setup(event) {
-    let subscriberFn = jest.fn();
-    return {
-      ...renderHook(
-        () => {
-          // set up useNotification to listen for the notification
-          return event
-            ? useNotification(event, subscriberFn)
-            : useNotification();
-        },
-        { wrapper: NotificationProvider }
-      ),
-      subscriberFn,
-    };
-  }
-
   test("works", () => {
-    const { result, subscriberFn } = setup("event");
-    // ...and use sendNotification to send out an 'event' notification
+    let subscriberFn = jest.fn();
+    renderHook(() => useNotification("event", subscriberFn));
+    // use sendNotification to send out an 'event' notification
     act(() => {
-      let sendNotification = result.current;
       sendNotification("event", "payload");
     });
 
@@ -42,19 +27,14 @@ describe("useNotification", () => {
   });
 
   test('passes type to "*" subscribers"', () => {
-    const { result, subscriberFn } = setup("*");
+    let subscriberFn = jest.fn();
+    renderHook(() => useNotification("*", subscriberFn));
     act(() => {
-      let sendNotification = result.current;
       sendNotification("event", "payload");
     });
 
     expect(subscriberFn).toHaveBeenCalledTimes(1);
     expect(subscriberFn).toHaveBeenCalledWith("event", "payload");
-  });
-
-  test("returns emitter even if called with no arguments", () => {
-    const { result } = setup();
-    expect(typeof result.current).toBe("function");
   });
 });
 
@@ -86,19 +66,15 @@ describe("useSocketNotification", () => {
       on("event", serverHandler);
       on("*", serverHandlerStar);
 
-      // Client-side
-      const { result, unmount } = renderHook(() => {
-        return useSocketNotification("sender");
-      });
+      // sets up the connection and returns an emit function
+      const emit = sendSocketNotification("sender");
 
+      // Client-side
       await waitFor(() => expect(onConnect).toHaveBeenCalledTimes(1), {
         timeout: 4000,
       });
 
-      act(() => {
-        const sendSocketNotification = result.current;
-        sendSocketNotification("event", "payload"); // send an "event" notification
-      });
+      emit("event", "payload"); // send an "event" notification from "sender"
 
       await waitFor(() => expect(serverHandler).toHaveBeenCalledTimes(1), {
         timeout: 1000,
@@ -113,12 +89,6 @@ describe("useSocketNotification", () => {
       expect(serverHandler).toHaveBeenCalledWith("payload");
       expect(serverHandlerStar).toHaveBeenCalledTimes(1);
       expect(serverHandlerStar).toHaveBeenCalledWith("event", "payload");
-
-      unmount();
-
-      await waitFor(() => expect(onDisconnect).toHaveBeenCalledTimes(1), {
-        timeout: 1000,
-      });
     } finally {
       io && io.close();
     }
@@ -141,12 +111,14 @@ describe("useSocketNotification", () => {
       const subscriberStar = jest.fn();
       const wrongEvent = jest.fn();
       const wrongNamespace = jest.fn();
-      renderHook(() => {
-        useSocketNotification("sender", "event", subscriber);
-        useSocketNotification("sender", "*", subscriberStar);
-        useSocketNotification("sender", "wrongEvent", wrongEvent);
-        useSocketNotification("wrongNamespace", "event", wrongNamespace);
-      });
+      for (const args of [
+        ["sender", "event", subscriber],
+        ["sender", "*", subscriberStar],
+        ["sender", "wrongEvent", wrongEvent],
+        ["wrongNamespace", "event", wrongNamespace],
+      ]) {
+        renderHook(() => useSocketNotification(...args));
+      }
 
       await waitFor(() => expect(onConnect).toHaveBeenCalledTimes(1), {
         timeout: 4000,

@@ -56,7 +56,6 @@ class StartCommand extends Command {
     });
 
     const createServer = require("../shared/create-server");
-    const createWindow = require("../shared/create-window");
     const server = await createServer(
       config,
       paths,
@@ -87,9 +86,12 @@ class StartCommand extends Command {
         const openBrowser = require("react-dev-utils/openBrowser");
         openBrowser(config.url);
       } else {
+        const createWindow = require("../shared/create-window");
         const window = createWindow(config, { dev: true });
         await window.open();
       }
+      // Remove stale built files, if present, when `mm start` successfully builds new files in memory
+      await fs.remove(paths.appBuild);
     });
 
     return new Promise((resolve) => {
