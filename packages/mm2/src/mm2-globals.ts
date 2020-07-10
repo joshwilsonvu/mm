@@ -10,7 +10,7 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import "@fortawesome/fontawesome-free/css/v4-shims.min.css";
 import { Module } from "./module";
 import {
-  internal_notificationEmitter,
+  sendNotification,
   internal_getCurrentConfig,
   internal_modifyConfig,
   InternalModuleConfig,
@@ -40,7 +40,7 @@ export const MM = {
     if (typeof payload === "object" && sender) {
       payload = { ...payload, [Module.Sender]: sender };
     }
-    internal_notificationEmitter.emit(notification, payload);
+    sendNotification(notification, payload);
   },
   updateDom(module: Module, speed?: number) {
     throw new Error("not implemented");

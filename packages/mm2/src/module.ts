@@ -5,13 +5,13 @@ import React, {
   useRef,
   useEffect,
   useLayoutEffect,
-  useCallback,
 } from "react";
 import useConstant from "use-constant";
 import {
   useNotification,
   useModifyConfig,
   useSocketNotification,
+  sendSocketNotification,
   Props,
 } from "@mm/core";
 
@@ -424,7 +424,7 @@ function makeCompat<T extends Module>(
       }
     );
     // Hook up Module#socketNotificationReceived
-    const sendSocketNotification = useSocketNotification(
+    useSocketNotification(
       props.name,
       "*",
       (notification: string, payload: any) => {
@@ -473,12 +473,12 @@ function makeCompat<T extends Module>(
             close() {},
           };
         },
-        sendNotification(notification: string, payload: any) {
+        sendNotification(this: Module, notification: string, payload: any) {
           let sender = this;
           if (typeof payload === "object") {
             payload[Module.Sender] = sender;
           }
-          sendNotification(notification, payload);
+          sendSocketNotification(this.name)(notification, payload);
         },
       };
       return new MM2(filterDataFromProps(props), inject);
