@@ -4,7 +4,7 @@ const plugin = require("..");
 pluginTester({
   plugin: plugin,
   pluginOptions: {
-    imports: ["optionalImport", "Module"],
+    imports: ["Module", "Log", "MM", "moment", "nunjucks", "SunCalc"],
   },
   tests: {
     "transforms MM2 modules": {

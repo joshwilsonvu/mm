@@ -55,6 +55,7 @@
     "weathericons": "^2.1.0"
   },
   "devDependencies": {
+    "@mm/babel-plugin-transform-mm2": "workspace:*",
     "@testing-library/jest-dom": "^5.10.1",
     "@testing-library/react": "^10.3.0",
     "@types/node": "^14.0.13",

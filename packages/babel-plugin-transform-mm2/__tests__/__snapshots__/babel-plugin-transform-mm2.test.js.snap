@@ -8,8 +8,9 @@ Module.register("helloworld", {
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
-import { Module, optionalImport } from "@mm/mm2";
-export default Module.register("helloworld", {
+const { Module, Log, MM, moment, nunjucks, SunCalc } = require("@mm/mm2");
+
+module.exports = Module.register("helloworld", {
   foo: "bar",
 });
 

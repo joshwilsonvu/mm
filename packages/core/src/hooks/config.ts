@@ -26,11 +26,15 @@ export function useInitializeConfig(initialConfig: Config | (() => Config)) {
  * To access the app configuration, call `const config = useCurrentConfig()`. The return value will be updated
  * when a module changes the configuration.
  */
-export function useCurrentConfig() {
+export function useCurrentConfig(): Config;
+export function useCurrentConfig<T>(selector: (c: Config) => T): T;
+export function useCurrentConfig<T>(selector?: (currentConfig: Config) => T): T | Config {
   const [, updateState] = React.useState({});
-  // Subscribe to config changes and orce rerender every time the config updates
+  // Subscribe to config changes and force rerender every time the config updates
   React.useEffect(() => subscribeToConfigUpdates(() => updateState({})), []);
-  return internal_getCurrentConfig();
+  const currentConfig = internal_getCurrentConfig();
+  const selected = selector ? selector(currentConfig) : currentConfig;
+  return selected;
 }
 
 /**
