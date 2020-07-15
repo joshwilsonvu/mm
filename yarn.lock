@@ -3156,6 +3156,7 @@ __metadata:
     browserslist: ^4.12.0
     case-sensitive-paths-webpack-plugin: ^2.3.0
     chalk: ^4.1.0
+    clear: ^0.1.0
     clipanion: ^2.4.2
     confusing-browser-globals: ^1.0.9
     consola: ^2.13.0
@@ -3176,6 +3177,7 @@ __metadata:
     fs-extra: ^9.0.1
     helmet: ^3.23.1
     html-webpack-plugin: ^4.3.0
+    memfs: ^3.2.0
     mitt: ^1.2.0
     morgan: ^1.10.0
     pem: ^1.14.4
@@ -3240,6 +3242,7 @@ __metadata:
   resolution: "@mm/mm2@workspace:packages/mm2"
   dependencies:
     "@fortawesome/fontawesome-free": ^5.13.1
+    "@mm/babel-plugin-transform-mm2": "workspace:*"
     "@mm/core": "workspace:*"
     "@testing-library/jest-dom": ^5.10.1
     "@testing-library/react": ^10.3.0
@@ -3375,6 +3378,24 @@ __metadata:
     lodash: ^4.17.15
     redent: ^3.0.0
   checksum: 1ed0cbc29396f87f0615e9fed0eaab644c741908bc85d2915aa13928d5e1545cdbec823c5479a22961ca421467d3bd747740aa2b45b1021d0d759cd89e67785f
+  languageName: node
+  linkType: hard
+
+"@testing-library/jest-dom@npm:^5.11.0":
+  version: 5.11.0
+  resolution: "@testing-library/jest-dom@npm:5.11.0"
+  dependencies:
+    "@babel/runtime": ^7.9.2
+    "@types/testing-library__jest-dom": ^5.9.1
+    aria-query: ^4.2.2
+    chalk: ^3.0.0
+    css: ^2.2.4
+    css.escape: ^1.5.1
+    jest-diff: ^25.1.0
+    jest-matcher-utils: ^25.1.0
+    lodash: ^4.17.15
+    redent: ^3.0.0
+  checksum: c6f6270ca2f4cf88af01cb8872ab2ee92f276a1434e43a49f59fcd2265710f6ff828900b54687f46ec79140646f2eec8765a8162dbe3349010d7841f8fa3567b
   languageName: node
   linkType: hard
 
@@ -3576,6 +3597,16 @@ __metadata:
     jest-diff: ^25.2.1
     pretty-format: ^25.2.1
   checksum: a0facd670b1ad6da2355a2b4606a372284cbe7cfde51b84b9e636171fb3e6a6c17a6980ffe0c8d2b0a12b5756501d7c99d7043e8041d410d4a78f3f3cc4e5cac
+  languageName: node
+  linkType: hard
+
+"@types/jest@npm:^26.0.4":
+  version: 26.0.4
+  resolution: "@types/jest@npm:26.0.4"
+  dependencies:
+    jest-diff: ^25.2.1
+    pretty-format: ^25.2.1
+  checksum: f815792ecc2191410bf541740b834bafb608b9a5be0b77b21770d8728e87b2bdd55843999bc9236ebd027e11a4cabbec90da7612fb9a620cf8bd858ae3774bd2
   languageName: node
   linkType: hard
 
@@ -5826,6 +5857,13 @@ __metadata:
   version: 2.2.0
   resolution: "clean-stack@npm:2.2.0"
   checksum: e291ce2b8c8c59e6449ac9a7a726090264bea6696e5343b21385e16d279c808ca09d73a1abea8fd23a9b7699e6ef5ce582df203511f71c8c27666bf3b2e300c5
+  languageName: node
+  linkType: hard
+
+"clear@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "clear@npm:0.1.0"
+  checksum: 5bb327928ac437961b25b51c8ab637b9c6dd74e53ff1d76928c71900f27ef8774da778da81b6cc7d9aba3467da508be9bbd4968a347ba6467761643111d34948
   languageName: node
   linkType: hard
 
@@ -8376,6 +8414,13 @@ __metadata:
   dependencies:
     minipass: ^2.6.0
   checksum: eb59a93065f25457e5d1d10a064e22565e704b03140d5ef86a71a57155b13aa645811126fed2a5a282df8dc9c40df9c9d696f6b2d93c181071a971221d0a454b
+  languageName: node
+  linkType: hard
+
+"fs-monkey@npm:1.0.1":
+  version: 1.0.1
+  resolution: "fs-monkey@npm:1.0.1"
+  checksum: 2ecb8ef5896fc66a5d6fbb9af6e1f9c5723b46ff46cbd91c815262c405318dad8cb6f1bbb36d9c63ec257131731fbdfa433683bc1fea34b4be17b07e64c826cc
   languageName: node
   linkType: hard
 
@@ -10991,6 +11036,15 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"memfs@npm:^3.2.0":
+  version: 3.2.0
+  resolution: "memfs@npm:3.2.0"
+  dependencies:
+    fs-monkey: 1.0.1
+  checksum: 48bf758246937c6ceadaecc31e81050d4745dac5e031e3080961c28311bcc4b29e99f9cc4110103a0cb9f004c30c59926eaf15d10f4ac9a00b773b256a918ae2
+  languageName: node
+  linkType: hard
+
 "memory-fs@npm:^0.4.1":
   version: 0.4.1
   resolution: "memory-fs@npm:0.4.1"
@@ -11275,6 +11329,8 @@ fsevents@^1.2.7:
     "@babel/preset-env": ^7.10.3
     "@babel/preset-react": ^7.10.1
     "@babel/preset-typescript": ^7.10.1
+    "@testing-library/jest-dom": ^5.11.0
+    "@types/jest": ^26.0.4
     "@typescript-eslint/eslint-plugin": ^2.34.0
     "@typescript-eslint/parser": ^2.34.0
     axios: ^0.19.2

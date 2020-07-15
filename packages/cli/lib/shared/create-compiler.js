@@ -2,9 +2,8 @@
 
 const webpack = require("webpack");
 const chalk = require("chalk");
-//const forkTsCheckerWebpackPlugin = require("react-dev-utils/ForkTsCheckerWebpackPlugin");
+const clear = require("clear");
 const formatWebpackMessages = require("react-dev-utils/formatWebpackMessages");
-//const typescriptFormatter = require("react-dev-utils/typescriptFormatter");
 
 module.exports = createCompiler;
 function createCompiler({ config }) {
@@ -51,23 +50,22 @@ function createCompiler({ config }) {
 
 const handlers = {
   invalid() {
-    console.info("Compiling...");
+    clear();
+    console.info("Working...");
   },
   success() {
-    console.success("Compiled successfully!");
+    console.success("Done!");
   },
   warning(messages) {
+    const warnings = messages.warnings.slice(0, 10);
     console.warn(
-      chalk.bold.yellow("Compiled with warnings.\n"),
-      messages.warnings.join("\n\n"),
-      "\n"
+      [chalk.bold.yellow("Done with warnings."), ...warnings].join("\n\n")
     );
   },
   error(messages) {
+    const error = messages.errors[0];
     console.error(
-      chalk.bold.red("Failed to compile.\n"),
-      messages.errors[0],
-      "\n"
+      [chalk.bold.red(`Failed with the following error.\n`), error].join("\n\n")
     );
   },
 };

@@ -86,6 +86,6 @@ class ServeCommand extends Command {
 ServeCommand.addPath("serve");
 ServeCommand.addOption("rebuild", Command.Boolean("--rebuild"));
 ServeCommand.addOption("view", Command.Boolean("--view"));
-ServeCommand.addOption("browser", Command.Boolean("--browser"));
+ServeCommand.addOption("browser", Command.Boolean("-b,--browser"));
 
 module.exports = ServeCommand;

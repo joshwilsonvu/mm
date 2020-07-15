@@ -36,7 +36,7 @@ $ mm check [--all] ...
 
 Details:
 
-\`mm check\` checks your files for potential problems with ESLint.
+\`mm check\` checks your files for potential problems using ESLint.
 
 Examples:
 

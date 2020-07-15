@@ -45,7 +45,6 @@ class StartCommand extends Command {
     const createCompiler = require("../shared/create-compiler");
     const compiler = createCompiler({
       config: webpackConfig,
-      useTypeScript: fs.existsSync(paths.appTsConfig),
     });
 
     const webpackDevMiddleware = require("webpack-dev-middleware");
@@ -100,7 +99,7 @@ class StartCommand extends Command {
         hotMiddleware.close();
         kp.done();
         setTimeout(() => process.exit(0), 1000).unref();
-        resolve && resolve();
+        resolve();
       });
     });
   }
@@ -108,6 +107,7 @@ class StartCommand extends Command {
 
 StartCommand.addPath("start");
 StartCommand.addOption("noView", Command.Boolean("--no-view"));
-StartCommand.addOption("browser", Command.Boolean("--browser"));
+StartCommand.addOption("browser", Command.Boolean("-b,--browser"));
+StartCommand.addOption("check", Command.Boolean("-c,--check"));
 
 module.exports = StartCommand;

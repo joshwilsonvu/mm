@@ -26,6 +26,7 @@ class BuildCommand extends Command {
   });
 
   analyze = false;
+  check = false;
 
   async execute() {
     // Force production mode
@@ -43,13 +44,13 @@ class BuildCommand extends Command {
       mode: process.env.NODE_ENV,
       paths: paths,
       analyze: Boolean(this.analyze),
+      check: Boolean(this.check),
     });
     if (!webpackConfig) {
       return 1;
     }
     const compiler = createCompiler({
       config: webpackConfig,
-      useTypeScript: fs.existsSync(paths.appTsConfig),
     });
 
     try {
@@ -67,5 +68,6 @@ class BuildCommand extends Command {
 
 BuildCommand.addPath("build");
 BuildCommand.addOption("analyze", Command.Boolean("--analyze"));
+BuildCommand.addOption("check", Command.Boolean("-c,--check"));
 
 module.exports = BuildCommand;

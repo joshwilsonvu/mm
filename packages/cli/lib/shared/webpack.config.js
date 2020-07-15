@@ -1,6 +1,7 @@
 "use strict";
 
 const fs = require("fs");
+const path = require("path");
 const webpack = require("webpack");
 const PnpWebpackPlugin = require("pnp-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
@@ -11,7 +12,7 @@ const postcssNormalize = require("postcss-normalize");
 const ignoreRegex = /node_modules|\.yarn|@babel(?:\/|\\{1,2})runtime/;
 
 module.exports = webpackConfig;
-function webpackConfig({ mode = "development", paths, analyze }) {
+function webpackConfig({ mode = "development", paths, analyze, check }) {
   if (!paths.appIndex) return null;
 
   // Check if TypeScript is setup
@@ -79,6 +80,27 @@ function webpackConfig({ mode = "development", paths, analyze }) {
               test: /\.(js|mjs|jsx|ts|tsx)$/,
               exclude: ignoreRegex,
               rules: [
+                // First, run the linter.
+                // It's important to do this before Babel processes the JS.
+                // Ensure dependencies are not linted.
+                check && {
+                  enforce: "pre",
+                  use: [
+                    {
+                      options: {
+                        configFile: require.resolve("./eslint-config"),
+                        //cache: true,
+                        formatter: require.resolve("./eslint-formatter"),
+                        eslintPath: require.resolve("eslint"),
+                        resolvePluginsRelativeTo: path.join(
+                          __dirname,
+                          __filename
+                        ),
+                      },
+                      loader: require.resolve("eslint-loader"),
+                    },
+                  ],
+                },
                 {
                   loader: require.resolve("babel-loader"),
                   options: {
@@ -87,28 +109,30 @@ function webpackConfig({ mode = "development", paths, analyze }) {
                     ...require("./babel-config").config(paths, mode),
                   },
                 },
-                useTypeScript && {
-                  test: /\.(ts|tsx)$/,
-                  loader: require.resolve("ts-loader"),
-                  options: {
-                    //...(process.versions.pnp && require("./pnpTs.js")),
-                    silent: true,
-                    configFile: paths.appTsConfig,
-                    errorFormatter: require("./formatter").ts,
-                    // Override certain compiler options for more predictable output
-                    compilerOptions: {
-                      target: "ESNext",
-                      module: "ES6",
-                      incremental: true,
-                      isolatedModules: true,
-                      jsx: "preserve",
-                      declaration: false,
-                      sourceMap: false,
-                      noEmit: false,
-                      types: [],
+                // use ts-loader for transpiling and type-checking TS files.
+                useTypeScript &&
+                  check && {
+                    test: /\.(ts|tsx)$/,
+                    loader: require.resolve("ts-loader"),
+                    options: {
+                      //...(process.versions.pnp && require("./pnpTs.js")),
+                      silent: true,
+                      configFile: paths.appTsConfig,
+                      errorFormatter: require("./formatter").ts,
+                      // Override certain compiler options for more predictable output
+                      compilerOptions: {
+                        target: "ESNext",
+                        module: "ES6",
+                        incremental: true,
+                        isolatedModules: true,
+                        jsx: "preserve",
+                        declaration: false,
+                        sourceMap: false,
+                        noEmit: false,
+                        types: [],
+                      },
                     },
                   },
-                },
               ].filter(Boolean),
             },
             // "postcss" loader applies autoprefixer to our CSS.
@@ -212,32 +236,6 @@ function webpackConfig({ mode = "development", paths, analyze }) {
       // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
       // You can remove this if you don't use Moment.js:
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-      // TypeScript type checking
-      // useTypeScript &&
-      //   new ForkTsCheckerWebpackPlugin({
-      //     typescript: require.resolve("typescript"),
-      //     async: mode !== "production",
-      //     useTypescriptIncrementalApi: true,
-      //     //checkSyntacticErrors: true,
-      //     resolveModuleNameModule: process.versions.pnp
-      //       ? require.resolve("./pnpTs.js")
-      //       : undefined,
-      //     resolveTypeReferenceDirectiveModule: process.versions.pnp
-      //       ? require.resolve("./pnpTs.js")
-      //       : undefined,
-      //     tsconfig: paths.appTsConfig,
-      //     reportFiles: [
-      //       "**",
-      //       "!**/__tests__/**",
-      //       "!**/?(*.)(spec|test).*",
-      //       "!**/src/setupProxy.*",
-      //       "!**/src/setupTests.*",
-      //       "!**/.yarn/**",
-      //       "!**/node_modules/**",
-      //     ],
-      //     silent: true,
-      //     // The formatter is invoked directly in WebpackDevServerUtils during development
-      //   }),
       // If analyze is true, open up a bundle analysis page after the build
       analyze &&
         new (require("webpack-bundle-analyzer").BundleAnalyzerPlugin)({

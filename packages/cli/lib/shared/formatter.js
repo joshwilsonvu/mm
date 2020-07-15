@@ -11,7 +11,7 @@ const table = require("text-table");
 exports.eslint = function formatter(results) {
   // All files and associated lines
   let blocks = results
-    .map(({ filePath, messages, errorCount, warningCount }) => {
+    .map(({ messages, errorCount, warningCount }) => {
       if (errorCount + warningCount === 0) {
         return null;
       }
@@ -25,7 +25,6 @@ exports.eslint = function formatter(results) {
       const lines = messages.map((m) => formatLine(m, color));
 
       return {
-        filePath,
         lines,
         hasErrors,
       };
@@ -77,17 +76,13 @@ function formatLine({ ruleId, message, line = 1, column = 1 }, color) {
 }
 
 function joinBlocks(blocks) {
-  const cwd = process.cwd();
   return blocks
-    .map(({ filePath, lines }) => {
-      return [
-        chalk.bold(filePath.replace(cwd, ".")),
-        table(lines, {
-          stringLength(str) {
-            return stripAnsi(str).length;
-          },
-        }),
-      ].join("\n");
+    .map(({ lines }) => {
+      return table(lines, {
+        stringLength(str) {
+          return stripAnsi(str).length;
+        },
+      });
     })
     .join("\n\n");
 }
