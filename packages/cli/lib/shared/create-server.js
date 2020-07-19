@@ -119,28 +119,14 @@ module.exports = async function createServer(config, paths, ...middlewares) {
 
   // 404 for all paths not already handled
   app.get("*", (_, res) => {
-    res.status(404).type("html").send(`
-    <html><head>
-      <style>body { background: #000; color: #FFF; width: 100%; text-align: center } main { display: inline-block; }</style>
-    </head>
-    <body><main>
-      <h1>Something is wrong.</h4>
-      <p>Check the output of your terminal for more information.</p>
-    </main></body></html>`);
+    res.status(404).type("html").send(require("./template").notFound);
   });
 
   // Error handler, for when a device not on the ipAllowlist tries to access
   app.use(function (err, _, res, next) {
     if (err instanceof IpDeniedError) {
       console.warn(err.message);
-      res.status(403).type("html").send(`
-      <html><head>
-        <style>body { background: #000; color: #FFF; width: 100%; text-align: center } main { display: inline-block; }</style>
-      </head>
-      <body><main>
-        <h1>This device is not allowed to access your mirror.</h4>
-        <p>Check the output of your terminal for more information.</p>
-      </main></body></html>`);
+      res.status(403).type("html").send(require("./template").unauthorized);
     } else {
       return next(err);
     }

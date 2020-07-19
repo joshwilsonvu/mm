@@ -26,6 +26,7 @@ class StartCommand extends Command {
   // options
   noView = false;
   browser = false;
+  check = false;
 
   async execute() {
     const fs = require("fs-extra");
@@ -41,6 +42,7 @@ class StartCommand extends Command {
     const webpackConfig = require("../shared/webpack.config")({
       mode: process.env.NODE_ENV,
       paths: paths,
+      check: Boolean(this.check),
     });
     const createCompiler = require("../shared/create-compiler");
     const compiler = createCompiler({
