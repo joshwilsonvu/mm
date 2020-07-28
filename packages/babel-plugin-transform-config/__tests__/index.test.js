@@ -62,6 +62,19 @@ pluginTester({
         modulesPath: "../../custom-modules",
       },
     },
+    "bails if .disabled === true": {
+      code: `
+        export default {
+          modules: [
+            {
+              module: "a-module",
+              disabled: true
+            }
+          ]
+        };
+      `,
+      snapshot: true,
+    }
   },
   babelOptions: {
     filename: require.resolve("./config/dummy"),

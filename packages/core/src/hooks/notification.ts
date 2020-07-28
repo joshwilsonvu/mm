@@ -5,53 +5,77 @@ import io from "socket.io-client";
 const emitter = mitt() as Emitter;
 
 /**
- * To subscribe to a notification, call this hook with the name of the notification
+ * To subscribe to a notification, use this hook with the name of the notification
  * to subscribe to and the function to be called when the notification comes in.
  * @example useNotification("ALL_MODULES_LOADED", (payload) => console.log("Loaded!"));
  *
- * @example useNotification("*", (event, payload) => console.log("Received event " + event));
+ * @example useNotification("*", (notification, payload) => console.log("Received notification " + notification));
  */
-export function useNotification(event: "*", subscriber: WildcardHandler): void;
-export function useNotification(event: string, subscriber: Handler): void;
 export function useNotification(
-  event: string,
+  notification: "*",
+  subscriber: WildcardHandler
+): void;
+export function useNotification(
+  notification: string,
+  subscriber: Handler
+): void;
+export function useNotification(
+  notification: string,
   subscriber: Handler | WildcardHandler
 ): void {
-  useNotificationImpl(emitter, event, subscriber);
+  useNotificationImpl(emitter, notification, subscriber);
 }
+
 /**
- * To emit notifications, use `sendNotification` in a useEffect() block or event handler.
+ * To send notifications, use `sendNotification` in a useEffect() block or event handler.
  * Avoid calling it in the component body, because it could be called more than once.
- * @example useEffect(() => fetch(something).then(content => sendNotification("FETCHED", content, 'sender')), [something]);
+ * @example useEffect(() => fetch(something).then(content => sendNotification("FETCHED", content), [something]);
  */
 export const sendNotification = emitter.emit;
 
+/**
+ * To subscribe to notifications from the node helper, use this hook with the name of the
+ * module, the name of the notification to subscribe to, and the function to be called
+ * when the notification comes in.
+ * @example useSocketNotification(name, "NEW_CONTENT", (payload) => setContent(payload));
+ * @param sender pass the `name` prop of the component
+ * @param notification the notification name to receive from the helper
+ * @param subscriber data received from the helper
+ */
 export function useSocketNotification(
   sender: string,
-  event: "*",
+  notification: "*",
   subscriber: WildcardHandler
 ): void;
 export function useSocketNotification(
   sender: string,
-  event: string,
+  notification: string,
   subscriber: Handler
 ): void;
 export function useSocketNotification(
   sender: string,
-  event: string,
+  notification: string,
   subscriber: Handler | WildcardHandler
 ): void {
-  const socketEmitter = useSocketEmitter(sender);
-  useNotificationImpl(socketEmitter, event, subscriber);
+  const socketEmitter = socketCache.get(sender);
+  useNotificationImpl(socketEmitter, notification, subscriber);
 }
 
-export function sendSocketNotification(sender: string): Emit {
-  const socketEmitter = socketMap.ref(sender)[0];
-  // usually enough time for the caller to use the return value,
-  // and keeps the ref count from growing out of control. Worst
-  // case scenario is the socket is closed.
-  setTimeout(() => socketMap.unref(sender), 5000);
-  return socketEmitter.emit;
+/**
+ * To send a notification to the node helper, use `sendSocketNotification` in a useEffect() block or event handler.
+ * Avoid calling it in the component body, because it could be called more than once.
+ * @example useEffect(() => fetch(something).then(content => sendSocketNotification(name, "FETCHED", content), [something]);
+ * @param sender pass the `name` prop of the component
+ * @param notification the notification name to send to the helper
+ * @param payload any data to send to the helper
+ */
+export function sendSocketNotification(
+  sender: string,
+  notification: string,
+  payload: any
+): void {
+  const socketEmitter = socketCache.get(sender);
+  socketEmitter.emit(notification, payload);
 }
 
 /********** Private API ***********/
@@ -86,94 +110,42 @@ function useNotificationImpl(
   }, [cb, event, localEmitter]);
 }
 
-interface RefMap<K, V> {
-  ref(k: K): V;
-  unref(k: K): void;
+interface Cache<K, V> {
+  get(k: K): V;
 }
-// Allows sharing an item accessed by key k and destroying it when no references to
-// it remain
-function createRefMap<K, V>(
-  create: (k: K) => V,
-  destroy?: (v: V, k: K) => void
-) {
-  let map = new Map<K, { v: V; refcount: number }>();
+// Allows sharing an item accessed by key k
+function createCache<K, V>(create: (k: K) => V): Cache<K, V> {
+  let map = new Map<K, V>();
   return {
-    ref(k: K): V {
-      let rv = map.get(k);
-      if (!rv) {
-        rv = { v: create(k), refcount: 0 };
-        map.set(k, rv);
+    get(k: K): V {
+      let val = map.get(k);
+      if (!val) {
+        val = create(k);
+        map.set(k, val);
       }
-      rv.refcount += 1;
-      return rv.v;
-    },
-    unref(k: K): void {
-      const rv = map.get(k);
-      if (!rv) {
-        throw new Error("Can't unref namespace that hasn't been ref'ed.");
-      } else {
-        rv.refcount -= 1;
-        if (rv.refcount === 0) {
-          destroy?.(rv.v, k);
-          map.delete(k); // allow value to be garbage collected
-        }
-      }
-    },
-  };
-}
-// create a React hook to access the RefMap, synchronously returns shared RefMap value for any key
-function createUseRefMap<K, V>(refMap: RefMap<K, V>) {
-  return function useRefMap(k: K) {
-    let box = useRef<{ k?: K; v?: V }>({});
-    if (box.current.k !== k) {
-      const next = { k: k, v: refMap.ref(k) };
-      box.current.k && refMap.unref(box.current.k);
-      box.current = next;
+      return val;
     }
-    // ensure unref on unmount
-    useEffect(() => () => box.current.k && refMap.unref(box.current.k), []);
-    return box.current.v!;
   };
 }
 
-// create socket and emitter and wire them together
-const socketMap = createRefMap(
-  (namespace: string) => {
-    if (namespace.startsWith("/")) {
-      namespace = namespace.substr(1);
-    }
-    const socket = io(`${window.location.href}${namespace}`);
-    const socketEmitter = mitt() as Emitter;
-    socket.on("notification", socketEmitter.emit);
-    const emitter: Emitter = {
-      emit(event: string, payload: any) {
-        socket.emit("notification", event, payload);
-      },
-      on: socketEmitter.on,
-      off: socketEmitter.off,
-    };
-    const close = () => {
-      socket.off("notification", socketEmitter.emit);
-      socket.close();
-    };
-    return [emitter, close] as const;
-  },
-  ([_, close]) => close()
-);
-const useSocketMap = createUseRefMap(socketMap);
-
-// Creates an Emitter instance ({ on, off, emit }) that sends and receives
-// events over a socket connection
-function useSocketEmitter(namespace: string = "/") {
-  if (!namespace.startsWith("/")) {
-    namespace = "/" + namespace;
+// Creates a cache of Emitter instances ({ on, off, emit }) that send and receive
+// events over socket connections
+const socketCache = createCache((namespace: string) => {
+  if (namespace.startsWith("/")) {
+    namespace = namespace.substr(1);
   }
-  // share one socket emitter for each namespace
-  const [emitter] = useSocketMap(namespace);
+  const socket = io(`${window.location.href}${namespace}`);
+  const socketEmitter = mitt() as Emitter;
+  socket.on("notification", socketEmitter.emit);
+  const emitter: Emitter & { close?(): void } = {
+    emit(event: string, payload: any) {
+      socket.emit("notification", event, payload);
+    },
+    on: socketEmitter.on,
+    off: socketEmitter.off
+  };
   return emitter;
-}
-
-export const internal_notificationSocketRefMap = socketMap;
+});
 
 type Emit = (event: string, payload: any) => void;
 type Emitter = {

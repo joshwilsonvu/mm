@@ -94,9 +94,6 @@ export default class NodeHelper {
    * @deprecated
    */
   socketNotificationReceived(notification?: string, payload?: any) {
-    console.log(
-      `${this.name} received a socket notification: ${notification} - Payload: ${payload}`
-    );
   }
 
   on: mitt.Emitter["on"];

@@ -28,7 +28,9 @@ export function useInitializeConfig(initialConfig: Config | (() => Config)) {
  */
 export function useCurrentConfig(): Config;
 export function useCurrentConfig<T>(selector: (c: Config) => T): T;
-export function useCurrentConfig<T>(selector?: (currentConfig: Config) => T): T | Config {
+export function useCurrentConfig<T>(
+  selector?: (currentConfig: Config) => T
+): T | Config {
   const [, updateState] = React.useState({});
   // Subscribe to config changes and force rerender every time the config updates
   React.useEffect(() => subscribeToConfigUpdates(() => updateState({})), []);

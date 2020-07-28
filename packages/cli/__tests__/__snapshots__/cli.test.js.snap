@@ -5,7 +5,7 @@ exports[`shows help message on '$ mm build -h' 1`] = `
 
 Usage:
 
-$ mm build [--analyze]
+$ mm build [--analyze] [-c,--check]
 
 Details:
 
@@ -32,22 +32,19 @@ exports[`shows help message on '$ mm check -h' 1`] = `
 
 Usage:
 
-$ mm check [--all] ...
+$ mm check [-w,--watch]
 
 Details:
 
-\`mm check\` checks your files for potential problems using ESLint.
+\`mm check\` checks your files for potential problems using ESLint and TypeScript.
 
 Examples:
 
 Check your config and source files
   $ yarn mm check
 
-Only check one or more modules
-  $ yarn mm check calendar clock
-
-Check your config, source files, and entire modules directory
-  $ yarn mm check --all"
+Watch files and update results
+  $ yarn mm check --watch"
 `;
 
 exports[`shows help message on '$ mm serve -h' 1`] = `
@@ -55,7 +52,7 @@ exports[`shows help message on '$ mm serve -h' 1`] = `
 
 Usage:
 
-$ mm serve [--rebuild] [--view] [--browser]
+$ mm serve [--rebuild] [--view] [-b,--browser]
 
 Details:
 
@@ -89,7 +86,7 @@ exports[`shows help message on '$ mm start -h' 1`] = `
 
 Usage:
 
-$ mm start [--no-view] [--browser]
+$ mm start [--no-view] [-b,--browser] [-c,--check]
 
 Details:
 
@@ -118,16 +115,16 @@ exports[`shows help message on '$ mm' 1`] = `
 
 Where <command> is one of:
 
-  mm build [--analyze]
+  mm build [--analyze] [-c,--check]
     Prepare all source files, stylesheets, and asset files to be served with \`mm serve\`.
 
-  mm check [--all] ...
+  mm check [-w,--watch]
     Check your files for problems.
 
-  mm serve [--rebuild] [--view] [--browser]
+  mm serve [--rebuild] [--view] [-b,--browser]
     Serve prebuilt files and run Node helpers.
 
-  mm start [--no-view] [--browser]
+  mm start [--no-view] [-b,--browser] [-c,--check]
     Start the app and instantly see changes to your source files.
 
   mm view [--address,-a #0] [--port,-p #0] [--url,-u #0]

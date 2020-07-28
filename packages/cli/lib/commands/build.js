@@ -41,7 +41,7 @@ class BuildCommand extends Command {
     const paths = this.context.paths();
 
     const webpackConfig = require("../shared/webpack.config")({
-      mode: process.env.NODE_ENV,
+      mode: "production",
       paths: paths,
       analyze: Boolean(this.analyze),
       check: Boolean(this.check),

@@ -40,7 +40,7 @@ class StartCommand extends Command {
     }`;
 
     const webpackConfig = require("../shared/webpack.config")({
-      mode: process.env.NODE_ENV,
+      mode: "development",
       paths: paths,
       check: Boolean(this.check),
     });

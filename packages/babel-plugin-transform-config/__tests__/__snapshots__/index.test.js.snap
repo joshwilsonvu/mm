@@ -37,6 +37,31 @@ export default {
 
 `;
 
+exports[`babel-plugin-transform-config bails if .disabled === true: bails if .disabled === true 1`] = `
+
+export default {
+  modules: [
+    {
+      module: "a-module",
+      disabled: true
+    }
+  ]
+};
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+export default {
+  modules: [
+    {
+      module: "a-module",
+      disabled: true,
+    },
+  ],
+};
+
+
+`;
+
 exports[`babel-plugin-transform-config doesn't search if option \`modulesPath\` is specified: doesn't search if option \`modulesPath\` is specified 1`] = `
 
 export default {

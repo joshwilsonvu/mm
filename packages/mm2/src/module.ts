@@ -473,7 +473,7 @@ function makeCompat<T extends Module>(
           if (typeof payload === "object") {
             payload[Module.Sender] = sender;
           }
-          sendSocketNotification(this.name)(notification, payload);
+          sendSocketNotification(this.name, notification, payload);
         },
       };
       return new MM2(filterDataFromProps(props), inject);

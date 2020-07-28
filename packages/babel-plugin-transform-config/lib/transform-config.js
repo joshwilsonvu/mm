@@ -32,6 +32,18 @@ function transformModulesProperty(t, path, state, options) {
       continue;
     }
     const properties = element.get("properties");
+    // bail if the object has { disabled: true }
+    if (
+      properties.find(
+        (p) =>
+          !p.node.computed &&
+          isIdentifierOrLiteral(p.get("key"), "disabled") &&
+          t.isBooleanLiteral(p.node.value, { value: true })
+      )
+    ) {
+      continue;
+    }
+    // get the "module" property
     const moduleProperty = properties.find(
       (p) =>
         !p.node.computed &&

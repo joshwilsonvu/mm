@@ -10,7 +10,7 @@ module.exports = {
     "\\.css$": "<rootDir>/__tests__/css-stub.js",
   },
   preset: "ts-jest/presets/js-with-babel",
-  setupFilesAfterEnv: ["<rootDir>/__tests__/setup.ts"],
+  setupFilesAfterEnv: ["<rootDir>/__tests__/global-setup.ts"],
   globals: {
     "ts-jest": {
       tsConfig: path.resolve(__dirname, "tsconfig.base.json"),

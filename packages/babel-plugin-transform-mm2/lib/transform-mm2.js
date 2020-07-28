@@ -34,7 +34,9 @@ exports.transformModuleDotRegister = function transformModuleDotRegister(
     const program = path.findParent((p) => p.isProgram());
     const imports = (options.imports || []).filter((imp) => imp !== "Module");
     imports.unshift("Module");
-    program.node.body.unshift(requireExpression(t, imports, options.reqId || "@mm/mm2"));
+    program.node.body.unshift(
+      requireExpression(t, imports, options.reqId || "@mm/mm2")
+    );
   }
 };
 

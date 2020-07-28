@@ -98,7 +98,7 @@ export function initializeConfigClient(c: Config): InternalConfig {
     language,
     timeFormat,
     units,
-    modules: modules.map(initializeModule),
+    modules: modules.map(initializeModule).filter(Boolean) as InternalModuleConfig[],
   };
 }
 
@@ -110,8 +110,11 @@ export function initializeConfig(c: Config): Required<Config> {
   return config;
 }
 
-function initializeModule(mod: ModuleConfig): InternalModuleConfig {
+function initializeModule(mod: ModuleConfig): InternalModuleConfig | null {
   // @mm/babel-plugin-transform-config automatically adds _path and _component properties to config
+  if (mod.disabled) {
+    return null;
+  }
   if (!mod._path || !mod._component) {
     throw new Error(
       `Babel loader not working for module ${mod.module}: ${JSON.stringify(
@@ -127,7 +130,7 @@ function initializeModule(mod: ModuleConfig): InternalModuleConfig {
     classes: mod.classes || [],
     header: mod.header || "",
     config: mod.config || {},
-    disabled: mod.disabled || false,
+    disabled: false,
     // Note: the rest of these properties are automatically added but won't be typechecked
     _component: mod._component,
     hidden: false,

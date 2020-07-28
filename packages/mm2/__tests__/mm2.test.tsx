@@ -13,7 +13,7 @@ const mm2Definition = () => ({
 
   start: jest.fn(),
   // Override dom generator.
-  getDom: jest.fn(function(this: any) {
+  getDom: jest.fn(function (this: any) {
     var wrapper = document.createElement("div");
     wrapper.innerHTML = this.config.text;
     return wrapper;
