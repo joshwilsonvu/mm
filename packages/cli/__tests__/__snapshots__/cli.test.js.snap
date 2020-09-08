@@ -47,6 +47,28 @@ Watch files and update results
   $ yarn mm check --watch"
 `;
 
+exports[`shows help message on '$ mm init -h' 1`] = `
+"Set up files for a new module.
+
+Usage:
+
+$ mm init [--typescript] <name>
+
+Details:
+
+\`mm init <new-module>\` will set up a folder and starter files for a new module.
+
+Open up MagicMirror/modules/new-module/index.js to get started.
+
+Examples:
+
+create a module called \`my-module\`
+  $ yarn mm init my-module
+
+use TypeScript instead of JavaScript
+  $ yarn mm init --typescript my-module"
+`;
+
 exports[`shows help message on '$ mm serve -h' 1`] = `
 "Serve prebuilt files and run Node helpers.
 
@@ -120,6 +142,9 @@ Where <command> is one of:
 
   mm check [-w,--watch]
     Check your files for problems.
+
+  mm init [--typescript] <name>
+    Set up files for a new module.
 
   mm serve [--rebuild] [--view] [-b,--browser]
     Serve prebuilt files and run Node helpers.

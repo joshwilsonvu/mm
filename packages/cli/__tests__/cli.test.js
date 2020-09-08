@@ -24,3 +24,6 @@ test("shows help message on '$ mm serve -h'", () =>
 
 test("shows help message on '$ mm check -h'", () =>
   testOutput("check", "--help"));
+
+test("shows help message on '$ mm init -h'", () =>
+  testOutput("init", "--help"));
