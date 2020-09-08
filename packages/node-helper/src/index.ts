@@ -7,9 +7,9 @@
 
 import path from "path";
 import express from "express";
-import type SocketIO from "socket.io";
+import SocketIO from "socket.io";
 import { serverSocketEmitter } from "@mm/core";
-import type mitt from "mitt";
+import mitt from "mitt";
 import fs from "fs";
 
 export default class NodeHelper {
@@ -93,8 +93,7 @@ export default class NodeHelper {
    * argument payload mixed - The payload of the notification.
    * @deprecated
    */
-  socketNotificationReceived(notification?: string, payload?: any) {
-  }
+  socketNotificationReceived(notification?: string, payload?: any) {}
 
   on: mitt.Emitter["on"];
   off: mitt.Emitter["off"];

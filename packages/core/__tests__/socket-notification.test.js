@@ -15,7 +15,7 @@ function mockWindowLocation(port) {
 // Require a different instance of the source, so tests don't share the same state
 function requireCore() {
   let core;
-  jest.isolateModules(() => core = require("../src"));
+  jest.isolateModules(() => (core = require("../src")));
   return core;
 }
 
@@ -25,10 +25,7 @@ test("client to server", async () => {
   mockWindowLocation(port);
 
   //
-  const {
-    sendSocketNotification,
-    serverSocketEmitter,
-  } = requireCore();
+  const { sendSocketNotification, serverSocketEmitter } = requireCore();
 
   let io;
   try {
@@ -71,10 +68,7 @@ test("server to client", async () => {
   const port = 8082;
   mockWindowLocation(port);
 
-  const {
-    useSocketNotification,
-    serverSocketEmitter,
-  } = requireCore();
+  const { useSocketNotification, serverSocketEmitter } = requireCore();
 
   let io;
   try {

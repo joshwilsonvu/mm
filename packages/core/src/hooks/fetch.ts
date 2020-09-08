@@ -1,12 +1,12 @@
 import { useQuery } from "react-query";
 
 type UrlWithOptions = {
-  url: string,
+  url: string;
 } & Parameters<typeof fetch>[1];
 
 /**
- * Fetches JSON from a url. The result is available immediately in your component, thanks
- * to React Suspense. Passing a new url fetches new content.
+ * Fetches JSON from a url. The result is available immediately in your component; no
+ * need to `await`. Passing a new url fetches new content.
  * @param url the array of { url: string, ...fetchOptions } to fetch JSON from.
  *            A single string is equivalent to [{ url: url }]. See fetch options here:
  *            https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch
@@ -17,19 +17,15 @@ export function useFetchJson(
   refetchIntervalMs?: number
 ): AnyJson {
   const urls = typeof url === "string" ? [{ url }] : url;
-  return useQuery(
-    JSON.stringify(urls),
-    () => fetchMany(urls, "json"),
-    {
-      suspense: true,
-      refetchInterval: refetchIntervalMs || false,
-    }
-  ).data!;
+  return useQuery(JSON.stringify(urls), () => fetchMany(urls, "json"), {
+    suspense: true,
+    refetchInterval: refetchIntervalMs || false,
+  }).data!;
 }
 
 /**
- * Fetches plain text from a url. The result is available immediately in your component, thanks
- * to React Suspense. Passing a new url fetches new content.
+ * Fetches plain text from a url. The result is available immediately in your component; no
+ * need to `await`. Passing a new url fetches new content.
  * @param url the array of { url: string, ...fetchOptions } to fetch text from.
  *            A single string is equivalent to [{ url: url }]. See fetch options here:
  *            https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch
@@ -37,21 +33,16 @@ export function useFetchJson(
  */
 export function useFetchText(
   url: string | UrlWithOptions[],
-  refetchIntervalMs?: number,
+  refetchIntervalMs?: number
 ) {
   const urls = typeof url === "string" ? [{ url }] : url;
-  return useQuery(
-    JSON.stringify(urls),
-    () => fetchMany(urls, "text"),
-    {
-      suspense: true,
-      refetchInterval: refetchIntervalMs || false,
-    }
-  ).data as string[];
+  return useQuery(JSON.stringify(urls), () => fetchMany(urls, "text"), {
+    suspense: true,
+    refetchInterval: refetchIntervalMs || false,
+  }).data as string[];
 }
 
 export { useQuery }; // might as well make it available
-
 
 function fetchMany(
   urls: UrlWithOptions[],
@@ -63,10 +54,7 @@ function fetchMany(
   return all;
 }
 
-function fetchOne(
-  url: UrlWithOptions,
-  method: "json" | "text"
-) {
+function fetchOne(url: UrlWithOptions, method: "json" | "text") {
   // Create a new AbortController signal and abort() for this request
   const { signal, abort } = new AbortController();
   const { url: u, ...options } = url;

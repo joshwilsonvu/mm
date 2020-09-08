@@ -1,31 +1,40 @@
 const execa = require("execa");
 const path = require("path");
 const fs = require("fs-extra");
+const tmp = require("tmp");
 
 const MAGICMIRROR_URL = "https://github.com/joshwilsonvu/MagicMirror.git";
-const cwd = path.resolve(__dirname, "MagicMirror");
+
+const cwd = tmp.dirSync().name;
 const paths = {
   cwd: cwd,
   entry: path.join(cwd, "src", "index.js"),
   buildHtml: path.join(cwd, "build", "index.html"),
   git: path.join(cwd, ".git"),
   packageJson: path.join(cwd, "package.json"),
+  local: path.join(__dirname, "..", "..", "MagicMirror"),
 };
 
 // Run the following once if this module is required by any tests
 beforeAll(async () => {
-  if (
-    !(await fs.pathExists(paths.git)) ||
-    (process.env.CI && process.env.CI !== "false")
-  ) {
-    // if there isn't a copy of MagicMirror, clone the latest commit
-    await fs.emptyDir(paths.cwd);
+  if (await fs.pathExists(paths.local)) {
+    // if a copy of MagicMirror is checked out locally alongside mm,
+    // copy it to paths.cwd.
+    await fs.copy(paths.local, paths.cwd);
+    // let { stdout: files } = await execa("git", ["ls-files"], {
+    //   cwd: paths.local,
+    // });
+    // files = files.split("\n").filter((f) => f.length && f !== "yarn.lock");
+    // await Promise.all(
+    //   files.map((f) =>
+    //     fs.copy(path.resolve(paths.local, f), path.resolve(paths.cwd, f))
+    //   )
+    // );
+  } else {
+    // clone the latest commit
     await execa("git", ["clone", MAGICMIRROR_URL, paths.cwd, "--depth=1"], {
       cwd: __dirname,
     });
-  } else {
-    // if there is a copy of MagicMirror, update to the latest commit
-    await execa("git", ["pull"], { cwd: paths.cwd });
   }
 
   // ensure yarn 2 is installed in the MagicMirror repo so that we can use $ yarn link --all
@@ -46,9 +55,12 @@ beforeAll(async () => {
   await fs.writeJson(paths.packageJson, packageJson);
   await execa(
     "yarn",
-    ["link", process.cwd() /* mm, not MagicMirror */, "--all", "--relative"],
+    ["link", path.resolve(__dirname, ".."), "--all", "--relative"],
     { cwd: paths.cwd }
   );
+  console.log(await fs.readJson(paths.packageJson));
 });
+
+afterAll(() => fs.remove(paths.cwd));
 
 module.exports = paths;

@@ -1,4 +1,4 @@
-import type React from "react";
+import React from "react";
 import { nanoid } from "nanoid";
 
 /**
@@ -98,7 +98,9 @@ export function initializeConfigClient(c: Config): InternalConfig {
     language,
     timeFormat,
     units,
-    modules: modules.map(initializeModule).filter(Boolean) as InternalModuleConfig[],
+    modules: modules
+      .map(initializeModule)
+      .filter(Boolean) as InternalModuleConfig[],
   };
 }
 

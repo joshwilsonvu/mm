@@ -46,11 +46,11 @@
     "@fortawesome/fontawesome-free": "^5.13.1",
     "@mm/core": "workspace:*",
     "moment-timezone": "^0.5.31",
-    "nunjucks": "^3.2.1",
+    "nunjucks": "^3.2.2",
     "path": "^0.12.7",
     "socket.io-client": "^2.3.0",
     "suncalc": "^1.8.0",
-    "tslib": "^2.0.0",
+    "tslib": "^2.0.1",
     "use-constant": "^1.0.0",
     "weathericons": "^2.1.0"
   },

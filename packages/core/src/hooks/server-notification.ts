@@ -1,4 +1,4 @@
-import type SocketIO from "socket.io";
+import SocketIO from "socket.io";
 
 interface Options {
   onConnect?: (socket: SocketIO.Socket) => void;

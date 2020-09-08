@@ -124,7 +124,7 @@ function createCache<K, V>(create: (k: K) => V): Cache<K, V> {
         map.set(k, val);
       }
       return val;
-    }
+    },
   };
 }
 
@@ -142,7 +142,7 @@ const socketCache = createCache((namespace: string) => {
       socket.emit("notification", event, payload);
     },
     on: socketEmitter.on,
-    off: socketEmitter.off
+    off: socketEmitter.off,
   };
   return emitter;
 });

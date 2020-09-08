@@ -2585,12 +2585,6 @@ Entertainment and Miscellaneous:
     author: ngnijland
     description: A clock which shows the time as text.
     repository: https://github.com/ngnijland/MMM-text-clock
-  - name: Hello-Lucy
-    author: Mykle1
-    description:
-      Using voice commands, hide or show individual modules, all modules,
-      or pages of modules with custom sound support
-    repository: https://github.com/mykle1/Hello-Lucy
   - name: MMM-ATM
     author: Mykle1
     description: Another Trivia Module? Really?.

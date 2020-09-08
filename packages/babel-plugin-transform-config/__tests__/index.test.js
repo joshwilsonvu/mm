@@ -74,7 +74,7 @@ pluginTester({
         };
       `,
       snapshot: true,
-    }
+    },
   },
   babelOptions: {
     filename: require.resolve("./config/dummy"),
