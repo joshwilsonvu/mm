@@ -1,11 +1,12 @@
 const execa = require("execa");
 const path = require("path");
 const fs = require("fs-extra");
+const copy = require("recursive-copy");
 const tmp = require("tmp");
 
 const MAGICMIRROR_URL = "https://github.com/joshwilsonvu/MagicMirror.git";
 
-const cwd = tmp.dirSync().name;
+let cwd = path.join(tmp.dirSync().name, "MagicMirror");
 const paths = {
   cwd: cwd,
   entry: path.join(cwd, "src", "index.js"),
@@ -17,19 +18,15 @@ const paths = {
 
 // Run the following once if this module is required by any tests
 beforeAll(async () => {
+  jest.setTimeout(5 * 60 * 1000);
+  await fs.ensureDir(paths.cwd);
   if (await fs.pathExists(paths.local)) {
     // if a copy of MagicMirror is checked out locally alongside mm,
     // copy it to paths.cwd.
-    await fs.copy(paths.local, paths.cwd);
-    // let { stdout: files } = await execa("git", ["ls-files"], {
-    //   cwd: paths.local,
-    // });
-    // files = files.split("\n").filter((f) => f.length && f !== "yarn.lock");
-    // await Promise.all(
-    //   files.map((f) =>
-    //     fs.copy(path.resolve(paths.local, f), path.resolve(paths.cwd, f))
-    //   )
-    // );
+    await copy(paths.local, paths.cwd, {
+      expand: true,
+      dot: true,
+    });
   } else {
     // clone the latest commit
     await execa("git", ["clone", MAGICMIRROR_URL, paths.cwd, "--depth=1"], {
@@ -58,7 +55,6 @@ beforeAll(async () => {
     ["link", path.resolve(__dirname, ".."), "--all", "--relative"],
     { cwd: paths.cwd }
   );
-  console.log(await fs.readJson(paths.packageJson));
 });
 
 afterAll(() => fs.remove(paths.cwd));

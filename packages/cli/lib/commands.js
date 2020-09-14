@@ -45,13 +45,13 @@ exports.Start = StartCommand;
 /***************************/
 
 const buildDetails = `\`mm build\` will compile all of your code, stylesheets, etc. into static \
-  files that browsers can understand. The files will be placed into the ./build folder.
+files that browsers can understand. The files will be placed into the ./build folder.
 
-  Running \`mm serve\` will serve these static files and run Node helpers as needed based \
-  on the config.
+Running \`mm serve\` will serve these static files and run Node helpers as needed based \
+on the config.
 
-  \`mm build\` can take a long time, but it performs optimizations that make the application \
-  load and run faster.`;
+\`mm build\` can take a long time, but it performs optimizations that make the application \
+load and run faster.`;
 
 class BuildCommand extends Command {
   static usage = Command.Usage({
@@ -85,7 +85,7 @@ exports.Build = BuildCommand;
 
 const serveDetails = `
 \`mm serve\` will serve files previously built with \`mm build\` \
-and run Node helpers as needed based on the config. If necessary, \`mm build\`
+and run Node helpers as needed based on the config. If necessary, \`mm build\` \
 will be run automatically.
 
 Unlike \`mm start\`, \`mm serve\` doesn't automatically update on file changes.
@@ -229,7 +229,7 @@ const addDetails = `\`mm add <module>\` will add a third-party MagicMirror modul
 \`mm add\` will download and set up a module from GitHub. In most cases it can find the right module \
 from the name alone.
 
-In some cases you will need to specify the GitHub username of the module's author. Use
+In some cases you will need to specify the GitHub username of the module's author. Use \
 the format \`mm add <github-username>/<module>\`.
 `;
 

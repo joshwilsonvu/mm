@@ -1,11 +1,37 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`shows help message on '$ mm add -h' 1`] = `
+"Adds a MagicMirror module to your project.
+
+Usage:
+
+$ mm add <moduleName>
+
+Details:
+
+\`mm add <module>\` will add a third-party MagicMirror module to your project.
+
+\`mm add\` will download and set up a module from GitHub. In most cases it can 
+find the right module from the name alone.
+
+In some cases you will need to specify the GitHub username of the module's 
+author. Use the format \`mm add <github-username>/<module>\`.
+
+Examples:
+
+Add by module name
+  $ yarn mm add MMM-WeatherDependentClothes
+
+Add by GitHub username and module name
+  $ yarn mm add fruestueck/MMM-WeatherDependentClothes"
+`;
+
 exports[`shows help message on '$ mm build -h' 1`] = `
 "Prepare all source files, stylesheets, and asset files to be served with \`mm serve\`.
 
 Usage:
 
-$ mm build [--analyze] [-c,--check]
+$ mm build [--analyze] [--fast]
 
 Details:
 
@@ -47,26 +73,19 @@ Watch files and update results
   $ yarn mm check --watch"
 `;
 
-exports[`shows help message on '$ mm init -h' 1`] = `
+exports[`shows help message on '$ mm new -h' 1`] = `
 "Set up files for a new module.
 
 Usage:
 
-$ mm init [--typescript] <name>
+$ mm new
 
 Details:
 
-\`mm init <new-module>\` will set up a folder and starter files for a new module.
+\`mm new\` will set up a folder and starter files for a new module.
 
-Open up MagicMirror/modules/new-module/index.js to get started.
-
-Examples:
-
-create a module called \`my-module\`
-  $ yarn mm init my-module
-
-use TypeScript instead of JavaScript
-  $ yarn mm init --typescript my-module"
+It will ask you a few questions, like the name of the module you want to make. 
+You will be shown which files are created and how to get started."
 `;
 
 exports[`shows help message on '$ mm serve -h' 1`] = `
@@ -79,7 +98,7 @@ $ mm serve [--rebuild] [--view] [-b,--browser]
 Details:
 
 \`mm serve\` will serve files previously built with \`mm build\` and run Node 
-helpers as needed based on the config. If necessary, \`mm build\`will be run 
+helpers as needed based on the config. If necessary, \`mm build\` will be run 
 automatically.
 
 Unlike \`mm start\`, \`mm serve\` doesn't automatically update on file changes.
@@ -108,7 +127,7 @@ exports[`shows help message on '$ mm start -h' 1`] = `
 
 Usage:
 
-$ mm start [--no-view] [-b,--browser] [-c,--check]
+$ mm start [--no-view] [-b,--browser] [--fast]
 
 Details:
 
@@ -127,7 +146,10 @@ Start in a browser instead of Electron
   $ yarn mm start --browser
 
 Start to be viewed on another device with \`mm view\`
-  $ yarn mm start --no-view"
+  $ yarn mm start --no-view
+
+Start without linting or type checking (faster, but can miss bugs)
+  $ yarn mm start --fast"
 `;
 
 exports[`shows help message on '$ mm' 1`] = `
@@ -137,19 +159,22 @@ exports[`shows help message on '$ mm' 1`] = `
 
 Where <command> is one of:
 
-  mm build [--analyze] [-c,--check]
+  mm add <moduleName>
+    Adds a MagicMirror module to your project.
+
+  mm build [--analyze] [--fast]
     Prepare all source files, stylesheets, and asset files to be served with \`mm serve\`.
 
   mm check [-w,--watch]
     Check your files for problems.
 
-  mm init [--typescript] <name>
+  mm new
     Set up files for a new module.
 
   mm serve [--rebuild] [--view] [-b,--browser]
     Serve prebuilt files and run Node helpers.
 
-  mm start [--no-view] [-b,--browser] [-c,--check]
+  mm start [--no-view] [-b,--browser] [--fast]
     Start the app and instantly see changes to your source files.
 
   mm view [--address,-a #0] [--port,-p #0] [--url,-u #0]
