@@ -2,5 +2,5 @@
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "eslint.nodePath": ".yarn/sdks",
   "prettier.prettierPath": ".yarn/sdks/prettier/index.js",
-  "typescript.tsdk": ".yarn/sdks/typescript/lib"
+  "typescript.tsdk": "/Users/Josh/web/mm/.yarn/sdks/typescript/lib"
 }

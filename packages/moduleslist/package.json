@@ -22,6 +22,7 @@
   },
   "scripts": {
     "build": "node src/build.js",
+    "prepack": "run build",
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "bugs": {

@@ -2,8 +2,8 @@ module.exports = {
   testEnvironment: "node",
   verbose: true,
   bail: false,
-  testMatch: ["<rootDir>/**/__tests__/**/*.test.[jt]s?(x)"],
-  watchPathIgnorePatterns: ["__fixtures__", "MagicMirror"],
+  testMatch: ["<rootDir>/**/*.test.[jt]s?(x)", "!**/dist/**"],
+  watchPathIgnorePatterns: ["__fixtures__"],
   watchPlugins: ["jest-watch-suspend"],
   moduleNameMapper: {
     "\\.css$": "<rootDir>/__tests__/css-stub.js",

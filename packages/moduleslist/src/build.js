@@ -2,6 +2,18 @@ const yaml = require("yaml");
 const fs = require("fs-extra");
 const path = require("path");
 
+const indexDTs = `
+type ModuleEntry = {
+  name: string,
+  author: string,
+  description: string,
+  repository: string,
+  category: string,
+}
+declare var modulesList: Array<ModuleEntry>;
+export default modulesList;
+`;
+
 (async function build() {
   // Parse the YAML file
   const data = yaml.parse(
@@ -23,9 +35,8 @@ const path = require("path");
     });
 
   // Write the list to dist/index.json
-  await fs.writeJson(
-    path.resolve(__dirname, "..", "dist", "index.json"),
-    list,
-    { spaces: 1 }
-  );
+  const dist = path.resolve(__dirname, "..", "dist");
+  await fs.ensureDir(dist);
+  await fs.writeJson(path.join(dist, "index.json"), list, { spaces: 1 });
+  await fs.writeFile(path.join(dist, "index.d.ts"), indexDTs);
 })();

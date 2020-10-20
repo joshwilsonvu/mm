@@ -30,7 +30,7 @@ beforeAll(async () => {
   } else {
     // clone the latest commit
     await execa("git", ["clone", MAGICMIRROR_URL, paths.cwd, "--depth=1"], {
-      cwd: __dirname,
+      cwd: path.dirname(paths.cwd),
     });
   }
 
