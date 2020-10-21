@@ -1,8 +1,7 @@
 "use strict";
 
+const path = require("path");
 const { cli } = require("snowpack");
+const { port } = require("../shared/config");
 
-module.exports = async () => {
-  // Run the Snowpack dev server
-  return cli(["dev"]);
-};
+module.exports = () => cli(["node", "mm", "dev"]);

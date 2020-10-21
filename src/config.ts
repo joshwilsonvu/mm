@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
-import produce from "immer";
+import produce, { setAutoFreeze } from "immer";
 import { InternalConfig as Config } from "./types";
+
+setAutoFreeze(false);
 
 /*
  * Modules will control other modules by directly mutating the config object. We

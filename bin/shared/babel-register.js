@@ -23,10 +23,11 @@ const config = {
         ],
       ],
     },
+    // babel-plugin-transform-mm2 is frontend only
   ],
   comments: true,
   extensions: paths.extensions,
-  cache: false,
+  cache: true,
 };
 
 // Modifies `require` so that paths.modules and paths.config are transpiled with the

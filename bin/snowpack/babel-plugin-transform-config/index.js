@@ -46,6 +46,11 @@ module.exports = function babelPluginTransformConfig(babel) {
 };
 
 function transformConfig(t, path /* ObjectExpression */, state, options) {
+  if (!nodepath.isAbsolute(options.modulesPath)) {
+    throw path.buildCodeFrameError(
+      `options.modulesPath must be an absolute path, got ${options.modulesPath}`
+    );
+  }
   // find the { modules: any[] } property
   const modulesProperty = path.get("properties").find((property) => {
     return (
@@ -60,6 +65,8 @@ function transformConfig(t, path /* ObjectExpression */, state, options) {
 }
 
 function transformModulesProperty(t, path, state, options) {
+  const defaultModules = findDefaultModules(options.modulesPath);
+
   // get the array elements
   const elements = path.get("value.elements");
   for (const element of elements) {
@@ -98,33 +105,27 @@ function transformModulesProperty(t, path, state, options) {
         `'${moduleName}' is not safe for URIs. Please use only the following characters: A-Z a-z 0-9 - _`
       );
     }
-    // find the relative path to the nearest modules/ folder within the project
-    let modulesPath;
-    modulesPath = nodepath.resolve(
-      state.file.opts.filename,
-      options.modulesPath.replace("/", nodepath.sep)
-    );
-    const defaultModules = findDefaultModules(modulesPath);
-    if (defaultModules.indexOf(moduleName) !== -1) {
-      modulesPath = nodepath.join(modulesPath, "default");
-    }
 
+    let modulesPath = options.modulesPath;
+    const isDefault = defaultModules.indexOf(moduleName) !== -1;
     // resolve the path of the module being requested
     const tryResolvePaths = [
-      nodepath.join(modulesPath, moduleName), // index.jsx?, index.tsx?, or package.json#main field
-      nodepath.join(modulesPath, moduleName, moduleName), // {moduleName}.jsx?, {moduleName}.tsx?
+      nodepath.join(isDefault ? "default" : ".", moduleName), // index.jsx?, index.tsx?, or package.json#main field
+      nodepath.join(isDefault ? "default" : ".", moduleName, moduleName), // {moduleName}.jsx?, {moduleName}.tsx?
     ];
+    const cfgRequire = createRequire(state.file.opts.filename);
     const resolvedModulePath = resolveModulePath(
-      state.file.opts.filename,
+      cfgRequire,
+      modulesPath,
       tryResolvePaths
     );
     if (!resolvedModulePath) {
       throw moduleProperty.buildCodeFrameError(
         `Can't resolve module file at any of ${tryResolvePaths.join(
           ", "
-        )}. Make sure a ${Object.keys(require.extensions).join(
-          "|"
-        )} file exists at this path.`
+        )} in ${modulesPath}. Make sure a ${Object.keys(
+          require.extensions
+        ).join("|")} file exists at this path.`
       );
     }
     // insert a _path property with the absolute path to the module file
@@ -136,9 +137,9 @@ function transformModulesProperty(t, path, state, options) {
     );
 
     // resolve the path to the node helper file of the module, if any
-    const resolvedHelperPath = resolveModulePath(state.file.opts.filename, [
-      nodepath.join(modulesPath, "node_helper"),
-      nodepath.join(modulesPath, "node-helper"),
+    const resolvedHelperPath = resolveModulePath(cfgRequire, modulesPath, [
+      nodepath.join(isDefault ? "default" : ".", moduleName, "node_helper"),
+      nodepath.join(isDefault ? "default" : ".", moduleName, "node-helper"),
     ]);
     // insert a _helperPath property with the absolute path to the helper file
     if (resolvedHelperPath) {
@@ -164,14 +165,38 @@ const findDefaultModules = memoize(function (modulesPath) {
   return defaultModules;
 });
 
-function resolveModulePath(base, paths) {
+function resolveModulePath(req, base, paths) {
   for (const tryResolve of paths) {
     try {
-      return createRequire(base).resolve(tryResolve.replace("\\", "/"));
+      const joined = nodepath.join(base, tryResolve);
+      const resolved = req.resolve(joined);
+      const normalized = normalizedRelative(base, resolved);
+      return normalized;
     } catch (err) {}
   }
 }
 
 function isIdentifierOrLiteral(path, name) {
   return path.isIdentifier({ name }) || path.isStringLiteral({ value: name });
+}
+
+/**
+ * Normalizes a path relative to a base suitable for use as a URL path segment.
+ * Does NOT start with "/".
+ */
+function normalizedRelative(base, filePath) {
+  let relative = nodepath.relative(base, filePath);
+  if (
+    relative &&
+    !relative.startsWith("..") &&
+    !nodepath.isAbsolute(relative)
+  ) {
+    relative = relative.replace(nodepath.sep, "/");
+    if (relative.startsWith("./")) {
+      relative = relative.substr(2);
+    }
+    return relative;
+  } else {
+    throw new Error(`${relative} is not a relative path without ".."`);
+  }
 }

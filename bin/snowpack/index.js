@@ -23,7 +23,6 @@ const exclude = [
   "__tests__/**/*",
   "magicmirror",
 ];
-console.log(exclude);
 
 const snowpackConfig = {
   exclude,
@@ -46,9 +45,12 @@ const snowpackConfig = {
     require.resolve("./transform-plugin"),
     require.resolve("./lint-plugin"),
   ],
-  experiments: {
-    app: middleware,
+  mount: {
+    modules: "/modules",
   },
+  // experiments: {
+  //   app: middleware,
+  // },
 };
 
 module.exports = snowpackConfig;

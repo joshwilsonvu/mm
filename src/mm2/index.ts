@@ -1,4 +1,3 @@
-import path from "path";
 import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
 import useConstant from "use-constant";
 import {
@@ -253,7 +252,7 @@ export class Module implements ModuleInjectedProperties, ModuleOverrides {
    * Retrieve the path to a module file.
    */
   file(file: string) {
-    return path.resolve(this.data.path, file);
+    return `${this.data.path}/${file}`;
   }
 
   sendSocketNotification(notification: string, payload: any) {
@@ -265,19 +264,17 @@ export class Module implements ModuleInjectedProperties, ModuleOverrides {
    */
   loadStyles(cb: () => void) {
     Promise.all(
-      this.getStyles()
-        .map(pathToUrlPath)
-        .map((dep) => {
-          return new Promise((resolve, reject) => {
-            const link = document.createElement("link");
-            link.addEventListener("load", resolve);
-            link.addEventListener("error", reject);
-            link.rel = "stylesheet";
-            link.type = "text/css";
-            link.href = path.resolve(dep);
-            document.head.appendChild(link);
-          });
-        })
+      this.getStyles().map((dep) => {
+        return new Promise((resolve, reject) => {
+          const link = document.createElement("link");
+          link.addEventListener("load", resolve, { once: true });
+          link.addEventListener("error", reject, { once: true });
+          link.rel = "stylesheet";
+          link.type = "text/css";
+          link.href = `/modules/${dep}`;
+          document.head.appendChild(link);
+        });
+      })
     ).then(cb);
   }
 
@@ -292,7 +289,7 @@ export class Module implements ModuleInjectedProperties, ModuleOverrides {
           script.addEventListener("load", resolve);
           script.addEventListener("error", reject);
           script.async = true;
-          script.src = dep;
+          script.src = `/modules/${dep}`;
           document.head.appendChild(script);
         });
       })
@@ -336,10 +333,6 @@ function getNunjucksEnvironment(module: Module) {
     nunjucksMap.set(module, env);
   }
   return env;
-}
-
-function pathToUrlPath(p: string) {
-  return path.relative(process.cwd(), p).replace("\\", "/");
 }
 
 // The type of the MM2 data property
@@ -538,10 +531,13 @@ function filterDataFromProps({
   identifier,
   config,
 }: Props): Data {
+  const segments = p.split("/");
+  const file = segments.pop()!;
+  const path = segments.join("/");
   return {
     classes,
-    file: path.basename(p),
-    path: path.dirname(p),
+    file,
+    path,
     header,
     position,
     name,

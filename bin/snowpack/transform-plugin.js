@@ -4,17 +4,20 @@ const paths = require("../shared/paths");
 
 const babelOpts = {
   caller: {
+    name: "snowpack-plugin-transform",
     supportsStaticESM: true,
   },
   cloneInputAst: false,
   configFile: false,
   babelrc: false,
-  presets: [require.resolve("@babel/preset-typescript")],
 };
-const babelOptsMM2 = {
-  ...babelOpts,
-  plugins: [require.resolve("./babel-plugin-transform-mm2")],
-};
+
+// Allow parsing of TypeScript files but don't transform
+const syntaxTypescript = [
+  require.resolve("@babel/plugin-syntax-typescript"),
+  { isTSX: true },
+];
+
 const babelOptsCfg = {
   ...babelOpts,
   plugins: [
@@ -36,28 +39,45 @@ module.exports = function snowpackPluginTransform(
     name: "snowpack-plugin-transform",
     resolve: {
       input: paths.extensions,
-      output: [".js"],
+      output: paths.extensions,
     },
     // Transform specific user files with Babel
-    async load({ filePath }) {
+    async load({ filePath, fileExt }) {
+      filePath = path.resolve(filePath);
       if (isMM2Module(filePath)) {
-        const { code, map } = await transformFileAsync(filePath, babelOptsMM2);
+        const { code, map } = await transformFileAsync(filePath, {
+          ...babelOpts,
+          plugins: [
+            fileExt.includes(".ts") && syntaxTypescript,
+            require.resolve("./babel-plugin-transform-mm2"),
+          ].filter(Boolean),
+        });
         return {
-          ".js": {
+          [fileExt]: {
             code,
             map,
           },
         };
       } else if (isConfig(filePath)) {
-        const { code, map } = await transformFileAsync(filePath, babelOptsCfg);
+        const { code, map } = await transformFileAsync(filePath, {
+          ...babelOpts,
+          plugins: [
+            fileExt.includes(".ts") && syntaxTypescript,
+            [
+              require.resolve("./babel-plugin-transform-config"),
+              { modulesPath: paths.modules },
+            ],
+          ].filter(Boolean),
+        });
         return {
-          ".js": {
+          [fileExt]: {
             code,
             map,
           },
         };
       }
       // defer other files to esbuild
+      console.log("Deferring file", filePath);
     },
   };
 };
@@ -77,6 +97,7 @@ function isConfig(filePath) {
 }
 
 function contains(parent, child) {
+  if (parent === child) return true;
   const relative = path.relative(parent, child);
   return relative && !relative.startsWith("..") && !path.isAbsolute(relative);
 }

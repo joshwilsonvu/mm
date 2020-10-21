@@ -15,7 +15,7 @@ const restrictedGlobals = require("confusing-browser-globals");
 module.exports = {
   root: true,
 
-  parser: "babel-eslint",
+  parser: require.resolve("babel-eslint"),
 
   plugins: [
     "eslint-plugin-import",
