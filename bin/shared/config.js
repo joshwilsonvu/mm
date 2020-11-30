@@ -1,6 +1,6 @@
-require("./babel-register");
+require("./babel").register();
 const paths = require("./paths");
-const { initializeConfig } = require("../../dist/cjs/types");
+const { initializeConfig } = require("../../dist/types.js");
 
 // allow ESM and typescript for MagicMirror config
 const rawConfig = require(paths.config);

@@ -24,43 +24,33 @@ export type ModulePosition = typeof modulePositions[number];
  * Config file options for each module. While only `module` is strictly required,
  * some modules may also require `position` and/or `config`.
  */
-export type ModuleConfig = {
+export interface ModuleConfig {
   module: string;
   position?: ModulePosition;
   classes?: string[];
   header?: string;
   config?: Record<string, any>;
   disabled?: boolean;
-  // added by Babel plugin
-  _path?: string;
-  _nodePath?: string;
-};
+}
 
 /**
  * The config hooks and other parts of MagicMirror expect these extra properties
  * to be added to the properties that come from the config file.
  */
-export type InternalModuleConfig = Required<
-  Omit<ModuleConfig, "module" | "_path" | "_nodePath">
-> & {
+export interface Props
+  extends Required<Omit<ModuleConfig, "module" | "_path" | "_nodePath">> {
   readonly name: string;
   hidden: boolean;
   readonly identifier: string;
-  readonly path: string; // the full path to the module file
-  readonly nodePath?: string; // the full path to the node helper, if any
-};
-
-/**
- * MagicMirror components won't receive the following properties because they are
- * applied elsewhere.
- * @deprecated
- */
-export type Props = InternalModuleConfig;
+  readonly path: string; // the path to the module file relative to /modules
+  readonly nodePath?: string; // the full path to the node helper relative to /modules, if any
+}
+export type MagicMirrorModule = React.FunctionComponent<Props>;
 
 /**
  * Options for MagicMirror.
  */
-export type Config = {
+export interface Config {
   port?: number;
   address?: string;
   ipAllowlist?: string[];
@@ -79,39 +69,41 @@ export type Config = {
    */
   modules?: ModuleConfig[];
   electronOptions?: BrowserWindowConstructorOptions;
-};
+}
 
 /**
  * The client only uses a few properties from Config, the rest are server options
  */
-export type InternalConfig = Required<
-  Pick<Config, "language" | "timeFormat" | "units">
-> & {
-  modules: InternalModuleConfig[];
-};
+export interface ClientConfig
+  extends Required<Pick<Config, "language" | "timeFormat" | "units">> {
+  modules: Props[];
+}
 
-export function initializeConfigClient(c: Config): InternalConfig {
+export function initializeConfigClient(c: Config): ClientConfig {
   const { language, timeFormat, units, modules } = initializeConfig(c);
   return {
     language,
     timeFormat,
     units,
-    modules: modules
-      .map(initializeModule)
-      .filter(Boolean) as InternalModuleConfig[],
+    modules: modules.map(initializeModule).filter(Boolean) as Props[],
   };
 }
 
-export function initializeConfig(c: Config) {
-  const config: Required<Config> = {
+export function initializeConfig(c: Config): Required<Config> {
+  const config = {
     ...defaults,
     ...c,
   };
+  if (c.zoom) {
+    config.electronOptions &&
+      config.electronOptions.webPreferences &&
+      (config.electronOptions.webPreferences.zoomFactor = c.zoom);
+  }
   return config;
 }
 
 let id = 0;
-function initializeModule(mod: ModuleConfig): InternalModuleConfig | null {
+function initializeModule(mod: ModuleConfig): Props | null {
   if (mod.disabled) {
     return null;
   }
@@ -125,8 +117,8 @@ function initializeModule(mod: ModuleConfig): InternalModuleConfig | null {
     disabled: false,
     hidden: false,
     identifier: `m${id++}`,
-    path: mod._path || "",
-    nodePath: mod._nodePath || "",
+    path: (mod as any)._path || "",
+    nodePath: (mod as any)._helperPath || "",
   };
 }
 

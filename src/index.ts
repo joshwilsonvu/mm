@@ -2,10 +2,16 @@
 export * from "./fetch";
 export * from "./interval";
 export * from "./notification";
-export * from "./config";
+export {
+  useInitializeConfig,
+  useCurrentConfig,
+  setCurrentConfig,
+  modifyCurrentConfig,
+  getCurrentConfig,
+} from "./config";
 
 export * from "./module-guard";
 export * from "./module-layout";
 
 // Export shared types used across packages
-export * from "./types";
+export type { Config, ClientConfig, MagicMirrorModule } from "./types";

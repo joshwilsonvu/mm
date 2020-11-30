@@ -1,15 +1,25 @@
 {
-  "exclude": ["**/__test__/**", "**/*.test.*"],
+  "exclude": ["**/__test__", "**/*.test.*"],
   "include": ["src"],
   "compilerOptions": {
     /* Basic Options */
-    "target": "ES5" /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019', 'ES2020', or 'ESNEXT'. */,
+    "target": "ES2019" /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019', 'ES2020', or 'ESNEXT'. */,
     "module": "commonjs" /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', 'es2020', or 'ESNext'. */,
     "jsx": "react" /* Specify JSX code generation: 'preserve', 'react-native', or 'react'. */,
     "declaration": true /* Generates corresponding '.d.ts' file. */,
     "declarationMap": true /* Generates a sourcemap for each corresponding '.d.ts' file. */,
     "sourceMap": true /* Generates corresponding '.map' file. */,
-    "lib": ["DOM", "ES6", "DOM.Iterable", "ScriptHost"],
+    "lib": [
+      "DOM",
+      "ES6",
+      "ES2016",
+      "ES2017",
+      "ES2018",
+      "ES2019",
+      "ES2020",
+      "DOM.Iterable",
+      "ScriptHost"
+    ],
 
     /* Strict Type-Checking Options */
     "strict": true /* Enable all strict type-checking options. */,
@@ -21,13 +31,12 @@
 
     /* Advanced Options */
     "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */,
-    "skipLibCheck": true /* Skip type checking of all declaration files (*.d.ts). */,
+    "skipLibCheck": false /* Skip type checking of all declaration files (*.d.ts). */,
     "importHelpers": false /* import shared helper functions from tslib */,
     "isolatedModules": true /* Make seperate compilation safe */,
     "keyofStringsOnly": true /* Keyof should only give string valued keys */,
     "incremental": true /* Enable incremental compilations for performance */,
 
-    "outDir": "./dist/cjs",
-    "declarationDir": "./dist/types"
+    "outDir": "./dist"
   }
 }

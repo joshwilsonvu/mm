@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import { Module } from ".";
+import { Module } from "./mm2";
 import React from "react";
 
 const mm2Definition = () => ({
@@ -21,5 +21,16 @@ const mm2Definition = () => ({
 
 test("Module basically works", () => {
   const Component = Module.register("helloworld", mm2Definition());
-  expect(React.isValidElement(<Component />)).toBe(true);
+  const props: React.ComponentPropsWithoutRef<typeof Component> = {
+    name: "helloworld",
+    hidden: false,
+    identifier: "asdfghjkl",
+    path: "helloworld/helloworld.js",
+    classes: [],
+    config: {},
+    disabled: false,
+    header: null,
+    position: "top_left",
+  };
+  expect(React.isValidElement(<Component {...props} />)).toBe(true);
 });

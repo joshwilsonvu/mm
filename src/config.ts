@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import produce, { setAutoFreeze } from "immer";
-import { InternalConfig as Config } from "./types";
+import { ClientConfig as Config } from "./types";
 
 setAutoFreeze(false);
 

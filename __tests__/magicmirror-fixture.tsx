@@ -4,7 +4,7 @@
 
 import React from "react";
 import {
-  InternalModuleConfig,
+  ClientModuleConfig,
   ModuleGuard,
   Config,
   useInitializeConfig,
@@ -13,7 +13,7 @@ import {
   ModuleLayout,
 } from "..";
 
-function MagicMirrorModule({ _component, ...props }: InternalModuleConfig) {
+function MagicMirrorModule({ _component, ...props }: ClientModuleConfig) {
   const Component = _component;
   return props.disabled ? null : (
     <ModuleGuard name={Component.name}>

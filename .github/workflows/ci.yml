@@ -8,16 +8,10 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
-        with:
-          # This makes Actions fetch all Git history for Changesets
-          fetch-depth: 0
       - name: Use Node.js 12.x
         uses: actions/setup-node@v1
         with:
           node-version: 12.x
-      - name: Check if commit includes version information
-        # Run `yarn version check --interactive` before committing
-        run: yarn version check
       - name: Install Dependencies
         run: yarn install --immutable
       - name: Lint

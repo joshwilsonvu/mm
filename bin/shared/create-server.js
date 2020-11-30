@@ -6,9 +6,6 @@ const express = require("express");
 const SocketIO = require("socket.io");
 const { IpFilter, IpDeniedError } = require("express-ipfilter");
 const morgan = require("morgan");
-morgan.token("status-text", function (req, res) {
-  return res.statusMessage;
-});
 const helmet = require("helmet");
 const chalk = require("chalk");
 const paths = require("./paths");
@@ -101,6 +98,9 @@ function addHelperRouters(app, nodeHelpers) {
 }
 
 function addLogger(app) {
+  morgan.token("status-text", function (req, res) {
+    return res.statusMessage;
+  });
   app.use(
     morgan(
       `A :method request to ${chalk.underline(":url")} from ${chalk.underline(
@@ -109,7 +109,7 @@ function addLogger(app) {
         "(:res[content-length] bytes, :total-time ms)"
       )}`,
       {
-        skip(req, res) {
+        skip(_, res) {
           return res.statusCode < 400;
         },
       }
@@ -160,13 +160,6 @@ function getHelperFor(modulePath) {
         this.instance.stop();
         this.instance = null;
         delete require.cache[nodeHelperPath];
-      }
-    },
-    reload(io) {
-      // preserve existing refcount and force reload
-      if (this.refcount > 0) {
-        this._unload();
-        this._load(io);
       }
     },
     isLoaded() {

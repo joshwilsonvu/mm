@@ -32,7 +32,6 @@
 const nodepath = require("path");
 const fs = require("fs");
 const memoize = require("fast-memoize");
-const { createRequire } = require("module");
 
 module.exports = function babelPluginTransformConfig(babel) {
   return {
@@ -102,7 +101,7 @@ function transformModulesProperty(t, path, state, options) {
     if (moduleName !== encodeURIComponent(moduleName)) {
       // name is not safe for a URI, syntax error and suggest a conservative character set
       throw moduleProperty.buildCodeFrameError(
-        `'${moduleName}' is not safe for URIs. Please use only the following characters: A-Z a-z 0-9 - _`
+        `'${moduleName}' is not safe for URLs. Please use only the following characters: A-Z a-z 0-9 - _`
       );
     }
 
@@ -113,12 +112,7 @@ function transformModulesProperty(t, path, state, options) {
       nodepath.join(isDefault ? "default" : ".", moduleName), // index.jsx?, index.tsx?, or package.json#main field
       nodepath.join(isDefault ? "default" : ".", moduleName, moduleName), // {moduleName}.jsx?, {moduleName}.tsx?
     ];
-    const cfgRequire = createRequire(state.file.opts.filename);
-    const resolvedModulePath = resolveModulePath(
-      cfgRequire,
-      modulesPath,
-      tryResolvePaths
-    );
+    const resolvedModulePath = resolveModulePath(modulesPath, tryResolvePaths);
     if (!resolvedModulePath) {
       throw moduleProperty.buildCodeFrameError(
         `Can't resolve module file at any of ${tryResolvePaths.join(
@@ -137,7 +131,7 @@ function transformModulesProperty(t, path, state, options) {
     );
 
     // resolve the path to the node helper file of the module, if any
-    const resolvedHelperPath = resolveModulePath(cfgRequire, modulesPath, [
+    const resolvedHelperPath = resolveModulePath(modulesPath, [
       nodepath.join(isDefault ? "default" : ".", moduleName, "node_helper"),
       nodepath.join(isDefault ? "default" : ".", moduleName, "node-helper"),
     ]);
@@ -165,11 +159,11 @@ const findDefaultModules = memoize(function (modulesPath) {
   return defaultModules;
 });
 
-function resolveModulePath(req, base, paths) {
+function resolveModulePath(base, paths) {
   for (const tryResolve of paths) {
     try {
       const joined = nodepath.join(base, tryResolve);
-      const resolved = req.resolve(joined);
+      const resolved = require.resolve(joined);
       const normalized = normalizedRelative(base, resolved);
       return normalized;
     } catch (err) {}

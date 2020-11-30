@@ -44,16 +44,9 @@ module.exports = async function () {
   if (ghUsername) {
     url = `https://github.com/${ghUsername}/${moduleName}.git`;
   } else {
-    // TODO try to find module in moduleslist
-    // url = getUrl(moduleName);
-    // if (!url) {
-    console.error(`No repository found for ${moduleName}. `);
-    console.info(
-      "Try " + chalk.cyan(`yarn mm add <github-username>/${moduleName}`)
-    );
-    return 1;
-    // }
+    url = await getUrl(moduleName);
   }
+  if (!url) return 1;
 
   console.debug("Cloning", url);
   try {
@@ -88,19 +81,51 @@ module.exports = async function () {
     )} to see if there are any other installation instructions.`
   );
   console.info(
-    `Open ${chalk.underline(paths.config)} to add it to your config file.`
+    `Open ${chalk.underline(
+      paths.config
+    )} to add ${moduleName} to your config file. ex:
+    {
+      module: "${moduleName}",
+      position: " ... ",
+      config: { ... }
+    }`
   );
 };
 
 const ghUsernameRegex = /^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i;
 const moduleRegex = /^[a-z][_a-z0-9-]*$/i;
 
-function getUrl(moduleName) {
+async function getUrl(moduleName) {
+  const prompts = require("prompts");
+  const fetch = require("node-fetch");
   // Find the desired repository and clone it into the modules folder
-  const moduleslist = require("@mm/moduleslist");
-  const knownModule = moduleslist.find((m) => m.name === moduleName);
-  if (knownModule) {
-    console.debug(`Found module matching ${moduleName}:`, knownModule);
-    return knownModule.repository;
+  const json = await fetch(
+    `https://api.github.com/search/repositories?page=1&per_page=3&sort=stars&q=${encodeURIComponent(
+      moduleName
+    )}`
+  ).then((res) => res.json());
+  if (!Array.isArray(json.items)) {
+    return null;
   }
+  const items = json.items
+    .map((i) => ({
+      clone_url: i.clone_url,
+      full_name: i.full_name,
+      stars: i.stargazers_count,
+    }))
+    .slice(0, 3);
+  if (items.length <= 1) {
+    return items[0] || null;
+  }
+  const { choice } = await prompts([
+    {
+      type: "select",
+      name: "choice",
+      message: `Did you mean one of these?`,
+      choices: items.map((i) => ({
+        title: `${i.full_name} (${i.stars} stars)`,
+      })),
+    },
+  ]);
+  return items[choice] ? items[choice].clone_url : null;
 }

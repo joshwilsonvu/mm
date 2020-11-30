@@ -1,3 +1,11 @@
+/**
+ * Provides backwards-compatibility for MM2 modules.
+ *
+ * Provides the global variables from MM2 and is used internally
+ * by [the CLI](../../bin). Please refer to its documentation.
+ * You should not normally need to access this file directly.
+ */
+
 import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
 import useConstant from "use-constant";
 import {
@@ -5,9 +13,9 @@ import {
   sendNotification,
   useSocketNotification,
   sendSocketNotification,
-} from "../notification";
-import { getCurrentConfig, modifyCurrentConfig } from "../config";
-import { InternalModuleConfig, Props } from "../types";
+} from "./notification";
+import { getCurrentConfig, modifyCurrentConfig } from "./config";
+import { Props } from "./types";
 
 // // @ts-ignore
 // import moment from "moment-timezone";
@@ -607,7 +615,7 @@ function hideModule(identifier: string, hide: boolean) {
   });
 }
 
-class ModuleArray extends Array<InternalModuleConfig> {
+class ModuleArray extends Array<Props> {
   /* withClass(className)
    * calls modulesByClass to filter modules with the specified classes.
    *
@@ -663,7 +671,7 @@ class ModuleArray extends Array<InternalModuleConfig> {
    *
    * return array - Filtered collection of modules.
    */
-  exceptModule(module: InternalModuleConfig) {
+  exceptModule(module: Props) {
     return this.filter((mod) => mod.identifier !== module.identifier);
   }
 
@@ -672,7 +680,7 @@ class ModuleArray extends Array<InternalModuleConfig> {
    *
    * argument callback function - The function to execute with the module as an argument.
    */
-  enumerate(callback: Parameters<Array<InternalModuleConfig>["forEach"]>[0]) {
+  enumerate(callback: Parameters<Array<Props>["forEach"]>[0]) {
     this.forEach(callback);
   }
 }

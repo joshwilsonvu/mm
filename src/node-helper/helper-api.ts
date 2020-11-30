@@ -32,7 +32,6 @@
  *
  */
 
-import { AnyJson } from "..";
 import express from "express";
 import SocketIO from "socket.io";
 import mitt from "mitt";
@@ -44,7 +43,7 @@ class Helper {
   }
 
   onSocketNotification(notification: string, cb: NotificationCallback) {}
-  sendSocketNotification(notification: string, payload: AnyJson) {}
+  sendSocketNotification(notification: string, payload: any) {}
   cleanup(cleanFn: CleanFn) {
     this.cleanFns.push(cleanFn);
   }
@@ -66,7 +65,7 @@ export const helper = {
   },
 };
 
-type NotificationCallback = (...args: any[]) => AnyJson | Promise<AnyJson>;
+type NotificationCallback = (...args: any[]) => any | Promise<any>;
 type CleanFn = () => void | Promise<void>;
 
 /******** New API ********/

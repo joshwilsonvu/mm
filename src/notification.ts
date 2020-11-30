@@ -64,17 +64,17 @@ export function useSocketNotification(
 /**
  * To send a notification to the node helper, use `sendSocketNotification` in a useEffect() block or event handler.
  * Avoid calling it in the component body, because it could be called more than once.
- * @example useEffect(() => fetch(something).then(content => sendSocketNotification(name, "FETCHED", content), [something]);
- * @param sender pass the `name` prop of the component
+ * @example useEffect(() => sendSocketNotification(name, "SOMETHING_CHANGED", something), [something]);
+ * @param name pass the `name` prop of the component
  * @param notification the notification name to send to the helper
  * @param payload any data to send to the helper
  */
 export function sendSocketNotification(
-  sender: string,
+  name: string,
   notification: string,
   payload: any
 ): void {
-  const socketEmitter = socketCache.get(sender);
+  const socketEmitter = socketCache.get(name);
   socketEmitter.emit(notification, payload);
 }
 

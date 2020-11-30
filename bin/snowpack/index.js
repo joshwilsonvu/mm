@@ -1,56 +1,44 @@
-const path = require("path");
-// const paths = require("../shared/paths");
 const config = require("../shared/config");
 const rollupPluginPnpResolve = require("rollup-plugin-pnp-resolve");
 
 // On requests from the client, let the mm server handle it before Snowpack
-const middleware = (() => {
-  let app;
-  return (req, res, next) => {
-    if (!app) {
-      const createServer = require("../shared/create-server");
-      app = createServer().app;
-    }
-    app(req, res, next);
-  };
-})();
-
-const exclude = [
-  // `!(${[paths.modules, paths.config, paths.src]
-  //   .map((p) => `${p.replace(paths.cwd, "").replace(/^[/\\]/, "")`})
-  //   .join("|")})`,
-  "**/node[-_]helper.*",
-  "__tests__/**/*",
-  "magicmirror",
-];
+let app;
+const middleware = (req, res, next) => {
+  if (!app) {
+    const createServer = require("../shared/create-server");
+    app = createServer().app;
+  }
+  app(req, res, next);
+};
 
 const snowpackConfig = {
-  exclude,
+  exclude: [
+    // `!(${[paths.modules, paths.config, paths.src]
+    //   .map((p) => `${p.replace(paths.cwd, "").replace(/^[/\\]/, "")`})
+    //   .join("|")})`,
+    "**/node[-_]helper.*",
+    "__tests__/**/*",
+    "magicmirror",
+  ],
   devOptions: {
     open: "none",
     port: config.port || 8080,
     hostname: config.address || "127.0.0.1",
   },
-  buildOptions: {
-    clean: true,
-  },
   installOptions: {
     NODE_ENV: true,
-    alias: {
-      node_helper: "magicmirror/node-helper",
-    },
+    polyfillNode: true,
     rollup: { plugins: [rollupPluginPnpResolve()] },
+    treeshake: false,
   },
   plugins: [
-    require.resolve("./transform-plugin"),
-    require.resolve("./lint-plugin"),
+    require.resolve("@snowpack/plugin-babel"),
+    //[require.resolve("@snowpack/plugin-babel"), { transformOptions: require("../shared/babel").config }],
+    //require.resolve("./lint-plugin"),
   ],
-  mount: {
-    modules: "/modules",
+  experiments: {
+    app: middleware,
   },
-  // experiments: {
-  //   app: middleware,
-  // },
 };
 
 module.exports = snowpackConfig;
