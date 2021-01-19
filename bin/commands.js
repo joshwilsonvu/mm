@@ -1,14 +1,12 @@
 const { Command } = require("clipanion");
 
 const startDetails = `\`mm start\` compiles your files on the fly and updates \
-the app instantly as you update your code or config.
-
-Use it to quickly configure your mirror or develop your module.`;
+the screen instantly as you update your code or config files.`;
 
 class StartCommand extends Command {
   static usage = Command.Usage({
     description:
-      "Start the app and instantly see changes to your source files.",
+      "Start the MagicMirror and instantly see changes to your source files.",
     details: startDetails,
     examples: [
       ["Start MagicMirror with live updates", "yarn mm start"],

@@ -32,22 +32,23 @@
 const nodepath = require("path");
 const fs = require("fs");
 const memoize = require("fast-memoize");
+const resolve = require("resolve");
 
 module.exports = function babelPluginTransformConfig(babel) {
   return {
     name: "babel-plugin-transform-config",
     visitor: {
       ObjectExpression(path, state) {
-        transformConfig(babel.types, path, state, state.opts);
+        transformConfig(babel.types, path, state);
       },
     },
   };
 };
 
-function transformConfig(t, path /* ObjectExpression */, state, options) {
-  if (!nodepath.isAbsolute(options.modulesPath)) {
+function transformConfig(t, path /* ObjectExpression */, state) {
+  if (!nodepath.isAbsolute(state.opts.modulesPath)) {
     throw path.buildCodeFrameError(
-      `options.modulesPath must be an absolute path, got ${options.modulesPath}`
+      `options.modulesPath must be an absolute path, got ${state.opts.modulesPath}`
     );
   }
   // find the { modules: any[] } property
@@ -59,12 +60,12 @@ function transformConfig(t, path /* ObjectExpression */, state, options) {
     );
   });
   if (modulesProperty) {
-    transformModulesProperty(t, modulesProperty, state, options);
+    transformModulesProperty(t, modulesProperty, state);
   }
 }
 
-function transformModulesProperty(t, path, state, options) {
-  const defaultModules = findDefaultModules(options.modulesPath);
+function transformModulesProperty(t, path, state) {
+  const defaultModules = findDefaultModules(state.opts.modulesPath);
 
   // get the array elements
   const elements = path.get("value.elements");
@@ -105,21 +106,26 @@ function transformModulesProperty(t, path, state, options) {
       );
     }
 
-    let modulesPath = options.modulesPath;
+    const modulesPath = state.opts.modulesPath;
+    const extensions = state.opts.extensions || [".js", ".cjs"];
     const isDefault = defaultModules.indexOf(moduleName) !== -1;
     // resolve the path of the module being requested
     const tryResolvePaths = [
       nodepath.join(isDefault ? "default" : ".", moduleName), // index.jsx?, index.tsx?, or package.json#main field
       nodepath.join(isDefault ? "default" : ".", moduleName, moduleName), // {moduleName}.jsx?, {moduleName}.tsx?
     ];
-    const resolvedModulePath = resolveModulePath(modulesPath, tryResolvePaths);
+    const resolvedModulePath = resolveModulePath(
+      modulesPath,
+      tryResolvePaths,
+      extensions
+    );
     if (!resolvedModulePath) {
       throw moduleProperty.buildCodeFrameError(
         `Can't resolve module file at any of ${tryResolvePaths.join(
           ", "
-        )} in ${modulesPath}. Make sure a ${Object.keys(
-          require.extensions
-        ).join("|")} file exists at this path.`
+        )} in ${modulesPath}. Make sure a ${Object.keys(extensions).join(
+          "|"
+        )} file exists at this path.`
       );
     }
     // insert a _path property with the absolute path to the module file
@@ -131,10 +137,14 @@ function transformModulesProperty(t, path, state, options) {
     );
 
     // resolve the path to the node helper file of the module, if any
-    const resolvedHelperPath = resolveModulePath(modulesPath, [
-      nodepath.join(isDefault ? "default" : ".", moduleName, "node_helper"),
-      nodepath.join(isDefault ? "default" : ".", moduleName, "node-helper"),
-    ]);
+    const resolvedHelperPath = resolveModulePath(
+      modulesPath,
+      [
+        nodepath.join(isDefault ? "default" : ".", moduleName, "node_helper"),
+        nodepath.join(isDefault ? "default" : ".", moduleName, "node-helper"),
+      ],
+      extensions
+    );
     // insert a _helperPath property with the absolute path to the helper file
     if (resolvedHelperPath) {
       moduleProperty.insertAfter(
@@ -159,11 +169,14 @@ const findDefaultModules = memoize(function (modulesPath) {
   return defaultModules;
 });
 
-function resolveModulePath(base, paths) {
+function resolveModulePath(base, paths, extensions) {
   for (const tryResolve of paths) {
     try {
       const joined = nodepath.join(base, tryResolve);
-      const resolved = require.resolve(joined);
+      const resolved = resolve.sync(joined, {
+        extensions,
+        includeCoreModules: false,
+      });
       const normalized = normalizedRelative(base, resolved);
       return normalized;
     } catch (err) {}

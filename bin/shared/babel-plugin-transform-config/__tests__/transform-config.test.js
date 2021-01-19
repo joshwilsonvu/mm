@@ -10,9 +10,10 @@ pluginTester({
   plugin: plugin,
   pluginOptions: {
     modulesPath: path.resolve(__dirname, "modules"),
+    extensions: [".js", ".jsx", ".ts", ".tsx"],
   },
   tests: {
-    "resolves a module and adds _path, _nodePath": {
+    "resolves a module and adds _path, _helperPath": {
       code: `
         export default {
           port: 8080,

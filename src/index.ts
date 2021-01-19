@@ -14,4 +14,4 @@ export * from "./module-guard";
 export * from "./module-layout";
 
 // Export shared types used across packages
-export type { Config, ClientConfig, MagicMirrorModule } from "./types";
+export type { Config, ClientConfig, Props, MagicMirrorModule } from "./types";

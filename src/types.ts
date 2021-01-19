@@ -38,12 +38,12 @@ export interface ModuleConfig {
  * to be added to the properties that come from the config file.
  */
 export interface Props
-  extends Required<Omit<ModuleConfig, "module" | "_path" | "_nodePath">> {
+  extends Required<Omit<ModuleConfig, "module" | "_path" | "_helperPath">> {
   readonly name: string;
   hidden: boolean;
   readonly identifier: string;
   readonly path: string; // the path to the module file relative to /modules
-  readonly nodePath?: string; // the full path to the node helper relative to /modules, if any
+  readonly helperPath?: string; // the full path to the node helper relative to /modules, if any
 }
 export type MagicMirrorModule = React.FunctionComponent<Props>;
 
@@ -118,13 +118,13 @@ function initializeModule(mod: ModuleConfig): Props | null {
     hidden: false,
     identifier: `m${id++}`,
     path: (mod as any)._path || "",
-    nodePath: (mod as any)._helperPath || "",
+    helperPath: (mod as any)._helperPath || "",
   };
 }
 
 const defaults: Omit<Required<Config>, "ipWhitelist"> = {
   address: "localhost",
-  port: 8080,
+  port: 1111,
   ipAllowlist: ["127.0.0.1", "::ffff:127.0.0.1", "::1"],
   useHttps: false,
   httpsPrivateKey: "",

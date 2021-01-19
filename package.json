@@ -85,8 +85,9 @@
     "pascal-case": "^3.1.1",
     "prompts": "^2.3.2",
     "react-query": "^2.23.1",
+    "resolve": "^1.10.0",
     "rollup-plugin-pnp-resolve": "^2.0.0",
-    "snowpack": "2.16.x",
+    "snowpack": "~3.0.11",
     "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.1",
     "text-table": "^0.2.0",
@@ -130,8 +131,5 @@
     "react": ">=16.14.0",
     "react-dom": ">=16.14.0",
     "suncalc": "*"
-  },
-  "resolutions": {
-    "esinstall": "0.3.6"
   }
 }
