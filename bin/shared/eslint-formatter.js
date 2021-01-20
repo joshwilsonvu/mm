@@ -72,17 +72,3 @@ function joinBlocks(blocks) {
     })
     .join("\n\n");
 }
-
-// function tsFormatter(error) {
-//   const { code, severity, content, line, character } = error;
-
-//   return formatLine(
-//     {
-//       ruleId: `TS${code}`,
-//       message: content,
-//       line,
-//       column: character,
-//     },
-//     severity === "error" ? "red" : "yellow"
-//   ).join(" ");
-// };

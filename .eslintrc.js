@@ -1,6 +1,6 @@
 module.exports = {
   root: true,
-  extends: require.resolve("./bin/snowpack/eslint-config"),
+  extends: require.resolve("./bin/shared/eslint-config"),
   ignorePatterns: [
   "dist/",
   "build/",

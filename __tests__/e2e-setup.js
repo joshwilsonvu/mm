@@ -10,7 +10,6 @@ let cwd = path.join(tmp.dirSync().name, "MagicMirror");
 const paths = {
   cwd: cwd,
   entry: path.join(cwd, "src", "index.js"),
-  buildHtml: path.join(cwd, "build", "index.html"),
   git: path.join(cwd, ".git"),
   packageJson: path.join(cwd, "package.json"),
   local: path.join(__dirname, "..", "..", "MagicMirror"),

@@ -42,7 +42,7 @@ You will be shown which files are created and how to get started."
 `;
 
 exports[`shows help message on '$ mm start -h' 1`] = `
-"Start the app and instantly see changes to your source files.
+"Start the MagicMirror and instantly see changes to your source files.
 
 Usage:
 
@@ -50,10 +50,8 @@ $ mm start [--for-view] [-b,--browser]
 
 Details:
 
-\`mm start\` compiles your files on the fly and updates the app instantly as you 
-update your code or config.
-
-Use it to quickly configure your mirror or develop your module.
+\`mm start\` compiles your files on the fly and updates the screen instantly as 
+you update your code or config files.
 
 Examples:
 
@@ -111,7 +109,7 @@ Where <command> is one of:
     Set up files for a new module.
 
   mm start [--for-view] [-b,--browser]
-    Start the app and instantly see changes to your source files.
+    Start the MagicMirror and instantly see changes to your source files.
 
   mm view [--address,-a #0] [--port,-p #0] [--url,-u #0]
     Connect to \`mm start\` and display the application.

@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 
 require("dotenv").config(); // loads environment variables from .env file
+const fs = require("fs");
+const path = require("path");
 const { Cli, Command } = require("clipanion");
-const { startServer, createConfiguration, logger } = require("snowpack");
+const { startServer, createConfiguration } = require("snowpack");
 
 // Default to development mode
 if (!process.env.NODE_ENV) {
@@ -10,57 +12,6 @@ if (!process.env.NODE_ENV) {
 }
 
 function createContext() {
-  let _server = null;
-  async function getServer() {
-    if (_server) {
-      return _server;
-    }
-    const [err, snowpackConfig] = createConfiguration({
-      exclude: ["__tests__/**/*", "**/node_modules/**/*"],
-      devOptions: {
-        open: "none",
-        port: config.port + 1, // leave config.port open for MagicMirror server
-        hostname: config.address,
-        hmrDelay: 750,
-      },
-      packageOptions: {
-        source: "local",
-        env: {
-          NODE_ENV: true,
-        },
-        polyfillNode: false,
-      },
-      plugins: [
-        [
-          require.resolve("@snowpack/plugin-babel"),
-          { transformOptions: require("./shared/babel").config },
-        ],
-        // require.resolve("../shared/lint-plugin"),
-      ],
-      mount: {
-        public: "/",
-        src: "/src",
-        config: "/config",
-        modules: "/modules",
-      },
-    });
-    if (err) throw err;
-    _server = await startServer({
-      config: snowpackConfig,
-    });
-    return _server;
-  }
-
-  let _runtime = null;
-  async function getRuntime() {
-    if (_runtime) {
-      return _runtime;
-    }
-    const server = await getServer();
-    _runtime = server.getServerRuntime();
-    return _runtime;
-  }
-
   let _paths = null;
   function getPaths() {
     if (_paths) {
@@ -71,11 +22,16 @@ function createContext() {
     const extensions = [".js", ".ts", ".tsx", ".jsx", ".mjs"];
     const cwd = process.cwd();
 
-    const resolveUnqualified = (p) =>
-      resolve.sync(p, {
-        basedir: cwd,
-        extensions,
-      });
+    const resolveUnqualified = (p) => {
+      try {
+        return resolve.sync(p, {
+          basedir: cwd,
+          extensions,
+        });
+      } catch (e) {
+        return null;
+      }
+    };
 
     const config = resolveUnqualified("./config/config");
     if (!config) {
@@ -109,6 +65,63 @@ function createContext() {
       resolveUnqualified,
     };
     return _paths;
+  }
+
+  let _server = null;
+  async function getServer() {
+    if (_server) {
+      return _server;
+    }
+    const paths = getPaths();
+    const snowpackConfig = createConfiguration({
+      exclude: ["__tests__/**/*", "**/node_modules/**/*"],
+      devOptions: {
+        open: "none",
+        port: 9999, // config.port + 1, // leave config.port open for MagicMirror server
+        hostname: "127.0.0.1", // config.address,
+        hmrDelay: 750,
+      },
+      packageOptions: {
+        source: "local",
+        env: {
+          NODE_ENV: true,
+        },
+        polyfillNode: false,
+      },
+      buildOptions: {
+        sourcemap: true,
+      },
+      plugins: [
+        [
+          require.resolve("./shared/snowpack-plugin-transform"),
+          {
+            cwd: paths.cwd,
+            modulesPath: paths.modules,
+          },
+        ],
+      ],
+      mount: {
+        public: "/",
+        src: "/src",
+        config: "/config",
+        modules: "/modules",
+      },
+    });
+
+    _server = await startServer({
+      config: snowpackConfig,
+    });
+    return _server;
+  }
+
+  let _runtime = null;
+  async function getRuntime() {
+    if (_runtime) {
+      return _runtime;
+    }
+    const server = await getServer();
+    _runtime = server.getServerRuntime();
+    return _runtime;
   }
 
   let _config = null;
@@ -152,12 +165,14 @@ function createContext() {
       const moduleName = path.basename(dir);
       modules[moduleName] = {
         dir,
-        index:
+        indexPath:
           paths.resolveUnqualified(dir) || // index.js, .ts, etc.
           paths.resolveUnqualified(path.join(dir, moduleName)), // MM2-style, use name of folder as entry
-        helper:
+        helperPath:
           paths.resolveUnqualified(path.join(dir, "node_helper")) ||
           paths.resolveUnqualified(path.join(dir, "node-helper")), // handle typos
+        helper: null,
+        refCount: 0,
       };
       return modules;
     }, {});

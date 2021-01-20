@@ -1,11 +1,21 @@
 "use strict";
 
-const findModules = require("../shared/find-modules");
+const fs = require("fs-extra");
+const path = require("path");
+const morgan = require("morgan");
+const helmet = require("helmet");
+const express = require("express");
+const SocketIO = require("socket.io");
+const chalk = require("chalk");
+const { IpFilter, IpDeniedError } = require("express-ipfilter");
 
 module.exports = async function start() {
   // Start the Snowpack dev server
   const server = await this.context.getServer();
-  
+  const runtime = await this.context.getRuntime();
+  const paths = this.context.getPaths();
+  const config = await this.context.getConfig();
+
   // Initialize the express app
   const app = express();
 
@@ -43,8 +53,6 @@ module.exports = async function start() {
     res.type("application/json").send(JSON.stringify(config, null, 2))
   );
 
-  const io = createSocketServer();
-
   // Error handler, for when a device not on the ipAllowlist tries to access
   app.use(function (err, _, res, next) {
     if (err instanceof IpDeniedError) {
@@ -55,127 +63,84 @@ module.exports = async function start() {
     }
   });
 
+  // Create WebSocket server
+  const modules = this.context.getModules();
+  const io = SocketIO();
+  io.of((_1, _2, next) => next(null, true)) // this lets us connect with dynamic namespaces
+    .on("connect", async (socket) => {
+      let helperName = socket.nsp.name;
+      if (helperName.startsWith("/")) {
+        helperName = helperName.substr(1);
+      }
+      // Start helper if not already started
+      if (modules.hasOwnProperty(helperName)) {
+        const m = modules[helperName];
+        let helperModule;
+        if (m.refcount === 0 && m.helperPath) {
+          try {
+            // import as ESM
+            helperModule = await runtime.importModule(
+              server.getUrlForFile(m.helperPath)
+            ).exports;
+          } catch (e) {
+            // require as CommonJS, or surface error
+            helperModule = require(m.helperPath);
+          }
+          if (helperModule) {
+            const HelperClass = helperModule.default || helperModule;
+            try {
+              m.helper = new HelperClass(io, m.helperPath);
+              m.helper.start();
+              m.refcount = 1;
+            } catch (e) {
+              m.helper = null;
+              throw e;
+            }
+          }
+        } else if (m.refcount > 0) {
+          m.refcount += 1;
+        }
+      } else {
+        console.log(`No helper found for module ${helperName}.`);
+      }
+      // On disconnect, stop helper if not currently in use.
+      socket.on("disconnect", () => {
+        if (modules.hasOwnProperty(helperName)) {
+          const m = modules[helperName];
+          if (m.refcount > 0) {
+            setTimeout(() => {
+              m.refcount -= 1;
+              if (m.refcount <= 0 && m.helper) {
+                m.refcount = 0;
+                m.helper.stop();
+                m.helper = null;
+                delete require.cache(m.helperPath);
+              }
+            }, 2000).unref();
+          }
+        }
+      });
+    });
+
+  // Connect helper routers to the Express app, when the helpers are running
+  Object.values(modules).forEach((m) => {
+    app.use((req, res, next) => {
+      if (m.helper && m.helper.router) {
+        m.helper.router(req, res, next);
+      } else {
+        next();
+      }
+    });
+  });
+
+  // Pass all other requests to Snowpack, which will serve source files and manage HMR
   app.use((req, res) => server.handleRequest(req, res, { handleError: true }));
 
   return new Promise((resolve) => {
     process.on("SIGINT", () => {
       resolve();
     });
-  }).then((resolve) => io.close(resolve))
+  })
+    .then((resolve) => io.close(resolve))
     .then(() => server.shutdown && server.shutdown());
 };
-
-
-function createSocketServer() {
-  const io = SocketIO();
-  io.of((_, _, next) => next(null, true)) // this lets us connect with dynamic namespaces
-    .on("connect", (socket) => {
-      let helperName = socket.nsp.name;
-      if (helperName.startsWith("/")) {
-        helperName = helperName.substr(1);
-      }
-      // Start helper if not already started
-      const helper = getHelper(helperName);
-      if (helper) {
-        helper.ref(io);
-      } else {
-        console.log(`No helper found for module ${helperName}.`);
-      }
-      socket.on("disconnect", () => {
-        if (helper) {
-          helper.unref();
-        }
-      });
-    });
-  return io;
-}
-
-let _helpers = {};
-function getHelper(helperName, io) {
-  if (_helpers.hasOwnProperty(helperName)) {
-    return _helpers[helperName];
-  }
-
-}
-function getHelpers() {
-  return _helpers;
-}
-
-function addHelperRouters(app, nodeHelpers) {
-  // Use each helper's router, if the helper is currently loaded
-  Object.values(nodeHelpers)
-    .map((helper) => (res, req, next) => {
-      if (helper.instance && typeof helper.instance.router === "function") {
-        helper.instance.router(res, req, next);
-      } else {
-        return next();
-      }
-    })
-    .forEach((router) => app.use(router));
-}
-
-/**
- * Returns an object representing the node helper for a given path
- * @param {*} modulePath the path to the directory containing a `node_helper`
- */
-function getHelperFor(paths, helperName) {
-  let helperPath = fs.existsSync(path.join(paths.modules, helperName)) && paths.resolveUnqualified(path.join)
-  const requirePath = path.resolve(paths.modules, helperName, "node_helper");
-  let nodeHelperPath;
-  try {
-    nodeHelperPath = require.resolve(requirePath); // adds appropriate file extension and ensures file exists
-  } catch (err) {
-    return null;
-  }
-  return {
-    name: moduleName,
-    path: nodeHelperPath,
-    instance: null,
-    refcount: 0,
-    ref(io) {
-      if (this.refcount === 0) {
-        this._load(io);
-      }
-      this.refcount += 1;
-    },
-    unref() {
-      this.refcount -= 1;
-      if (this.refcount <= 0) {
-        this.refcount = 0;
-        this._unload();
-      }
-    },
-    _load(io) {
-      if (!this.instance) {
-        let Class = require(nodeHelperPath);
-        this.instance = new Class(io, nodeHelperPath);
-        this.instance.start();
-      }
-    },
-    _unload() {
-      if (this.instance) {
-        this.instance.stop();
-        this.instance = null;
-        delete require.cache[nodeHelperPath];
-      }
-    },
-    isLoaded() {
-      return Boolean(this.instance);
-    },
-  };
-}
-
-// returns object of { [helper]: HelperWrapper }
-function collectNodeHelpers() {
-  // Collect all modules dirs except default/, and all modules within default/
-  const moduleDirs = findModules(paths);
-  const nodeHelpers = {};
-  for (const modulePath of moduleDirs) {
-    const helper = getHelperFor(modulePath);
-    if (helper) {
-      console.debug("found helper for", modulePath);
-      nodeHelpers[helper.name] = helper;
-    }
-  }
-  return nodeHelpers;
-}
