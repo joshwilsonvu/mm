@@ -8872,13 +8872,13 @@ fsevents@^2.2.0:
   linkType: hard
 
 "socket.io-parser@npm:~3.3.0":
-  version: 3.3.1
-  resolution: "socket.io-parser@npm:3.3.1"
+  version: 3.3.2
+  resolution: "socket.io-parser@npm:3.3.2"
   dependencies:
     component-emitter: ~1.3.0
     debug: ~3.1.0
     isarray: 2.0.1
-  checksum: 1267a6520f4515260601a3d436037a15426ac8a64ebb6ff8d7de2f79bc415d0be85b7049a32d1531c47cb0c068438d38a91a26e7799fdf9b18bf6743b29f3049
+  checksum: 170431a74064f5bf0c9335fd95931ebb3ef0bbc80efe7f966e54e5df5122105d11f4190e83bb24b5c2cecbb86c7321e7d5791686b56a85f5458cd24a47d434da
   languageName: node
   linkType: hard
 
