@@ -1364,25 +1364,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@electron/get@npm:^1.0.1":
-  version: 1.12.2
-  resolution: "@electron/get@npm:1.12.2"
+"@electron/get@npm:^1.13.0":
+  version: 1.14.1
+  resolution: "@electron/get@npm:1.14.1"
   dependencies:
     debug: ^4.1.1
     env-paths: ^2.2.0
     fs-extra: ^8.1.0
-    global-agent: ^2.0.2
+    global-agent: ^3.0.0
     global-tunnel-ng: ^2.7.1
     got: ^9.6.0
     progress: ^2.0.3
-    sanitize-filename: ^1.6.2
+    semver: ^6.2.0
     sumchecker: ^3.0.1
   dependenciesMeta:
     global-agent:
       optional: true
     global-tunnel-ng:
       optional: true
-  checksum: 0d79fdb38fabb7467c7219d86142ccaf21329ecdf3c394371dbc3cc37e54026ac654e30339b50535289a0592294330f330d2cd9f3a315da403230bd9a0bdbb07
+  checksum: 603cfffd7f911d1d6ce35bf16f88768594b8ec3a1ecf393d229a8863e9c73b86b6102c75baaae84e358fc40d4aec1558318798215c47324571ec691199cce58a
   languageName: node
   linkType: hard
 
@@ -1885,10 +1885,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^12.0.12":
+"@types/node@npm:*":
   version: 12.12.69
   resolution: "@types/node@npm:12.12.69"
   checksum: cae9f2997362663899cd1e33180e0ec719004f2ce7d2d7afc972b9829596b0fad24be73727673c7ab72b457a2512adcab78d759b99d1dc1bf2c0edc610626808
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^16.11.26":
+  version: 16.18.3
+  resolution: "@types/node@npm:16.18.3"
+  checksum: 49b71b337b25b17ee80f248c6020f0052c3a75fb99f85acdc7002a2a474f237e958bebfc929fc63d18aef7f94997a84b08e087b5021f865b5af7e53b61371907
   languageName: node
   linkType: hard
 
@@ -3307,13 +3314,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"core-js@npm:^3.6.5":
-  version: 3.6.5
-  resolution: "core-js@npm:3.6.5"
-  checksum: 9283348dd5be2f1d07feaf90e2336b3f00a2316e3d3c6d4f789c9a67bdd4d7b08ce1c88dca4e591340130056c6b412b0b74fae039f8e259206f1073f542e4e85
-  languageName: node
-  linkType: hard
-
 "core-util-is@npm:1.0.2, core-util-is@npm:~1.0.0":
   version: 1.0.2
   resolution: "core-util-is@npm:1.0.2"
@@ -3703,16 +3703,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:^10.1.3":
-  version: 10.1.4
-  resolution: "electron@npm:10.1.4"
+"electron@npm:^18.3.7":
+  version: 18.3.15
+  resolution: "electron@npm:18.3.15"
   dependencies:
-    "@electron/get": ^1.0.1
-    "@types/node": ^12.0.12
+    "@electron/get": ^1.13.0
+    "@types/node": ^16.11.26
     extract-zip: ^1.0.3
   bin:
     electron: cli.js
-  checksum: ac4845c68a586af0f9c58c534a0f4cfcd16c1c1fb5c1c3118a85de7baad90040ad6132a05f956c9027e42b850ce9f1302aa5223a4c5f43f2b1576ae620a290e0
+  checksum: 8533466bb7f3f5026063b5ccf2dce9ed6e8949475e2c9cc18e1a3dc067e0b09ce02ba03a36b911c77c391206e3929760284d7af0e52f15cff3a20f2780b52e1c
   languageName: node
   linkType: hard
 
@@ -4797,18 +4797,17 @@ fsevents@^2.2.0:
   languageName: node
   linkType: hard
 
-"global-agent@npm:^2.0.2":
-  version: 2.1.12
-  resolution: "global-agent@npm:2.1.12"
+"global-agent@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "global-agent@npm:3.0.0"
   dependencies:
     boolean: ^3.0.1
-    core-js: ^3.6.5
     es6-error: ^4.1.1
     matcher: ^3.0.0
     roarr: ^2.15.3
     semver: ^7.3.2
     serialize-error: ^7.0.1
-  checksum: ee616a998d61d6dd0d7c37a00d91d37f40c556969ac6fc37ae44741fd04f4c9ae63c558f63646b49d6bbf428d4266903a7eb61d9e10af63bbc408e577bf15b06
+  checksum: bdb023256a346e411a1a9dc71e9f168fae99a89a965d5e4f7adbc97395f7d6a4659ca24733db179e1af41d18ad512ee6ef13d401179cb18cc21a78be1f5ad6f0
   languageName: node
   linkType: hard
 
@@ -6637,7 +6636,7 @@ fsevents@^2.2.0:
     clipanion: ^2.6.2
     confusing-browser-globals: ^1.0.9
     dotenv: ^8.2.0
-    electron: ^10.1.3
+    electron: ^18.3.7
     eslint: ^7.11.0
     eslint-plugin-import: ^2.21.2
     eslint-plugin-react: ^7.20.0
@@ -8506,15 +8505,6 @@ fsevents@^2.2.0:
   languageName: node
   linkType: hard
 
-"sanitize-filename@npm:^1.6.2":
-  version: 1.6.3
-  resolution: "sanitize-filename@npm:1.6.3"
-  dependencies:
-    truncate-utf8-bytes: ^1.0.0
-  checksum: 3e15159360c46fe1846eaeff92a6139c1b0873337cd12c7df0aa8a8978dce0524f37510cc1814c2e82fd7663ec7a15147321b2e5dc0ed426dfa31f1ea93e3691
-  languageName: node
-  linkType: hard
-
 "saxes@npm:^5.0.0":
   version: 5.0.1
   resolution: "saxes@npm:5.0.1"
@@ -8566,7 +8556,7 @@ fsevents@^2.2.0:
   languageName: node
   linkType: hard
 
-"semver@npm:^6.0.0, semver@npm:^6.3.0":
+"semver@npm:^6.0.0, semver@npm:^6.2.0, semver@npm:^6.3.0":
   version: 6.3.0
   resolution: "semver@npm:6.3.0"
   bin:
@@ -9480,15 +9470,6 @@ fsevents@^2.2.0:
   languageName: node
   linkType: hard
 
-"truncate-utf8-bytes@npm:^1.0.0":
-  version: 1.0.2
-  resolution: "truncate-utf8-bytes@npm:1.0.2"
-  dependencies:
-    utf8-byte-length: ^1.0.1
-  checksum: 208b1197a1067e43483d036ca98ea6c9b48a60324b08979b4a569f35fbec1f62617218d0d7d4f34657c37616b99a0eed7be681a656fea01331cf33a0f8158e1d
-  languageName: node
-  linkType: hard
-
 "ts-pnp@npm:^1.2.0":
   version: 1.2.0
   resolution: "ts-pnp@npm:1.2.0"
@@ -9770,13 +9751,6 @@ typescript@^3.9.7:
   version: 3.1.1
   resolution: "use@npm:3.1.1"
   checksum: 8dd3bdeeda53864c779e0fa8d799064739708f80b45d06fa48a1a6ba192dc3f9e3266d4556f223cd718d27aedfd957922152e7463c00ac46e185f8331353fb6f
-  languageName: node
-  linkType: hard
-
-"utf8-byte-length@npm:^1.0.1":
-  version: 1.0.4
-  resolution: "utf8-byte-length@npm:1.0.4"
-  checksum: df2466d1c91c58f172258e98e5ccf08707ca8e719a5715342e69bd2ebd349d209a05d173f2c069586442f7f7de44bdb37a5a263c75f69768852842b09cc50a04
   languageName: node
   linkType: hard
 
