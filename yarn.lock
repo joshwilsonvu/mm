@@ -5144,10 +5144,10 @@ fsevents@^2.2.0:
   languageName: node
   linkType: hard
 
-"immer@npm:7.0.12":
-  version: 7.0.12
-  resolution: "immer@npm:7.0.12"
-  checksum: 1e8289a213334069b9f8027c71d04282fa67337d62c3e7a038057f5a1191546fb84657610d15472cceb525dd204f46e0db6ba37c577a5f7a6f631023a2a65325
+"immer@npm:9.0.6":
+  version: 9.0.6
+  resolution: "immer@npm:9.0.6"
+  checksum: 48c9b673ee0f3a05f0651f26c8ccdcbc034a47502dd26e716bd7bb301bcede194d1c5e895d4d6ec8d1e7bfb6444dd1056095b3f10e6c5e08cc3e798497a96531
   languageName: node
   linkType: hard
 
@@ -6649,7 +6649,7 @@ fsevents@^2.2.0:
     fs-extra: ^9.0.1
     helmet: ^4.1.1
     husky: ^4.2.5
-    immer: 7.0.12
+    immer: 9.0.6
     jest: ^26.6.0
     jest-serializer-path: ^0.1.15
     jest-watch-suspend: ^1.1.2
