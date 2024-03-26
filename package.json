@@ -74,7 +74,7 @@
     "eslint-plugin-import": "^2.21.2",
     "eslint-plugin-react": "^7.20.0",
     "eslint-plugin-react-hooks": "^4.1.2",
-    "express": "^4.17.1",
+    "express": "^4.19.2",
     "express-ipfilter": "^1.1.2",
     "fast-memoize": "^2.5.2",
     "helmet": "^4.1.1",
